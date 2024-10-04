@@ -1,0 +1,37 @@
+# Back-end (Spring Boot) - in the back-end folder
+back-end/target/
+back-end/.mvn/
+back-end/.idea/
+back-end/*.iml
+back-end/mvnw
+back-end/mvnw.cmd
+back-end/.classpath
+back-end/.project
+back-end/.settings/
+back-end/.vscode/
+back-end/pom.xml.tag
+back-end/pom.xml.releaseBackup
+back-end/pom.xml.versionsBackup
+back-end/log/
+back-end/.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Front-end (Vue.js) - in the front-end folder
+front-end/node_modules/
+**/node_modules/
+front-end/npm-debug.log*
+front-end/yarn-debug.log*
+front-end/yarn-error.log*
+front-end/dist/
+front-end/!.env.local
+front-end/!.env.*.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# JetBrains Rider / WebStorm / IntelliJ
+.idea/
