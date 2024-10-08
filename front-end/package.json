@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev:css": "tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/style.css --watch",
+    "dev:css": "vite & tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/style.css --watch",
     "css": "tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/style.css",
     "dev": "vite",
     "build": "vite build",
