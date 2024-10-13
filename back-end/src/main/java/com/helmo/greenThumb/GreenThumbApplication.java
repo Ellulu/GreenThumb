@@ -7,9 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class GreenThumbApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(GreenThumbApplication.class, args);
-
 	}
 
 }
