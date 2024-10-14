@@ -16,13 +16,10 @@ public class Plant {
     @Enumerated(EnumType.STRING)
     private LightLevel lightLevel;
 
-    @ManyToOne
-    private Variety variety;
+    private String variety;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Task> taskList;
-
-    // Constructeurs, Getters et Setters
 
     public Plant() {
     }
@@ -35,7 +32,7 @@ public class Plant {
         this.id = id;
     }
 
-    public Plant(String name, double monthlyWaterFrequency, Variety variety, List<Task> taskList) {
+    public Plant(String name, double monthlyWaterFrequency, String variety, List<Task> taskList) {
         this.name = name;
         this.monthlyWaterFrequency = monthlyWaterFrequency;
         this.variety = variety;
@@ -66,11 +63,11 @@ public class Plant {
         this.lightLevel = lightLevel;
     }
 
-    public Variety getVariety() {
+    public String getVariety() {
         return variety;
     }
 
-    public void setVariety(Variety variety) {
+    public void setVariety(String variety) {
         this.variety = variety;
     }
 

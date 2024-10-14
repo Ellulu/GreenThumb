@@ -1,4 +1,4 @@
-package com.helmo.greenThumb.model;
+/*package com.helmo.greenThumb.model;
 
 import jakarta.persistence.*;
 
@@ -44,3 +44,4 @@ public class Variety {
         this.description = description;
     }
 }
+*/

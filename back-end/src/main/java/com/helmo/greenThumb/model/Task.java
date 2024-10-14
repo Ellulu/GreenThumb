@@ -20,11 +20,6 @@ public class Task {
     private Date taskDate;
     private boolean notification;
 
-    // Relation Many-to-One avec Plant
-    @ManyToOne
-    private Plant plant;
-
-    // Constructeurs, Getters et Setters
 
     public Task() {
     }
@@ -61,12 +56,5 @@ public class Task {
         this.notification = notification;
     }
 
-    public Plant getPlant() {
-        return plant;
-    }
-
-    public void setPlant(Plant plant) {
-        this.plant = plant;
-    }
 
 }

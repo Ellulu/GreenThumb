@@ -1,12 +1,13 @@
-package com.helmo.greenThumb.infrastructures;
+/*package com.helmo.greenThumb.infrastructures;
 
 
 import com.helmo.greenThumb.model.Variety;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 @Repository
 public interface VarietyRepository extends JpaRepository<Variety, Long> {
-    // rien a mettre dedans, géré automatiquement(il me semble)
+    Optional<Variety> findByVarietyName(String varietyName);
 }
-
+*/
