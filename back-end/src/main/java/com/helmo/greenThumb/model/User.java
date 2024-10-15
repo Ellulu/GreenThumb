@@ -16,6 +16,11 @@ public class User {
     private String lastName;
     private String firstName;
 
+
+    @ManyToOne
+    @JoinColumn(name = "note_id")
+    private Note note;
+
     @Lob
     private Byte[] profilePhoto; // Transformé en BLOB pour le stockage de la photo
 
@@ -38,6 +43,14 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Article> articles;
+
+    public Note getNote() {
+        return note;
+    }
+
+    public void setNote(Note note) {
+        this.note = note;
+    }
 
     public void createProfile() {
         // Implémentation

@@ -15,7 +15,7 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, PlantRepository plantRepository,
                                    ArticleRepository articleRepository, EventRepository eventRepository,VarietyRepository varietyRepository) {
-        if (true) return null; // A RETIRER POUR INIT DEDANS
+            if (true) return args -> {}; // A RETIRER POUR INIT DEDANS
         return args -> {
 
             // Créer des utilisateurs (User)
