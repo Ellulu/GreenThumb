@@ -1,6 +1,5 @@
 package com.helmo.greenThumb.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
@@ -33,7 +32,7 @@ public class User {
     private List<User> subscribers;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<Event> events;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
