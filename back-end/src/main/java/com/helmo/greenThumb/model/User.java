@@ -2,6 +2,8 @@ package com.helmo.greenThumb.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.rmi.server.UID;
 import java.util.List;
 
 @Entity
@@ -13,6 +15,8 @@ public class User {
     private Long id;
 
     private String email;
+
+    private String uid;
     private String lastName;
     private String firstName;
 
@@ -94,7 +98,37 @@ public class User {
     public String getLastName() {
         return lastName;
     }
+    public String getUid() {
+        return uid;
+    }
 
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public List<User> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(List<User> subscribers) {
+        this.subscribers = subscribers;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
+    }
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }

@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/plants")
+@CrossOrigin(origins = "http://localhost:5173")
 public class PlantController {
 
     private final PlantService plantService;
