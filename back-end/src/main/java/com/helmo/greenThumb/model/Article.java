@@ -27,8 +27,9 @@ public class Article {
     private Rating rating;
 
     @ManyToOne
-    @JsonBackReference // Ignorer la sérialisation inverse pour éviter la boucle
-    private User author; // Auteur de l'article
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User author;
 
     public Article() {
     }

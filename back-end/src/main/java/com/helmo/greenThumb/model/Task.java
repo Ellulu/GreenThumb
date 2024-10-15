@@ -10,15 +10,16 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    private String taskName;
+    private Date taskDate;
+    private boolean notification;
+
     public Task(String taskName, Date taskDate, boolean notification) {
         this.taskName = taskName;
         this.taskDate = taskDate;
         this.notification = notification;
     }
-
-    private String taskName;
-    private Date taskDate;
-    private boolean notification;
 
 
     public Task() {

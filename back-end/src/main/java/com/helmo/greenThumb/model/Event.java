@@ -1,5 +1,6 @@
 package com.helmo.greenThumb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,11 @@ public class Event {
     private Long id;
 
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User author;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date eventDate;
@@ -54,6 +60,10 @@ public class Event {
 
     public List<String> getFiles() {
         return files;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public void setFiles(List<String> files) {

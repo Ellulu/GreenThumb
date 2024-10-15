@@ -1,6 +1,11 @@
 package com.helmo.greenThumb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.aspectj.weaver.ast.Var;
+import org.springframework.data.annotation.Persistent;
+
 import java.util.List;
 
 @Entity
@@ -16,10 +21,19 @@ public class Plant {
     @Enumerated(EnumType.STRING)
     private LightLevel lightLevel;
 
-    private String variety;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private Variety variety;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Task> taskList;
+
+    @ElementCollection
+    private List<String> files;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User owner;
 
     public Plant() {
     }
@@ -32,11 +46,12 @@ public class Plant {
         this.id = id;
     }
 
-    public Plant(String name, double monthlyWaterFrequency, String variety, List<Task> taskList) {
+    public Plant(String name, double monthlyWaterFrequency, Variety variety, List<Task> taskList,User user) {
         this.name = name;
         this.monthlyWaterFrequency = monthlyWaterFrequency;
         this.variety = variety;
         this.taskList = taskList;
+        this.owner = user;
     }
 
     public String getName() {
@@ -63,11 +78,11 @@ public class Plant {
         this.lightLevel = lightLevel;
     }
 
-    public String getVariety() {
+    public Variety getVariety() {
         return variety;
     }
 
-    public void setVariety(String variety) {
+    public void setVariety(Variety variety) {
         this.variety = variety;
     }
 

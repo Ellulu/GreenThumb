@@ -2,7 +2,7 @@ package com.helmo.greenThumb.controller;
 
 
 import com.helmo.greenThumb.model.Article;
-import com.helmo.greenThumb.model.services.ArticleService;
+import com.helmo.greenThumb.services.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.helmo.greenThumb.model.services;
+package com.helmo.greenThumb.services;
 import com.helmo.greenThumb.infrastructures.PlantRepository;
 import com.helmo.greenThumb.model.Plant;
 import org.springframework.stereotype.Service;

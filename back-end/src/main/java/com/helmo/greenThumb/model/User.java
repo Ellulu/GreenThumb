@@ -19,7 +19,8 @@ public class User {
     @Lob
     private Byte[] profilePhoto; // Transformé en BLOB pour le stockage de la photo
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Plant> plants;
 
     @ManyToMany
@@ -30,11 +31,12 @@ public class User {
     )
     private List<User> subscribers;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Event> events;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    @JsonManagedReference // Sérialisation du côté User
+    @JsonManagedReference
     private List<Article> articles;
 
     public void createProfile() {

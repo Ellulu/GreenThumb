@@ -1,4 +1,4 @@
-/*package com.helmo.greenThumb.infrastructures;
+package com.helmo.greenThumb.infrastructures;
 
 
 import com.helmo.greenThumb.model.Variety;
@@ -10,4 +10,3 @@ import java.util.Optional;
 public interface VarietyRepository extends JpaRepository<Variety, Long> {
     Optional<Variety> findByVarietyName(String varietyName);
 }
-*/

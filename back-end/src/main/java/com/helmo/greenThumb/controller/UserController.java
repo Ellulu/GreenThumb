@@ -1,7 +1,7 @@
 package com.helmo.greenThumb.controller;
 
 import com.helmo.greenThumb.model.User;
-import com.helmo.greenThumb.model.services.UserService;
+import com.helmo.greenThumb.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

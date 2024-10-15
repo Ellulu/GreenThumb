@@ -1,4 +1,4 @@
-package com.helmo.greenThumb.model.services;
+package com.helmo.greenThumb.services;
 
 import com.helmo.greenThumb.model.Article;
 import com.helmo.greenThumb.infrastructures.ArticleRepository;
