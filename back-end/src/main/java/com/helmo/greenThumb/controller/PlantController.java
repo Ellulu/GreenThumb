@@ -1,13 +1,13 @@
 package com.helmo.greenThumb.controller;
 
 import com.helmo.greenThumb.model.Plant;
-import com.helmo.greenThumb.model.services.PlantService;
+import com.helmo.greenThumb.services.PlantService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/plants")
+@RequestMapping("/plants")
 public class PlantController {
 
     private final PlantService plantService;

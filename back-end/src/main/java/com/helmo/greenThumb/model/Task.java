@@ -10,21 +10,17 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    private String taskName;
+    private Date taskDate;
+    private boolean notification;
+
     public Task(String taskName, Date taskDate, boolean notification) {
         this.taskName = taskName;
         this.taskDate = taskDate;
         this.notification = notification;
     }
 
-    private String taskName;
-    private Date taskDate;
-    private boolean notification;
-
-    // Relation Many-to-One avec Plant
-    @ManyToOne
-    private Plant plant;
-
-    // Constructeurs, Getters et Setters
 
     public Task() {
     }
@@ -61,12 +57,5 @@ public class Task {
         this.notification = notification;
     }
 
-    public Plant getPlant() {
-        return plant;
-    }
-
-    public void setPlant(Plant plant) {
-        this.plant = plant;
-    }
 
 }
