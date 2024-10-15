@@ -15,7 +15,9 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, PlantRepository plantRepository,
                                    ArticleRepository articleRepository, EventRepository eventRepository,VarietyRepository varietyRepository) {
-            if (true) return args -> {}; // A RETIRER POUR INIT DEDANS
+        if (true) return args -> {
+
+        };// A RETIRER SI vous voulez seeddata
         return args -> {
 
             // Créer des utilisateurs (User)
@@ -67,6 +69,7 @@ public class LoadDatabase {
             eventRepository.save(event1);
         };
     }
+
 }
 
 
