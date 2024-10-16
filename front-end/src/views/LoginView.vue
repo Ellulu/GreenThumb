@@ -1,13 +1,25 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../assets/js/firebase'
+import { isEmailValid } from '../assets/js/utils'
 import GoogleSignIn from '../components/GoogleSignIn.vue'
 import Input from '../components/Input.vue'
 import Button from '../components/Button.vue'
 import Title from '../components/Title.vue'
 
 const email = ref('')
+const emailError = ref('')
 const password = ref('')
 const rememberMe = ref(false)
+
+watch(email, (value) => {
+    if (!isEmailValid(value)) {
+        emailError.value = 'L\'email n\'est pas valide'
+    } else {
+        emailError.value = ''
+    }
+})
 </script>
 
 <template>
@@ -15,7 +27,7 @@ const rememberMe = ref(false)
     <Title class="mb-5">Connectez-vous à votre compte</Title>
     
     <form @submit.prevent="handleSubmit" class="flex flex-col gap-4 w-5/6">
-      <Input name="Email" v-model="email" placeholder="Ex: johndoe@mail.com" required />
+      <Input name="Email" v-model="email" placeholder="Ex: johndoe@mail.com" required :error-message="emailError" />
 
       <Input name="Mot de passe" v-model="password" type="password" placeholder="********" required />
 

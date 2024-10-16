@@ -1,17 +1,45 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../assets/js/firebase'
+import { isEmailValid, validatePassword, isPasswordConfirmationValid } from '../assets/js/utils'
 import GoogleSignIn from '../components/GoogleSignIn.vue'
 import Input from '../components/Input.vue'
 import Button from '../components/Button.vue'
 import Title from '../components/Title.vue'
 
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
 const name = ref('')
 const firstName = ref('')
+const email = ref('')
+const emailError = ref('')
+const password = ref('')
+const passwordError = ref('')
+const confirmPassword = ref('')
+const confirmPasswordError = ref('')
+
+watch(email, (value) => {
+    if (!isEmailValid(value)) {
+        emailError.value = 'L\'email n\'est pas valide'
+    } else {
+        emailError.value = ''
+    }
+})
+
+watch(password, (value) => {
+    if (validatePassword(value).length > 0) {
+        passwordError.value = 'Le mot de passe doit contenir ' + validatePassword(value).join(', ')
+    } else {
+        passwordError.value = ''
+    }
+})
+
+watch(confirmPassword, (value) => {
+    if (!isPasswordConfirmationValid(password.value, value)) {
+        confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
+    } else {
+        confirmPasswordError.value = ''
+    }
+})
 </script>
 
 <template>
@@ -24,11 +52,11 @@ const firstName = ref('')
             <Input class="min-w-0" name="Nom" v-model="name" placeholder="Ex: Doe" required />
         </div>
         
-        <Input name="Email" v-model="email" placeholder="Ex: johndoe@gmail.com" required />
+        <Input name="Email" v-model="email" placeholder="Ex: johndoe@gmail.com" :errorMessage="emailError" required />
 
-        <Input name="Mot de passe" v-model="password" type="password" placeholder="********" required />
+        <Input name="Mot de passe" v-model="password" type="password" placeholder="********" :errorMessage="passwordError" required />
       
-        <Input name="Confirmation du mot de passe" v-model="confirmPassword" type="password" placeholder="********" required />
+        <Input name="Confirmation du mot de passe" v-model="confirmPassword" type="password" placeholder="********" :errorMessage="confirmPasswordError" required />
         <Button type="submit">S'enregistrer</Button>
     </form>
 
