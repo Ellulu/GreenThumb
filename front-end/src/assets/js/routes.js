@@ -5,26 +5,31 @@ import LoginView from '../../views/LoginView.vue'
 import NotFoundView from '../../views/NotFoundView.vue'
 import TestView from '../../views/TestView.vue'
 import MainLayout from '../../layout/main_layout.vue'
+import PlantView from '../../views/PlantView.vue'
 
 const routes = [
   {
     path: '/',
-    component: MainLayout, // Layout commun
+    component: MainLayout, 
     children: [
       {
-        path: '', // Route par défaut (Home)
+        path: '',
         component: HomeView,
       },
       {
-        path: 'test', // Route pour TestView
+        path: 'test',
         component: TestView,
+      },
+      {
+        path: 'plants',
+        component: PlantView,
       },
     ],
   },
   
-  { path: '/login', component: LoginView }, // Route sans layout
-  { path: '/404', component: NotFoundView }, // Page 404
-  { path: '/:pathMatch(.*)*', redirect: '/404' }, // Redirection pour les chemins non valides
+  { path: '/login', component: LoginView },
+  { path: '/404', component: NotFoundView },
+  { path: '/:pathMatch(.*)*', redirect: '/404' },
 ]
 
 const router = createRouter({
