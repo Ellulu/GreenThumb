@@ -1,16 +1,13 @@
 <script setup>
-import { signInWithPopup } from 'firebase/auth'
-import { auth, googleProvider } from '../assets/js/firebase'
+import { useUserStore } from '../stores/userStore'
 import googleLogo from '../assets/img/google.png'
 
+const userStore = useUserStore()
+
+// TODO: save uid to database
+// TODO: add error handling
 const signInWithGoogle = () => {
-  signInWithPopup(auth, googleProvider)
-    .then((result) => {
-      console.log(result.user.uid)
-    })
-    .catch((error) => {
-      console.error(error)
-    })
+    userStore.loginWithGoogle()
 }
 </script>
 

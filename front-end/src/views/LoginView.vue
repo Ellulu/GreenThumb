@@ -1,12 +1,13 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../assets/js/firebase'
+import { useUserStore } from '../stores/userStore'
 import { isEmailValid } from '../assets/js/utils'
 import GoogleSignIn from '../components/GoogleSignIn.vue'
 import Input from '../components/Input.vue'
 import Button from '../components/Button.vue'
 import Title from '../components/Title.vue'
+
+const userStore = useUserStore()
 
 const email = ref('')
 const emailError = ref('')
@@ -20,6 +21,18 @@ watch(email, (value) => {
         emailError.value = ''
     }
 })
+
+// TODO: save uid to database
+// TODO: add remember me feature
+// TODO: add forgot password feature
+// TODO: add error handling
+const handleSubmit = async () => {
+    try {
+        await userStore.login(email.value, password.value)
+    } catch (error) {
+        console.log(error)
+    }
+}
 </script>
 
 <template>

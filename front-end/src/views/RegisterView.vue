@@ -1,12 +1,13 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../assets/js/firebase'
+import { useUserStore } from '../stores/userStore'
 import { isEmailValid, validatePassword, isPasswordConfirmationValid } from '../assets/js/utils'
 import GoogleSignIn from '../components/GoogleSignIn.vue'
 import Input from '../components/Input.vue'
 import Button from '../components/Button.vue'
 import Title from '../components/Title.vue'
+
+const userStore = useUserStore()
 
 const name = ref('')
 const firstName = ref('')
@@ -40,6 +41,16 @@ watch(confirmPassword, (value) => {
         confirmPasswordError.value = ''
     }
 })
+
+// TODO: save uid to database
+// TODO: add error handling
+const handleSubmit = async () => {
+    try {
+        await userStore.register(email.value, password.value, firstName.value + ' ' + name.value)
+    } catch (error) {
+        console.log(error)
+    }
+}
 </script>
 
 <template>
