@@ -31,13 +31,6 @@ export const useEventStore = defineStore('event', {
         this.error = 'Failed to create event';
       }
     },
-    async updateEvent(id, eventData) {
-      try {
-        await APIService.put(`/events/${id}`, eventData);
-      } catch (error) {
-        this.error = `Failed to update event with id: ${id}`;
-      }
-    },
     async deleteEvent(id) {
       try {
         await APIService.delete(`/events/${id}`);

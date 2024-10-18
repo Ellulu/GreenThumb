@@ -31,13 +31,6 @@ export const usePlantStore = defineStore('plant', {
         this.error = 'Failed to create plant';
       }
     },
-    async updatePlant(id, plantData) {
-      try {
-        await APIService.put(`/plants/${id}`, plantData);
-      } catch (error) {
-        this.error = `Failed to update plant with id: ${id}`;
-      }
-    },
     async deletePlant(id) {
       try {
         await APIService.delete(`/plants/${id}`);

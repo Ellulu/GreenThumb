@@ -31,13 +31,6 @@ export const useArticleStore = defineStore('article', {
         this.error = 'Failed to create article';
       }
     },
-    async updateArticle(id, articleData) {
-      try {
-        await APIService.put(`/articles/${id}`, articleData);
-      } catch (error) {
-        this.error = `Failed to update article with id: ${id}`;
-      }
-    },
     async deleteArticle(id) {
       try {
         await APIService.delete(`/articles/${id}`);

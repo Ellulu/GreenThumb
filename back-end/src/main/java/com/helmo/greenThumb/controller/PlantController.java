@@ -2,6 +2,7 @@ package com.helmo.greenThumb.controller;
 
 import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.services.PlantService;
+import jakarta.persistence.PostUpdate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,10 @@ public class PlantController {
         return plantService.getAllPlants();
     }
 
+
     @PostMapping
     public Plant addPlant(@RequestBody Plant plant) {
-        return plantService.addPlant(plant);
+        return plantService.addOrUpdatePlant(plant);
     }
 
     @GetMapping("/{id}")

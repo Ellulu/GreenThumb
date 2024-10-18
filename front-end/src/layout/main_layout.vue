@@ -11,7 +11,7 @@
           v-for="(item, index) in menuItems"
           :key="index"
           :to="item.path"
-          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-green-700"
+          class="block my-0.5 py-2.5 px-4 rounded transition duration-200 hover:bg-green-700"
           :class="{ 'bg-green-700': $route.path === item.path }"
         >
           <div class="flex items-center space-x-2">
@@ -22,7 +22,7 @@
       </nav>
     </nav>
 
-    <div class="flex-1 p-10">
+    <div class="flex-1 p-10 bg-amber-50">
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>

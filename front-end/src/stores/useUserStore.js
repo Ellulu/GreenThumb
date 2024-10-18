@@ -31,13 +31,6 @@ export const useUserStore = defineStore('user', {
         this.error = 'Failed to create user';
       }
     },
-    async updateUser(id, userData) {
-      try {
-        await APIService.put(`/users/${id}`, userData);
-      } catch (error) {
-        this.error = `Failed to update user with id: ${id}`;
-      }
-    },
     async deleteUser(id) {
       try {
         await APIService.delete(`/users/${id}`);
