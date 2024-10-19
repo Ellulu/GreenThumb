@@ -6,6 +6,7 @@ import NotFoundView from '../../views/NotFoundView.vue'
 import TestView from '../../views/TestView.vue'
 import MainLayout from '../../layout/main_layout.vue'
 import PlantView from '../../views/PlantView.vue'
+import NoteFormView from "@/views/NoteFormView.vue";
 
 const routes = [
   {
@@ -19,6 +20,9 @@ const routes = [
       {
         path: 'test',
         component: TestView,
+      },{
+        path: 'notes',
+        component: NoteFormView,
       },
       {
         path: 'plants',
