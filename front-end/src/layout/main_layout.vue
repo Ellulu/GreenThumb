@@ -1,8 +1,9 @@
 <template>
-  <div class="flex h-screen bg-gray-100">
+  <div class="flex h-screen">
     <!-- Navbar verticale -->
-    <nav class="bg-green-600 text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
-      <div class="flex items-center justify-center mb-8">
+    <nav class="bg-green-600 text-white w-64 space-y-6 py-7 px-2 fixed md:static inset-y-0 left-0 transform transition duration-200 ease-in-out overflow-y-auto md:translate-x-0"
+     :class="{ '-translate-x-full': !isMenuOpen }">
+           <div class="flex items-center justify-center mb-8">
         <span class="text-2xl font-semibold">GreenThumb</span>
       </div>
       <nav>
@@ -22,7 +23,7 @@
       </nav>
     </nav>
 
-    <div class="flex-1 p-10 bg-amber-50">
+    <div class="flex-1 p-10">
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>

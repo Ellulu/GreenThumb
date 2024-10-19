@@ -171,6 +171,7 @@ html,
 
 body {
   margin: 0;
+  background-color: rgb(255 251 235);
   /* 1 */
   line-height: inherit;
   /* 2 */
