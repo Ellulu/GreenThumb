@@ -42,12 +42,13 @@
 
 <script setup>
 import { ref } from 'vue'
-import { HomeIcon, NewspaperIcon, LeafIcon, CalendarIcon, UsersIcon, UserIcon, HelpCircleIcon, MenuIcon, XIcon } from 'lucide-vue-next'
+import { HomeIcon, NewspaperIcon, LeafIcon, CalendarIcon, UsersIcon, UserIcon, HelpCircleIcon, MenuIcon, XIcon,NotebookPen } from 'lucide-vue-next'
 
 const menuItems = [
   { name: 'Dashboard', path: '/', icon: HomeIcon },
   { name: 'Posts', path: '/test', icon: NewspaperIcon },
   { name: 'Plants', path: '/plants', icon: LeafIcon },
+  { name: 'Notes', path: '/notes', icon: NotebookPen},
   { name: 'Calendar', path: '/calendar', icon: CalendarIcon },
   { name: 'Community', path: '/community', icon: UsersIcon },
   { name: 'Profile', path: '/profile', icon: UserIcon },
