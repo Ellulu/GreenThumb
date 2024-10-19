@@ -44,4 +44,10 @@ public class Note {
     }
 
 
+    public void setId(long l) {
+        this.id = l;
+    }
+    public Long getId() {
+        return id;
+    }
 }

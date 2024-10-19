@@ -26,10 +26,9 @@ public class NoteController {
         noteService.saveNote(note);
         return ResponseEntity.status(HttpStatus.CREATED).body("La note a bien été créée");
     }
-/*
-    @PostMapping
-    public ResponseEntity<String> readNote() {
-        List<Note> notes = noteService.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(notes.toString());
-    }*/
+
+    @GetMapping
+    public ResponseEntity<Iterable<Note>> getAllNotes() {
+        return ResponseEntity.ok(noteService.findAll());
+    }
 }
