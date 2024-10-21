@@ -28,7 +28,6 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User author;
 
     public Article() {

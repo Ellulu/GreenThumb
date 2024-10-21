@@ -46,7 +46,7 @@ import { HomeIcon, NewspaperIcon, LeafIcon, CalendarIcon, UsersIcon, UserIcon, H
 
 const menuItems = [
   { name: 'Dashboard', path: '/', icon: HomeIcon },
-  { name: 'Posts', path: '/test', icon: NewspaperIcon },
+  { name: 'Posts', path: '/posts', icon: NewspaperIcon },
   { name: 'Plants', path: '/plants', icon: LeafIcon },
   { name: 'Notes', path: '/notes', icon: NotebookPen},
   { name: 'Calendar', path: '/calendar', icon: CalendarIcon },

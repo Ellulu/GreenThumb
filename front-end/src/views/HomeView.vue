@@ -1,101 +1,110 @@
-<script setup>
-import { onMounted } from 'vue'
-import { usePlantStore } from '@/stores/usePlantStore'
-import { useUserStore } from '@/stores/useUserStore'
-import { useEventStore } from '@/stores/useEventStore'
-import { useArticleStore } from '@/stores/useArticleStore'
-
-const plantStore = usePlantStore()
-const userStore = useUserStore()
-const eventStore = useEventStore()
-const articleStore = useArticleStore()
-
-const plantId = 1
-const userId = 1
-const eventId = 1
-const articleId = 1
-
-onMounted(async () => {
-  await plantStore.fetchPlants() 
-  console.log('All Plants:', plantStore.plants)
-
-  await plantStore.fetchPlant(plantId)
-  console.log(`Plant by ID (${plantId}):`, plantStore.plant)
-
-  await userStore.fetchUsers()
-  console.log('All Users:', userStore.users)
-
-  await userStore.fetchUser(userId)
-  console.log(`User by ID (${userId}):`, userStore.user)
-
-  await eventStore.fetchEvents()
-  console.log('All Events:', eventStore.events)
-
-  await eventStore.fetchEvent(eventId)
-  console.log(`Event by ID (${eventId}):`, eventStore.event)
-
-  await articleStore.fetchArticles()
-  console.log('All Articles:', articleStore.articles)
-
-  await articleStore.fetchArticle(articleId)
-  console.log(`Article by ID (${articleId}):`, articleStore.article)
-})
-
-</script>
-
 <template>
-  <div>
-    <h1>Dashboard</h1>
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-green-800 mb-6">Feed GreenThumb(depecated)</h1>
 
-    <div v-if="plantStore.error">
-      <p>Error (Plants): {{ plantStore.error }}</p>
-    </div>
-    <div v-else-if="plantStore.plants && plantStore.plants.length">
-      <h2>All Plants</h2>
-      <ul>
-        <li v-for="plant in plantStore.plants" :key="plant.id">{{ plant.name }}</li>
-      </ul>
-    </div>
-    <div v-else>
-      <p>Loading Plants...</p>
+    <div v-if="loading" class="text-center py-8">
+      <Loader2Icon class="animate-spin h-8 w-8 mx-auto text-green-600" />
+      <p class="mt-2 text-gray-600">Chargement des articles...</p>
     </div>
 
-    <div v-if="userStore.error">
-      <p>Error (User): {{ userStore.error }}</p>
-    </div>
-    <div v-else-if="userStore.user">
-      <h2>User</h2>
-      <p>{{ userStore.user.name }}</p>
-    </div>
-    <div v-else>
-      <p>Loading User...</p>
+    <div v-else-if="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+      <p>{{ error }}</p>
     </div>
 
-    <div v-if="eventStore.error">
-      <p>Error (Events): {{ eventStore.error }}</p>
-    </div>
-    <div v-else-if="eventStore.events && eventStore.events.length">
-      <h2>All Events</h2>
-      <ul>
-        <li v-for="event in eventStore.events" :key="event.id">{{ event.name }}</li>
-      </ul>
-    </div>
-    <div v-else>
-      <p>Loading Events...</p>
+    <div v-else-if="articles.length === 0" class="text-center py-8">
+      <LeafIcon class="h-16 w-16 mx-auto text-gray-400" />
+      <p class="mt-4 text-xl text-gray-600">Aucun article pour le moment.</p>
     </div>
 
-    <div v-if="articleStore.error">
-      <p>Error (Articles): {{ articleStore.error }}</p>
+    <div v-else class="space-y-6">
+      <article v-for="article in articles" :key="article.id" class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <img :src="article.author.profilePhoto || 'https://via.placeholder.com/40'" alt="Profile photo" class="w-10 h-10 rounded-full mr-4">
+            <div>
+              <h2 class="font-semibold text-lg">{{ article.author.firstName }} {{ article.author.lastName }}</h2>
+              <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{{ article.title }}</h3>
+          <p class="text-gray-700 mb-4">{{ article.text }}</p>
+          <div v-if="article.files.length > 0" class="mb-4">
+            <h4 class="font-semibold mb-2">Fichiers joints :</h4>
+            <ul class="list-disc list-inside">
+              <li v-for="file in article.files" :key="file" class="text-blue-600 hover:underline">
+                {{ file }}
+              </li>
+            </ul>
+          </div>
+          <div class="flex items-center justify-between text-gray-500">
+            <div class="flex items-center space-x-4">
+              <button @click="likeArticle(article)" class="flex items-center space-x-1 hover:text-green-600">
+                <ThumbsUpIcon :class="{'text-green-600': article.liked}" />
+                <span>{{ article.rating.likeCount }}</span>
+              </button>
+              <button @click="dislikeArticle(article)" class="flex items-center space-x-1 hover:text-red-600">
+                <ThumbsDownIcon :class="{'text-red-600': article.disliked}" />
+                <span>{{ article.rating.dislikeCount }}</span>
+              </button>
+              <button @click="showComments(article)" class="flex items-center space-x-1 hover:text-blue-600">
+                <MessageCircleIcon />
+                <span>{{ article.comments || 0 }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
-    <div v-else-if="articleStore.articles && articleStore.articles.length">
-      <h2>All Articles</h2>
-      <ul>
-        <li v-for="article in articleStore.articles" :key="article.id">{{ article.title }}</li>
-      </ul>
-    </div>
-    <div v-else>
-      <p>Loading Articles...</p>
-    </div>
-
   </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import { useArticleStore } from '@/stores/useArticleStore';
+import { Loader2Icon, LeafIcon, ThumbsUpIcon, ThumbsDownIcon, MessageCircleIcon } from 'lucide-vue-next';
+
+const articleStore = useArticleStore();
+const loading = ref(true);
+const error = ref(null);
+
+onMounted(async () => {
+  try {
+    if (articleStore.articles.length === 0) {
+      await articleStore.fetchArticles();
+    }
+    loading.value = false;
+  } catch (err) {
+    error.value = "Erreur lors du chargement des articles.";
+    loading.value = false;
+  }
+});
+
+const { articles } = articleStore;
+
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  return new Date(dateString).toLocaleDateString('fr-FR', options);
+};
+
+const likeArticle = (article) => {
+  if (article.disliked) {
+    article.disliked = false;
+    article.rating.dislikeCount--;
+  }
+  article.liked = !article.liked;
+  article.rating.likeCount += article.liked ? 1 : -1;
+};
+
+const dislikeArticle = (article) => {
+  if (article.liked) {
+    article.liked = false;
+    article.rating.likeCount--;
+  }
+  article.disliked = !article.disliked;
+  article.rating.dislikeCount += article.disliked ? 1 : -1;
+};
+
+const showComments = (article) => {
+  console.log(`Afficher les commentaires pour l'article ${article.id}`);
+};
+</script>

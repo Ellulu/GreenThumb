@@ -1,5 +1,6 @@
 package com.helmo.greenThumb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -45,7 +46,7 @@ public class User {
     private List<Event> events;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Article> articles;
 
     public Note getNote() {
