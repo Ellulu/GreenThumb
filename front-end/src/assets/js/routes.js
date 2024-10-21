@@ -7,6 +7,7 @@ import TestView from '../../views/TestView.vue'
 import MainLayout from '../../layout/main_layout.vue'
 import PlantView from '../../views/PlantView.vue'
 import NoteFormView from "@/views/NoteFormView.vue";
+import PostsView from "@/views/PostsView.vue";
 
 const routes = [
   {
@@ -27,6 +28,10 @@ const routes = [
       {
         path: 'plants',
         component: PlantView,
+      },
+      {
+        path: 'posts',
+        component: PostsView,
       },
     ],
   },
