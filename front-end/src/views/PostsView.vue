@@ -15,7 +15,7 @@
       <div class="bg-white rounded-lg shadow p-4 mb-4">
         <textarea
             v-model="NewPoste"
-            placeholder="What's happening?"
+            placeholder="Quoi de neuf ?"
             class="w-full h-20 resize-none border-b border-green-200 focus:outline-none focus:border-green-500 mb-4"
         ></textarea>
         <div class="flex justify-between items-center">
@@ -32,7 +32,7 @@
               class="bg-green-500 text-white px-4 py-2 rounded-full font-bold hover:bg-green-600 transition"
               :disabled="!NewPoste.trim()"
           >
-            Tweet
+            Nouveau Poste
           </button>
         </div>
       </div>
