@@ -7,9 +7,38 @@ import LoginView from '../../views/LoginView.vue'
 import RegisterView from '../../views/RegisterView.vue'
 import NotFoundView from '../../views/NotFoundView.vue'
 import TestView from '../../views/TestView.vue'
+import MainLayout from '../../layout/main_layout.vue'
+import PlantView from '../../views/PlantView.vue'
+import NoteFormView from "@/views/NoteFormView.vue";
+import PostsView from "@/views/PostsView.vue";
 
 const routes = [
-  { path: '/', component: HomeView },
+  {
+    path: '/',
+    component: MainLayout, 
+    children: [
+      {
+        path: '',
+        component: HomeView,
+      },
+      {
+        path: 'test',
+        component: TestView,
+      },{
+        path: 'notes',
+        component: NoteFormView,
+      },
+      {
+        path: 'plants',
+        component: PlantView,
+      },
+      {
+        path: 'posts',
+        component: PostsView,
+      },
+    ],
+  },
+  
   { path: '/login', component: LoginView },
   { path: '/register', component: RegisterView },
   { 

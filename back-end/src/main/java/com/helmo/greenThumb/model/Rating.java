@@ -1,11 +1,33 @@
 package com.helmo.greenThumb.model;
-public class Rating {
-    private int like;
-    private int dislike;
 
-    public int getAverage() {
-        // Implémentation
-        return like - dislike;
+import jakarta.persistence.Embeddable;
+
+@Embeddable
+public class Rating {
+
+    private int likeCount;
+    private int dislikeCount;
+
+    public Rating() {}
+
+    public Rating(int like, int dislike) {
+        this.likeCount = like;
+        this.dislikeCount = dislike;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
     }
 }
-
