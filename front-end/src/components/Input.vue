@@ -1,6 +1,5 @@
 <script setup>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
+import { Eye, EyeOff } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
@@ -62,8 +61,8 @@ const hasError = computed(() => props.errorMessage !== '')
         @click="showPassword = !showPassword" 
         class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
       >
-        <FontAwesomeIcon :icon="faEye" v-if="!showPassword" />
-        <FontAwesomeIcon :icon="faEyeSlash" v-else />
+        <Eye v-if="!showPassword" />
+        <EyeOff v-else />
       </button>
     </div>
     <p v-if="hasError" class="text-red-500 text-sm">{{ errorMessage }}</p>
