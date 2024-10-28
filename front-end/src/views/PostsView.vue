@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen bg-green-50">
-
     <header class="bg-green-600 text-white p-4 sticky top-0 z-10">
       <div class="max-w-2xl mx-auto flex justify-between items-center">
         <h1 class="text-xl font-bold">Green Thumb</h1>
@@ -11,12 +10,11 @@
     </header>
 
     <main class="max-w-2xl mx-auto mt-4 px-4">
-
       <div class="bg-white rounded-lg shadow p-4 mb-4">
         <textarea
-            v-model="NewPoste"
-            placeholder="Quoi de neuf ?"
-            class="w-full h-20 resize-none border-b border-green-200 focus:outline-none focus:border-green-500 mb-4"
+          v-model="newArticle"
+          placeholder="Quoi de neuf ?"
+          class="w-full h-20 resize-none border-b border-green-200 focus:outline-none focus:border-green-500 mb-4"
         ></textarea>
         <div class="flex justify-between items-center">
           <div class="flex space-x-2 text-green-600">
@@ -28,11 +26,11 @@
             </button>
           </div>
           <button
-              @click="addTweet"
-              class="bg-green-500 text-white px-4 py-2 rounded-full font-bold hover:bg-green-600 transition"
-              :disabled="!NewPoste.trim()"
+            @click="addArticle"
+            class="bg-green-500 text-white px-4 py-2 rounded-full font-bold hover:bg-green-600 transition"
+            :disabled="!newArticle.trim()"
           >
-            Nouveau Poste
+            Nouvel Article
           </button>
         </div>
       </div>
@@ -55,26 +53,39 @@
           </div>
         </template>
         <template v-else>
-          <div v-for="poste in postes" :key="poste.id" class="bg-white rounded-lg shadow p-4">
+          <div v-for="article in articles" :key="article.id" class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center space-x-4 mb-4">
-              <img :src="poste.avatar" alt="User Avatar" class="w-12 h-12 rounded-full" />
+              <img :src="article.author.profilePhoto || '/placeholder.svg?height=48&width=48'" alt="User Avatar" class="w-12 h-12 rounded-full" />
               <div>
-                <h3 class="font-bold">{{ poste.username }}</h3>
-                <p class="text-gray-500 text-sm">{{ poste.handle }}</p>
+                <h3 class="font-bold">{{ article.author.firstName }} {{ article.author.lastName }}</h3>
+                <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
               </div>
             </div>
-            <p class="mb-4">{{ poste.content }}</p>
+            <h4 class="text-xl font-bold mb-2">{{ article.title }}</h4>
+            <p class="mb-4">{{ article.text }}</p>
+            <div v-if="article.files.length > 0" class="mb-4">
+              <h5 class="font-semibold mb-2">Fichiers joints :</h5>
+              <ul class="list-disc list-inside">
+                <li v-for="file in article.files" :key="file" class="text-blue-600 hover:underline">
+                  {{ file }}
+                </li>
+              </ul>
+            </div>
             <div class="flex justify-between text-green-600">
-              <button class="flex items-center space-x-1 hover:text-green-700">
+              <div class ="flex justify-between">
+              <button @click="likeArticle(article)" class="flex items-center space-x-1 hover:text-green-700 m-2">
+                <ThumbsUpIcon :class="{'text-green-700': article.liked}" class="w-5 h-5" />
+                <span>{{ article.rating.likeCount }}</span>
+              </button>
+              <button @click="dislikeArticle(article)" class="flex items-center space-x-1 hover:text-red-600 m-2">
+                <ThumbsDownIcon :class="{'text-red-600': article.disliked}" class="w-5 h-5" />
+                <span>{{ article.rating.dislikeCount }}</span>
+              </button>
+              </div>
+              <button @click="showComments(article)" class="flex items-center space-x-1 hover:text-green-700">
                 <MessageCircleIcon class="w-5 h-5" />
-                <span>{{ poste.comments }}</span>
+                <span>{{ article.comments || 0 }}</span>
               </button>
-
-              <button class="flex items-center space-x-1 hover:text-green-700">
-                <HeartIcon class="w-5 h-5" />
-                <span>{{ poste.likes }}</span>
-              </button>
-
             </div>
           </div>
         </template>
@@ -85,33 +96,76 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, RepeatIcon, HeartIcon, ShareIcon } from 'lucide-vue-next'
+import { useArticleStore } from '@/stores/useArticleStore'
+import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, ThumbsUpIcon, ThumbsDownIcon } from 'lucide-vue-next'
 
+const articleStore = useArticleStore()
 const isLoading = ref(true)
-const NewPoste = ref('')
-const postes = ref([])
+const newArticle = ref('')
+const articles = ref([])
 
-const addTweet = () => {
-  if (NewPoste.value.trim()) {
-    postes.value.unshift({
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+  return new Date(dateString).toLocaleDateString('fr-FR', options)
+}
+
+const addArticle = () => {
+  if (newArticle.value.trim()) {
+    const newArticleObj = {
       id: Date.now(),
-      username: 'Current User',
-      avatar: '/placeholder.svg?height=48&width=48',
-      content: NewPoste.value,
+      title: 'Nouveau article',
+      text: newArticle.value,
+      author: {
+        firstName: 'Current',
+        lastName: 'User',
+        profilePhoto: '/placeholder.svg?height=48&width=48'
+      },
+      date: new Date().toISOString(),
+      files: [],
+      rating: { likeCount: 0, dislikeCount: 0 },
       comments: 0,
-      likes: 0
-    })
-    NewPoste.value = ''
+      liked: false,
+      disliked: false
+    }
+    articles.value.unshift(newArticleObj)
+    newArticle.value = ''
   }
 }
 
-onMounted(() => {
-  // Charger les postes ici
-  setTimeout(() => {
-    postes.value = [
+const likeArticle = (article) => {
+  if (article.disliked) {
+    article.disliked = false
+    article.rating.dislikeCount--
+  }
+  article.liked = !article.liked
+  article.rating.likeCount += article.liked ? 1 : -1
+  articleStore.createArticle(article)
+}
 
-    ]
+const dislikeArticle = (article) => {
+  if (article.liked) {
+    article.liked = false
+    article.rating.likeCount--
+  }
+  article.disliked = !article.disliked
+  article.rating.dislikeCount += article.disliked ? 1 : -1
+  articleStore.createArticle(article)
+}
+
+const showComments = (article) => {
+  console.log(`Afficher les commentaires pour l'article ${article.id}`)
+}
+
+onMounted(async () => {
+  try {
+    if (articleStore.articles.length === 0) {
+      await articleStore.fetchArticles()
+    }
+    articles.value = articleStore.articles
     isLoading.value = false
-  }, 2000)
+  } catch (err) {
+    console.error("Erreur lors du chargement des articles:", err)
+    isLoading.value = false
+  }
 })
 </script>

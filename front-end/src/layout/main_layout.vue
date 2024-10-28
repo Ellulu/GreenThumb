@@ -1,7 +1,10 @@
 <template>
   <div class="flex h-screen">
     <!-- Navbar verticale -->
-    <nav class="bg-green-600 text-white w-64 space-y-6 py-7 px-2 fixed md:static inset-y-0 left-0 transform transition duration-200 ease-in-out overflow-y-auto md:translate-x-0"
+    <div class=" w-64 space-y-6 py-7 px-2 sticky inset-y-0 left-0 transform transition duration-200 ease-in-out overflow-y-auto md:translate-x-0 max-sm:hidden"  
+    ><!-- permet de garder un comportement sticky avec une navbar fixed-->
+    </div>
+    <nav class="bg-green-600 text-white w-64 space-y-6 py-7 px-2 fixed inset-y-0 left-0 transform transition duration-200 ease-in-out overflow-y-auto z-[100] md:translate-x-0"
      :class="{ '-translate-x-full': !isMenuOpen }">
            <div class="flex items-center justify-center mb-8">
         <span class="text-2xl font-semibold">GreenThumb</span>
