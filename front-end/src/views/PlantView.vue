@@ -11,7 +11,7 @@
       <p>{{ error }}</p>
     </div>
 
-    <div v-else-if="plants.length === 0" class="text-center py-8">
+    <div v-else-if="plantStore.plants.length === 0" class="text-center py-8">
       <LeafIcon class="h-16 w-16 mx-auto text-gray-400" />
       <p class="mt-4 text-xl text-gray-600">Vous n'avez pas encore de plantes.</p>
       <button @click="showAddPlantModal" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300">
@@ -20,7 +20,7 @@
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <div v-for="plant in plants" :key="plant.id" class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
+      <div v-for="plant in plantStore.plants" :key="plant.id" class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
         <img :src="'https://www.thespruce.com/thmb/npVjfgrsic53EqOwpgthAVMAnBo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/how-to-grow-monstera-deliciosa-5072671-01-a65286b8b3b8402882c7ad2c57756bbe.jpg'" :alt="plant.name" class="w-full h-48 object-cover">
         <div class="p-4">
           <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ plant.name }}</h2>
@@ -131,7 +131,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { usePlantStore } from '@/stores/usePlantStore'
 import { SunIcon, DropletIcon, EditIcon, TrashIcon, PlusIcon, LeafIcon, Loader2Icon } from 'lucide-vue-next';
 
@@ -147,8 +147,9 @@ const newPlant = ref({
   watering: 4
 });
 const editingPlant = ref(null);
-
 onMounted(async () => {
+  console.log("loading")
+  loading.value = true;
   try {
     await plantStore.fetchPlants();
 
@@ -159,18 +160,18 @@ onMounted(async () => {
         plant.lightLevel==60
       }else{
         plant.lightLevel==99
-        console.log(plant)
-
       };
     });
+    console.log(plantStore.plants)
     loading.value = false;
+    console.log("loaded")
   } catch (err) {
     error.value = "Erreur lors du chargement des plantes.";
     loading.value = false;
   }
-});
+})
 
-const { plants } = plantStore;
+
 function getLightPourcentage(lightLevel){
   switch (lightLevel){
     case("LOW"):
