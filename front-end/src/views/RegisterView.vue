@@ -5,7 +5,7 @@ import { isEmailValid, validatePassword, isPasswordConfirmationValid } from '../
 import GoogleSignIn from '../components/GoogleSignIn.vue'
 import Input from '../components/Input.vue'
 import Button from '../components/Button.vue'
-import Title from '../components/Title.vue'
+import Title from '../components/Title_3.vue'
 
 const userStore = useUserStore()
 

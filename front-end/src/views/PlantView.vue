@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6 text-green-700">Mes Plantes</h1>
+    <Title_2>Mes Plantes</Title_2>
     
     <div v-if="loading" class="text-center py-8">
       <Loader2Icon class="animate-spin h-8 w-8 mx-auto text-green-600" />
@@ -23,27 +23,21 @@
       <div v-for="plant in plantStore.plants" :key="plant.id" class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
         <img :src="'https://www.thespruce.com/thmb/npVjfgrsic53EqOwpgthAVMAnBo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/how-to-grow-monstera-deliciosa-5072671-01-a65286b8b3b8402882c7ad2c57756bbe.jpg'" :alt="plant.name" class="w-full h-48 object-cover">
         <div class="p-4">
-          <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ plant.name }}</h2>
-          <p class="text-gray-600 mb-2">Variété: {{ plant.variety.varietyName }}</p>
+          <Title_3>{{ plant.name }}</Title_3>
+          <Text>Variété: {{ plant.variety.varietyName }}</Text>
           <div class="flex items-center mb-2">
             <SunIcon class="h-5 w-5 text-yellow-500 mr-1" />
-            <div class="bg-gray-200 w-full rounded-full h-2">
-              <div class="bg-yellow-500 rounded-full h-2" :style="{  width: `${getLightPourcentage(plant.lightLevel)}%` }"></div>
-            </div>
+            <ProgressBar :value=getLightPourcentage(plant.lightLevel)></ProgressBar>
           </div>
           <div class="flex items-center mb-4">
             <DropletIcon class="h-5 w-5 text-blue-500 mr-1" />
-            <div class="bg-gray-200 w-full rounded-full h-2">
-              <div class="bg-blue-500 rounded-full h-2" :style="{ width: `${getWaterPourcentage(plant.monthlyWaterFrequency)}%` }"></div>
-            </div>
+            <ProgressBar color="bg-blue-500" :value=getWaterPourcentage(plant.monthlyWaterFrequency)></ProgressBar>
           </div>
           <div class="flex justify-between">
-            <button @click="editPlant(plant)" class="text-green-600 hover:text-green-800 transition duration-300">
+            <Button @click="editPlant(plant)" class="text-green-600 hover:text-green-800">
               <EditIcon class="h-5 w-5" />
             </button>
-            <button @click="deletePlant(plant.id)" class="text-red-600 hover:text-red-800 transition duration-300">
-              <TrashIcon class="h-5 w-5" />
-            </button>
+            <Button @click="deletePlant(plant)" class="text-red-600 hover:text-red-800"><TrashIcon class="h-5 w-5" /></Button>
           </div>
         </div>
       </div>
@@ -132,7 +126,13 @@
 
 <script setup>
 import { onMounted, ref, watchEffect } from 'vue';
-import { usePlantStore } from '@/stores/usePlantStore'
+import { usePlantStore } from '@/stores/usePlantStore';
+import  Button  from '../components/Button.vue';
+import  Title_2  from '../components/Title_2.vue';
+import  Title_3  from '../components/Title_3.vue';
+import  Text     from '../components/Text.vue';
+import  ProgressBar     from '../components/ProgressBar.vue';
+
 import { SunIcon, DropletIcon, EditIcon, TrashIcon, PlusIcon, LeafIcon, Loader2Icon } from 'lucide-vue-next';
 
 const plantStore = usePlantStore();
