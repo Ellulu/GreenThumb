@@ -11,7 +11,7 @@
       <p>{{ error }}</p>
     </Error>
 
-    <div v-else-if="plantStore.plants.length >=0" class="text-center py-8">
+    <div v-else-if="plantStore.plants.length <= 0" class="text-center py-8">
       <LeafIcon class="h-16 w-16 mx-auto text-gray-400" />
       <Text class="text-xl" >Vous n'avez pas encore de plantes.</Text>
       <Button @click="showAddPlantModal" class="mt-4 bg-green-600 hover:bg-green-700 text-white py-2 px-4">
@@ -22,7 +22,7 @@
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <ImageBox :alt="plant.name" v-for="plant in plantStore.plants" :key="plant.id">
           <Title_3>{{ plant.name }}</Title_3>
-          <Text>Variété: {{ plant.variety.Name }}</Text>
+          <Text>Variété: {{ plant.variety.name }}</Text>
           <div class="flex items-center mb-2">
             <SunIcon class="h-5 w-5 text-yellow-500 mr-1" />
             <ProgressBar :value=getLightPourcentage(plant.lightLevel)></ProgressBar>

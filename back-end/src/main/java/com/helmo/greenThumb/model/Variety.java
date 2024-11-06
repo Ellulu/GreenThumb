@@ -28,12 +28,12 @@ public class Variety {
         this.id = id;
     }
 
-    public String getVarietyName() {
+    public String getName() {
         return name;
     }
 
-    public void setVarietyName(String varietyName) {
-        this.name = varietyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

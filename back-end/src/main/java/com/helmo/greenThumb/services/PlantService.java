@@ -30,8 +30,8 @@ public class PlantService {
             Plant existingPlant = existingPlantOpt.get();
 
             // Si le nom de la variété a changé, crée une nouvelle variété
-            if (!existingPlant.getVariety().getVarietyName().equals(plant.getVariety().getVarietyName())) {
-                Optional<Variety> existingVariety = varietyRepository.findByVarietyName(plant.getVariety().getVarietyName());
+            if (!existingPlant.getVariety().getName().equals(plant.getVariety().getName())) {
+                Optional<Variety> existingVariety = varietyRepository.findByName(plant.getVariety().getName());
 
                 if (existingVariety.isPresent()) {
                     // Utilise la variété existante si elle existe déjà
@@ -39,7 +39,7 @@ public class PlantService {
                 } else {
                     // Crée une nouvelle variété si elle n'existe pas
                     Variety newVariety = new Variety();
-                    newVariety.setVarietyName(plant.getVariety().getVarietyName());
+                    newVariety.setName(plant.getVariety().getName());
                     varietyRepository.save(newVariety);
                     plant.setVariety(newVariety);
                 }
@@ -49,13 +49,13 @@ public class PlantService {
             }
         } else {
             // Lors de la création d'une nouvelle plante
-            Optional<Variety> existingVariety = varietyRepository.findByVarietyName(plant.getVariety().getVarietyName());
+            Optional<Variety> existingVariety = varietyRepository.findByName(plant.getVariety().getName());
 
             if (existingVariety.isPresent()) {
                 plant.setVariety(existingVariety.get());
             } else {
                 Variety newVariety = new Variety();
-                newVariety.setVarietyName(plant.getVariety().getVarietyName());
+                newVariety.setName(plant.getVariety().getName());
                 varietyRepository.save(newVariety);
                 plant.setVariety(newVariety);
             }
