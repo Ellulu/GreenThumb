@@ -9,11 +9,11 @@ public class Variety {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String varietyName;
+    private String name;
     private String description;
 
-    public Variety(String varietyName, String description) {
-        this.varietyName = varietyName;
+    public Variety(String name, String description) {
+        this.name = name;
         this.description = description;
     }
 
@@ -29,11 +29,11 @@ public class Variety {
     }
 
     public String getVarietyName() {
-        return varietyName;
+        return name;
     }
 
     public void setVarietyName(String varietyName) {
-        this.varietyName = varietyName;
+        this.name = varietyName;
     }
 
     public String getDescription() {
