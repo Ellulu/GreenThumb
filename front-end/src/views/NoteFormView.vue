@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white min-h-screen">
+  <div class="bg-white min-h-screen mr-5">
     <header class="bg-green-600 rounded-lg bg-primary text-white p-4 shadow-md">
       <h1 class="text-2xl font-bold">Flower Notes</h1>
     </header>
