@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white min-h-screen mr-5">
+  <div class="bg-amber-50 min-h-screen mr-5">
     <header class="bg-green-600 rounded-lg bg-primary text-white p-4 shadow-md">
       <h1 class="text-2xl font-bold">Flower Notes</h1>
     </header>
@@ -10,7 +10,7 @@
       </button>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="(note, index) in notes" :key="index" class="bg-white p-4 rounded shadow border border-green-600">
+        <div v-for="(note, index) in notes" :key="index" class="bg-amber-50 p-4 rounded shadow border border-green-600">
           <h2 class="text-xl font-semibold text-green-600 mb-2">{{ note.title }}</h2>
           <p class="text-gray-600 line-clamp-3">{{ note.content }}</p>
           <div class="flex space-x-2">
@@ -25,7 +25,7 @@
 
     <!-- Modal pour ajouter une nouvelle note -->
     <div v-if="showAddModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+      <div class="bg-amber-50 p-8 rounded-lg shadow-xl w-full max-w-md">
         <h2 class="text-2xl font-bold text-green-600 mb-4">Ajouter Une Note</h2>
         <form @submit="handleSubmit">
           <div class="mb-4">
@@ -51,7 +51,7 @@
 
     <!-- Modal pour afficher une note -->
     <div v-if="showNoteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md max-h-screen overflow-y-auto">
+      <div class="bg-amber-50 p-8 rounded-lg shadow-xl w-full max-w-md max-h-screen overflow-y-auto">
         <h2 class="text-2xl font-bold text-primary mb-4">{{ selectedNote.title }}</h2>
         <p class="text-gray-600">{{ selectedNote.content }}</p>
         <div class="flex justify-end mt-4">
@@ -64,7 +64,7 @@
 
     <!-- Modal pour modifier une note -->
     <div v-if="showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+      <div class="bg-amber-50 p-8 rounded-lg shadow-xl w-full max-w-md">
         <h2 class="text-2xl font-bold text-green-600 mb-4">Modifier la Note</h2>
         <form @submit="handleEditSubmit">
           <div class="mb-4">

@@ -10,7 +10,7 @@
     </header>
 
     <main class="max-w-2xl mx-auto mt-4 px-4">
-      <div class="bg-white rounded-lg shadow p-4 mb-4">
+      <div class="bg-amber-50 rounded-lg shadow p-4 mb-4">
         <textarea
           v-model="newArticle"
           placeholder="Quoi de neuf ?"
@@ -37,7 +37,7 @@
 
       <div class="space-y-4">
         <template v-if="isLoading">
-          <div v-for="n in 5" :key="n" class="bg-white rounded-lg shadow p-4 animate-pulse">
+          <div v-for="n in 5" :key="n" class="bg-amber-50 rounded-lg shadow p-4 animate-pulse">
             <div class="flex items-center space-x-4 mb-4">
               <div class="w-12 h-12 bg-green-200 rounded-full"></div>
               <div class="flex-1">
@@ -53,7 +53,7 @@
           </div>
         </template>
         <template v-else>
-          <div v-for="article in articles" :key="article.id" class="bg-white rounded-lg shadow p-4">
+          <div v-for="article in articles" :key="article.id" class="bg-amber-50 rounded-lg shadow p-4">
             <div class="flex items-center space-x-4 mb-4">
               <img :src="article.author.profilePhoto || '/placeholder.svg?height=48&width=48'" alt="User Avatar" class="w-12 h-12 rounded-full" />
               <div>
@@ -97,7 +97,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/useArticleStore'
-import { userStore } from '@/stores/userStore';
+import { useUserStore } from '@/stores/userStore';
 import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, ThumbsUpIcon, ThumbsDownIcon } from 'lucide-vue-next'
 
 const articleStore = useArticleStore()
@@ -140,7 +140,7 @@ const likeArticle = (article) => {
   }
   article.liked = !article.liked
   article.rating.likeCount += article.liked ? 1 : -1
-  articleStore.likeOrDislikeArticle(article.id, userStore.user.id,true)//TODO vérfier apres ajout userid
+  articleStore.likeOrDislikeArticle(article.id, useUserStore.user.id,true)//TODO vérfier apres ajout userid
 }
 
 const dislikeArticle = (article) => {

@@ -19,7 +19,7 @@ const menuItems = [
 
 <template>
   <nav
-    class="bg-white drop-shadow-md fixed top-0 flex justify-evenly items-center w-full z-[100] py-2"
+    class="bg-amber-50 drop-shadow-md fixed top-0 flex justify-evenly items-center w-full z-[100] py-2"
   >
     <RouterLink
       v-for="(item, index) in menuItems"
