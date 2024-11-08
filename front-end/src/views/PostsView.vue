@@ -150,7 +150,7 @@ const dislikeArticle = (article) => {
   }
   article.disliked = !article.disliked
   article.rating.dislikeCount += article.disliked ? 1 : -1
-  articleStore.likeOrDislikeArticle(article.id, userStore.user.id,false)//TODO vérfier apres ajout userid
+  articleStore.likeOrDislikeArticle(article.id, useUserStore.user.id,false)//TODO vérfier apres ajout userid
 }
 
 const showComments = (article) => {
