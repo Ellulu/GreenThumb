@@ -1,27 +1,10 @@
 <script setup>
 import { ref, Transition } from "vue";
 import { RouterLink } from "vue-router";
-import {
-  HomeIcon,
-  NewspaperIcon,
-  LeafIcon,
-  CalendarIcon,
-  UsersIcon,
-  UserIcon,
-  HelpCircleIcon,
-  ChevronsRight,
-  ChevronsLeft,
-  NotebookPen,
-} from "lucide-vue-next";
+import { ChevronsRight, ChevronsLeft } from "lucide-vue-next";
 import logo from "../assets/img/greenthumb.png";
 
-const menuItems = [
-  { name: "Posts", path: "/posts", icon: NewspaperIcon },
-  { name: "Calendar", path: "/calendar", icon: CalendarIcon },
-  { name: "Community", path: "/community", icon: UsersIcon },
-  { name: "Profile", path: "/profile", icon: UserIcon },
-  { name: "Help", path: "/help", icon: HelpCircleIcon },
-];
+defineProps({ menuItems: { type: Array, default: [] } });
 
 const isMenuOpen = ref(true);
 
@@ -55,7 +38,7 @@ const toggle = () => {
         </div>
 
         <RouterLink
-          v-for="(item, index) in menuItems"
+          v-for="(item, index) in $props.menuItems"
           :key="index"
           :to="item.path"
           class="my-1 py-2.5 px-4 rounded-md transition duration-200 hover:bg-green-700 flex items-center space-x-2"

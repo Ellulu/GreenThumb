@@ -1,20 +1,7 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import {
-  NewspaperIcon,
-  CalendarIcon,
-  UsersIcon,
-  UserIcon,
-  HelpCircleIcon,
-} from "lucide-vue-next";
 
-const menuItems = [
-  { name: "Posts", path: "/posts", icon: NewspaperIcon },
-  { name: "Calendar", path: "/calendar", icon: CalendarIcon },
-  { name: "Community", path: "/community", icon: UsersIcon },
-  { name: "Profile", path: "/profile", icon: UserIcon },
-  { name: "Help", path: "/help", icon: HelpCircleIcon },
-];
+defineProps({ menuItems: { type: Array, required: true, default: [] } });
 </script>
 
 <template>
@@ -22,17 +9,13 @@ const menuItems = [
     class="bg-white drop-shadow-md fixed top-0 flex justify-evenly items-center w-full z-[100] py-2"
   >
     <RouterLink
-      v-for="(item, index) in menuItems"
+      v-for="(item, index) in $props.menuItems"
       :key="index"
       :to="item.path"
-      class="flex flex-col justify-between items-center"
+      class="rounded-md p-2 text-green-600"
+      :class="{ 'bg-green-600 text-white': $route.path.includes(item.path) }"
     >
-      <span
-        class="rounded-md p-2"
-        :class="{ 'bg-green-100': $route.path.includes(item.path) }"
-      >
-        <component :is="item.icon" class="h-5 w-5 text-green-600"></component>
-      </span>
+      <component :is="item.icon" class="h-5 w-5"></component>
     </RouterLink>
   </nav>
 </template>

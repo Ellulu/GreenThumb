@@ -4,6 +4,21 @@ import Navbar from "@/components/Navbar.vue";
 import Footer from "../components/Footer.vue";
 import MobileNavbar from "../components/MobileNavbar.vue";
 import { onMounted, onUnmounted, ref } from "vue";
+import {
+  NewspaperIcon,
+  CalendarIcon,
+  UsersIcon,
+  UserIcon,
+  HelpCircleIcon,
+} from "lucide-vue-next";
+
+const menuItems = [
+  { name: "Posts", path: "/posts", icon: NewspaperIcon },
+  { name: "Calendar", path: "/calendar", icon: CalendarIcon },
+  { name: "Community", path: "/community", icon: UsersIcon },
+  { name: "Profile", path: "/profile", icon: UserIcon },
+  { name: "Help", path: "/help", icon: HelpCircleIcon },
+];
 
 const isMobileScreen = ref(false);
 
@@ -28,7 +43,8 @@ onUnmounted(() => {
 
 <template>
   <div class="min-h-screen flex flex-col md:grid md:grid-cols-[auto_1fr] gap-4">
-    <component :is="isMobileScreen ? MobileNavbar : Navbar"></component>
+    <MobileNavbar :menuItems="menuItems" v-if="isMobileScreen" />
+    <Navbar :menuItems="menuItems" v-else />
 
     <div class="w-full flex flex-col mt-5">
       <main class="mb-5">
