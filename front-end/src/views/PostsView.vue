@@ -97,6 +97,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/useArticleStore'
+import { userStore } from '@/stores/userStore';
 import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, ThumbsUpIcon, ThumbsDownIcon } from 'lucide-vue-next'
 
 const articleStore = useArticleStore()
@@ -139,7 +140,7 @@ const likeArticle = (article) => {
   }
   article.liked = !article.liked
   article.rating.likeCount += article.liked ? 1 : -1
-  articleStore.createArticle(article)
+  articleStore.likeOrDislikeArticle(article.id, userStore.user.id,true)//TODO vérfier apres ajout userid
 }
 
 const dislikeArticle = (article) => {
@@ -149,7 +150,7 @@ const dislikeArticle = (article) => {
   }
   article.disliked = !article.disliked
   article.rating.dislikeCount += article.disliked ? 1 : -1
-  articleStore.createArticle(article)
+  articleStore.likeOrDislikeArticle(article.id, userStore.user.id,false)
 }
 
 const showComments = (article) => {
