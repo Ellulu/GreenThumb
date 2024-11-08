@@ -37,6 +37,13 @@ export const useArticleStore = defineStore('article', {
       } catch (error) {
         this.error = `Failed to delete article with id: ${id}`;
       }
+    },
+    async likeOrDislikeArticle(id,userid,isLike){
+      try {
+        await APIService.put(`/articles/${id}`,{id,userid,isLike});
+      } catch (error) {
+        this.error = `Failed to like this article: ${id}`;
+      }
     }
   }
 });
