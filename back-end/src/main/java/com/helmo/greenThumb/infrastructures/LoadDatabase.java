@@ -22,7 +22,7 @@ public class LoadDatabase {
 
             // Créer des utilisateurs (User)
             Variety variety1 = new Variety();
-            variety1.setVarietyName("Common");
+            variety1.setName("Common");
             variety1.setDescription("CommonDescription");
 
             variety1 = varietyRepository.save(variety1);

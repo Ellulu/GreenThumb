@@ -49,7 +49,7 @@ const handleSubmit = async () => {
           <label for="remember" class="text-sm font-medium text-gray-500 cursor-pointer">Se souvenir de moi</label>
       </div>
 
-      <Button type="submit">Se connecter</Button>
+      <Button type="submit" class="text-white bg-green-600 hover:bg-green-700">Se connecter</Button>
     </form>
 
     <GoogleSignIn />
