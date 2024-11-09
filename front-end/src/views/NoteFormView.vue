@@ -148,6 +148,8 @@ const handleEditSubmit = async ()=> {
 
   try {
     await editNote({ id: selectedNote.value.id, title: title.value, content: content.value });
+    title.value = '';
+    content.value = '';
 
     closeModal();
   } catch (error) {
@@ -165,6 +167,8 @@ const handleSubmit = async () => {
     content: content.value
   });
 
+  title.value = '';
+  content.value = '';
 
   closeModal();
   } catch (error) {
