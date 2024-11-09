@@ -12,6 +12,7 @@ import PlantView from "../../views/PlantView.vue";
 import NoteFormView from "@/views/NoteFormView.vue";
 import PostsView from "@/views/PostsView.vue";
 import ProfileView from "../../views/ProfileView.vue";
+import CalendarView from "@/views/CalendarView.vue";
 
 const routes = [
   {
@@ -37,6 +38,10 @@ const routes = [
       {
         path: "posts",
         component: PostsView,
+      },
+      {
+        path: "calendar",
+        component: CalendarView,
       },
       {
         path: "profile",
