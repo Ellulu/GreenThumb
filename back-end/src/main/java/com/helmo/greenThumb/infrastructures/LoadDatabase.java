@@ -27,15 +27,11 @@ public class LoadDatabase {
 
             variety1 = varietyRepository.save(variety1);
             User user1 = new User();
-            user1.setFirstName("Alice");
-            user1.setLastName("Smith");
-            user1.setEmail("alice@example.com");
+            user1.setUid("A123ze45");
             user1 = userRepository.save(user1);
 
             User user2 = new User();
-            user2.setFirstName("Bob");
-            user2.setLastName("Jones");
-            user2.setEmail("bob@example.com");
+            user2.setUid("R678ty90");
             user2 = userRepository.save(user2);
 
             // Créer des plantes (Plant)

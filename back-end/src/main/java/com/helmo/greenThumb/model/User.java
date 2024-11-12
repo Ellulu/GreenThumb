@@ -4,28 +4,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.rmi.server.UID;
 import java.util.List;
 
 @Entity
 public class User {
-
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String email;
-
     private String uid;
-    private String lastName;
-    private String firstName;
-
-
-
-
-    @Lob
-    private Byte[] profilePhoto; // Transformé en BLOB pour le stockage de la photo
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -80,17 +64,6 @@ public class User {
         // Implémentation
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
     public String getUid() {
         return uid;
     }
@@ -121,32 +94,5 @@ public class User {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
-    }
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public Byte[] getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(Byte[] profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }
