@@ -13,7 +13,9 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(RatingRepository ratingRepository, UserRepository userRepository, PlantRepository plantRepository,
                                    ArticleRepository articleRepository, EventRepository eventRepository,VarietyRepository varietyRepository) {
+        if (true) return args -> {
 
+        };// A RETIRER SI vous voulez seeddata
         return args -> {
 
             // Créer des utilisateurs (User)
