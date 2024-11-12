@@ -27,7 +27,7 @@ const toggle = () => {
     >
       <div>
         <div
-          class="bg-white text-green-600 py-1 mb-5 px-2 rounded-md flex items-center space-x-1"
+          class="bg-amber-50 text-green-600 py-1 mb-5 px-2 rounded-md flex items-center space-x-1"
         >
           <img :src="logo" class="w-8 h-8" alt="logo" />
           <Transition name="fade">
