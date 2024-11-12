@@ -43,16 +43,10 @@ class UserControllerTest {
     @Test
     void getAllUsers() throws Exception {
         User user1 = new User();
-        user1.setId(1L);
-        user1.setFirstName("John");
-        user1.setLastName("Doe");
-        user1.setEmail("john.doe@example.com");
+        user1.setUid("1");
 
         User user2 = new User();
-        user2.setId(2L);
-        user2.setFirstName("Jane");
-        user2.setLastName("Doe");
-        user2.setEmail("jane.doe@example.com");
+        user2.setUid("2");
 
         List<User> users = Arrays.asList(user1, user2);
 
@@ -62,43 +56,28 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].firstName").value("John"))
-                .andExpect(jsonPath("$[0].lastName").value("Doe"))
-                .andExpect(jsonPath("$[0].email").value("john.doe@example.com"))
-                .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].firstName").value("Jane"))
-                .andExpect(jsonPath("$[1].lastName").value("Doe"))
-                .andExpect(jsonPath("$[1].email").value("jane.doe@example.com"));
+                .andExpect(jsonPath("$[0].uid").value("1"))
+                .andExpect(jsonPath("$[1].uid").value("2"));
     }
 
     @Test
     void getUserById() throws Exception {
         User user = new User();
-        user.setId(1L);
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setEmail("john.doe@example.com");
+        user.setUid("1");
 
-        Mockito.when(userService.getUserById(1L)).thenReturn(user);
+        Mockito.when(userService.getUserById("1")).thenReturn(user);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.uid").value("1"));
     }
 
     @Test
     void createUser() throws Exception {
         User user = new User();
-        user.setId(1L);
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setEmail("john.doe@example.com");
+        user.setUid("1");
 
         Mockito.when(userService.createUser(Mockito.any(User.class))).thenReturn(user);
 
@@ -107,39 +86,15 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.uid").value("1"));
     }
 
     @Test
     void deleteUser() throws Exception {
-        Mockito.doNothing().when(userService).deleteUser(1L);
+        Mockito.doNothing().when(userService).deleteUser("1");
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void updateUser() throws Exception {
-        User user = new User();
-        user.setId(1L);
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setEmail("john.doe@example.com");
-
-        Mockito.when(userService.updateUser(Mockito.eq(1L), Mockito.any(User.class))).thenReturn(user);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
     }
 }
