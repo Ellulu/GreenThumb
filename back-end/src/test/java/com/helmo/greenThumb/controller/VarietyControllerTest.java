@@ -58,10 +58,10 @@ class VarietyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].varietyName").value("Varieté 1"))
+                .andExpect(jsonPath("$[0].name").value("Varieté 1"))
                 .andExpect(jsonPath("$[0].description").value("Groot"))
                 .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].varietyName").value("Varieté 2"))
+                .andExpect(jsonPath("$[1].name").value("Varieté 2"))
                 .andExpect(jsonPath("$[1].description").value("Groot 2"));
     }
 
@@ -78,7 +78,7 @@ class VarietyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.varietyName").value("New Variety"))
+                .andExpect(jsonPath("$.name").value("New Variety"))
                 .andExpect(jsonPath("$.description").value("New Description"));
     }
 
@@ -94,7 +94,7 @@ class VarietyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.varietyName").value("Variety 1"))
+                .andExpect(jsonPath("$.name").value("Variety 1"))
                 .andExpect(jsonPath("$.description").value("Description 1"));
     }
 

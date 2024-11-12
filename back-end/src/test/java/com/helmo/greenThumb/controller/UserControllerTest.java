@@ -56,8 +56,8 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value("1"))
-                .andExpect(jsonPath("$[1].id").value("2"));
+                .andExpect(jsonPath("$[0].uid").value("1"))
+                .andExpect(jsonPath("$[1].uid").value("2"));
     }
 
     @Test
@@ -71,7 +71,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(jsonPath("$.uid").value("1"));
     }
 
     @Test
@@ -86,7 +86,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(jsonPath("$.uid").value("1"));
     }
 
     @Test
