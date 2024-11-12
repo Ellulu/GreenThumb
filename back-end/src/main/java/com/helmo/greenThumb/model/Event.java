@@ -18,16 +18,27 @@ public class Event {
 
     private String description;
 
+
+
+    private int cycle;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User author;
+
+
+    @ManyToOne
+    @JoinColumn(name = "plant_id")
+    private Plant plant;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date eventDate;
 
     @ElementCollection
     private List<String> files;
+
+
 
     public void addEvent() {
         this.eventDate = new Date();
@@ -73,4 +84,20 @@ public class Event {
     public void setFiles(List<String> files) {
         this.files = files;
     }
+
+    public int getCycle() {
+        return cycle;
+    }
+
+    public void setCycle(int cycle) {
+        this.cycle = cycle;
+    }
+    public Plant getPlant() {
+        return plant;
+    }
+
+    public void setPlant(Plant plant) {
+        this.plant = plant;
+    }
+
 }
