@@ -5,7 +5,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-});
+}); 
 
 export default {
   get: (url) => apiClient.get(url),
