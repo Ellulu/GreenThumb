@@ -11,6 +11,7 @@ import MainLayout from "../../layout/MainLayout.vue";
 import PlantView from "../../views/PlantView.vue";
 import NoteFormView from "@/views/NoteFormView.vue";
 import PostsView from "@/views/PostsView.vue";
+import EditProfileView from "@/views/EditProfileView.vue";
 import ProfileView from "../../views/ProfileView.vue";
 
 const routes = [
@@ -35,6 +36,18 @@ const routes = [
         component: PlantView,
       },
       {
+        path: "profile/edit",
+        component: EditProfileView,
+        beforeEnter: (to, from, next) => {
+          const userStore = useUserStore();
+          if (!userStore.isLoggedIn) {
+            next("/login");
+          } else {
+            next();
+          }
+        },
+      },
+      {
         path: "posts",
         component: PostsView,
       },
@@ -52,14 +65,12 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore();
       if (!userStore.isLoggedIn) {
-        next("/");
+        next("/posts");
       } else {
         next();
       }
     },
   },
-  { path: "/test", component: TestView },
-
   { path: "/404", component: NotFoundView },
   { path: "/:pathMatch(.*)*", redirect: "/404" },
 ];

@@ -25,7 +25,7 @@ export const useUserStore = defineStore("user", () => {
     const createdUser = await createUserWithEmailAndPassword(
       auth,
       email,
-      password
+      password,
     );
     console.log(createdUser);
 
@@ -39,7 +39,7 @@ export const useUserStore = defineStore("user", () => {
     });
 
     await ApiService.post("/users", { uid: user.value.uid })
-      .then(() => router.push("/dashboard"))
+      .then(() => router.push("/posts"))
       .catch(async () => {
         await deleteUser(createdUser);
       });
@@ -58,12 +58,12 @@ export const useUserStore = defineStore("user", () => {
 
     await ApiService.get(`/users/${user.value.uid}`)
       .then(() => {
-        router.push("/dashboard");
+        router.push("/posts");
       })
       .catch(async (error) => {
         if (error.status === 404) {
           await ApiService.post("/users", { uid: user.value.uid });
-          router.push("/dashboard");
+          router.push("/posts");
         }
       });
   };
@@ -77,7 +77,7 @@ export const useUserStore = defineStore("user", () => {
         uid: signedInUser.uid,
       };
       isLoggedIn.value = true;
-      router.push("/dashboard");
+      router.push("/posts");
     });
   };
 
