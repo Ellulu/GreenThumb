@@ -1,177 +1,219 @@
 <template>
   <div class="bg-white min-h-screen mr-5">
-    <header class="bg-green-600 rounded-lg bg-primary text-white p-4 shadow-md">
-      <h1 class="text-2xl font-bold">Flower Notes</h1>
+    <header>
+      <TitleBackground >
+        <Title_2 class="text-white">Notes</Title_2>
+      </TitleBackground>
+
     </header>
 
+
     <main class="container mx-auto p-4">
-      <button @click="showAddModal = true" class="bg-green-600 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded mb-4">
+      <Button @click="showAddModal = true" class="bg-green-600 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded mb-4">
         + Nouvelle Note
-      </button>
+      </Button>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="(note, index) in notes" :key="index" class="bg-white p-4 rounded shadow border border-green-600">
-          <h2 class="text-xl font-semibold text-green-600 mb-2">{{ note.title }}</h2>
-          <p class="text-gray-600 line-clamp-3">{{ note.content }}</p>
-          <div class="flex space-x-2">
-            <!-- Bouton Voir plus -->
-            <button @click="openNoteModal(note)" class="bg-green-600 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded mb-4">Voir plus</button>
-            <!-- Bouton Modifier -->
-            <button @click="openEditModal(note, index)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">Modifier</button>
+        <div v-for="(note, index) in notes" :key="index" class="bg-white text-center p-4 rounded shadow border border-green-600">
+          <h2 class="text-xl font-semibold text-green-600 mb-3 truncate-title">{{ note.title }}</h2>
+          <p class="text-gray-600 line-clamp-3 mb-3" >{{ note.content }}</p>
+          <div class="flex justify-between">
+
+            <Button @click="openEditModal(note, index)" class="bg-green-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 flex items-center justify-center">
+              <Edit class="inline "/>
+            </Button>
+            <Button  v-if="note.content.length > maxContentLength" @click="openNoteModal(note)" class="bg-green-600 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded mb-4">
+              <Plus class="inline "/>
+            </Button>
+            <Button @click="deleteNoteEvent(note)" class="bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
+              <Trash class="inline "/>
+            </Button>
           </div>
         </div>
       </div>
     </main>
-
-    <!-- Modal pour ajouter une nouvelle note -->
-    <div v-if="showAddModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h2 class="text-2xl font-bold text-green-600 mb-4">Ajouter Une Note</h2>
-        <form @submit="handleSubmit">
-          <div class="mb-4">
-            <label for="noteTitle" class="block text-gray-700 font-bold mb-2">Titre</label>
-            <input v-model="title" type="text" id="noteTitle" name="noteTitle" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary" required>
-          </div>
-          <div class="mb-4">
-            <label for="noteContent" class="block text-gray-700 font-bold mb-2">Contenu</label>
-            <textarea v-model="content" id="noteContent" name="noteContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary" required></textarea>
-          </div>
-          <div class="flex justify-end">
-            <button @click="showAddModal = false" type="button" class="bg-red-500 hover:bg-gray-400 text-white font-bold py-1 px-3 rounded mr-2">
-              Annuler
-            </button>
-            <button type="submit" class="bg-green-600 hover:bg-primary-dark text-white font-bold py-1 px-3 rounded">
-              Ajouter Note
-            </button>
-
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal pour afficher une note -->
     <div v-if="showNoteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md max-h-screen overflow-y-auto">
+      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md max-h-screen">
         <h2 class="text-2xl font-bold text-primary mb-4">{{ selectedNote.title }}</h2>
-        <p class="text-gray-600">{{ selectedNote.content }}</p>
+        <p class="text-gray-600 whitespace-pre-wrap break-words overflow-y-auto max-h-80">
+          {{ selectedNote.content }}
+        </p>
         <div class="flex justify-end mt-4">
-          <button @click="showNoteModal = false" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+          <Button @click="showNoteModal = false" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
             Fermer
-          </button>
+          </Button>
         </div>
       </div>
     </div>
 
-    <!-- Modal pour modifier une note -->
-    <div v-if="showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h2 class="text-2xl font-bold text-green-600 mb-4">Modifier la Note</h2>
-        <form @submit="handleEditSubmit">
-          <div class="mb-4">
-            <label for="editTitle" class="block text-gray-700 font-bold mb-2">Titre</label>
-            <input v-model="editTitle" type="text" id="editTitle" name="editTitle" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary" required>
-          </div>
-          <div class="mb-4">
-            <label for="editContent" class="block text-gray-700 font-bold mb-2">Contenu</label>
-            <textarea v-model="editContent" id="editContent" name="editContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary" required></textarea>
-          </div>
-          <div class="flex justify-end">
-            <button @click="showEditModal = false" type="button" class="bg-red-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded mr-2">
-              Annuler
-            </button>
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Sauvegarder
-            </button>
-          </div>
-        </form>
-      </div>
+
+    <ModalForm
+        :show="showAddModal"
+        title="Ajouter Une Note"
+        submitLabel="Ajouter Note"
+        @submit="handleSubmit"
+        @close="closeModal"
+    >
+      <template #form-content>
+        <div class="mb-4">
+
+          <Input v-model="title" type="text" id="noteTitle" required name="Titre" maxlength="30">
+          </Input>
+        </div>
+        <div class="mb-4">
+          <label for="noteContent" class="block text-gray-700 font-bold mb-2">Contenu</label>
+          <textarea v-model="content" id="noteContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
+        </div>
+      </template>
+    </ModalForm>
+    <ModalForm
+        :show="showEditModal"
+        title="Éditer Une Note"
+        submitLabel="Sauvegarder"
+        @submit="handleEditSubmit"
+        @close="closeModal"
+    >
+      <template #form-content>
+        <div class="mb-4">
+          <label for="editTitle" class="block text-gray-700 font-bold mb-2" >Titre</label>
+          <input v-model="title" type="text" id="editTitle" name="editTitle" class="w-full px-3 py-2 border border-gray-300 rounded" maxlength="30" required>
+        </div>
+        <div class="mb-4">
+          <label for="editContent" class="block text-gray-700 font-bold mb-2">Contenu</label>
+          <textarea v-model="content" id="editContent" name="editContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
+        </div>
+      </template>
+    </ModalForm>
+
+
     </div>
-  </div>
+
+
+
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {ref, onMounted} from 'vue';
+import {useNoteStore} from "@/stores/useNoteStore.js";
+import ModalForm from "@/components/ModalForm.vue";
+import Input from "@/components/Input.vue";
+import Button from "@/components/Button.vue";
+import { toRefs } from 'vue';
 
+import {Trash } from "lucide-vue-next";
+import {Edit } from "lucide-vue-next";
+import {Plus } from "lucide-vue-next";
+import TitleBackground from "@/components/TitleBackground.vue";
+
+import {Title_2} from "@/components/index.js";
+const noteStore = useNoteStore();
+const showAddModal = ref(false);
+const showEditModal = ref(false)
+const showNoteModal = ref(false);
+const selectedNote = ref({});
+
+const maxContentLength = 100
 const title = ref('');
 const content = ref('');
-const editTitle = ref('');
-const editContent = ref('');
-const selectedNote = ref({});
-const selectedNoteIndex = ref(null);
-
-const responseMessage = ref('');
-const showAddModal = ref(false);
-const showNoteModal = ref(false);
-const showEditModal = ref(false);
-
-//charger les notes ici
-const notes = ref([
-  { title: 'Rose Care', content: 'Water roses regularly and ensure they get enough sunlight.' },
-  { title: 'Sunflower Planting', content: 'Plant sunflower seeds in moist soil and ensure they get plenty of sunlight.' },
-  { title: 'Tulip Care', content: 'Water tulips every week and remove weeds from the surrounding area.' },
-  { title: 'Detailed Tulip Care', content: 'Water the tulips consistently, making sure not to overwater...' }
-]);
+const id = ref(null);
+const {fetchNotes,deleteNote,createNote,editNote} = noteStore;
+const { notes } = toRefs(noteStore);
 
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
 
-  const newNote = {
-    title: title.value,
-    content: content.value
-  };
+
+function openEditModal(note) {
+  title.value = note.title
+  content.value = note.content
+  id.value = note.id
+  showEditModal.value = true
+}
+
+function openNoteModal(note) {
+  selectedNote.value = note;
+  showNoteModal.value = true;
+}
+
+async function deleteNoteEvent(note) {
+  try{
+
+
+  await deleteNote( note.id);
+
+  }catch (error) {
+    console.error("Erreur de connexion au serveur:", error);
+  }
+
+}
+
+
+function closeModal() {
+  title.value = '';
+  content.value = '';
+  id.value=null;
+  showAddModal.value = false;
+  showEditModal.value = false
+  showNoteModal.value = false;
+}
+
+
+
+
+
+const handleEditSubmit = async ()=> {
+
 
   try {
-    const response = await fetch('http://localhost:8080/api/notes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newNote)
-    });
+    await editNote({ id: id.value, title: title.value, content: content.value });
+    title.value = '';
+    content.value = '';
+    id.value=null;
 
-    if (response.ok) {
-      notes.value.push(newNote);
-      title.value = '';
-      content.value = '';
-      showAddModal.value = false;
-    } else {
-      console.error("Erreur lors de l'enregistrement.");
-    }
+    closeModal();
+  } catch (error) {
+    console.error("Erreur de connexion au serveur:", error);
+  }}
+
+
+const handleSubmit = async () => {
+
+
+  try {
+    console.log(notes)
+  await createNote({
+    title: title.value,
+    content: content.value
+  });
+
+  title.value = '';
+  content.value = '';
+
+  closeModal();
   } catch (error) {
     console.error("Erreur de connexion au serveur:", error);
   }
+
 };
 
-// Méthode pour ouvrir la modale avec la note sélectionnée
-const openNoteModal = (note) => {
-  selectedNote.value = note;
-  showNoteModal.value = true;
-};
+onMounted(async () => {
+  await fetchNotes();
+});
 
-// Méthode pour ouvrir la modale de modification avec la note sélectionnée
-const openEditModal = (note, index) => {
-  editTitle.value = note.title;
-  editContent.value = note.content;
-  selectedNoteIndex.value = index;
-  showEditModal.value = true;
-};
-
-// Méthode pour sauvegarder les modifications
-const handleEditSubmit = async (e) => {
-  e.preventDefault();
-
-  const updatedNote = {
-    title: editTitle.value,
-    content: editContent.value
-  };
-
-  notes.value[selectedNoteIndex.value] = updatedNote;
-  showEditModal.value = false;
-};
 </script>
 
 <style scoped>
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.truncate-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;

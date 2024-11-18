@@ -34,9 +34,9 @@ const hasError = computed(() => props.errorMessage !== '')
     <label :for="name" class="text-sm font-medium text-gray-500">
       {{ name }}<span v-if="required" class="ml-1 text-red-500">*</span>
     </label>
-    <select 
+    <select
       :id="name"
-      :name="name" 
+      :name="name"
       :required="required"
       class="p-2 rounded-md border border-slate-300 outline-green-600 w-full"
       :class="{ 'outline-red-500': hasError }"

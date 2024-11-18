@@ -15,6 +15,11 @@ const props = defineProps({
       type: String,
       default: 'text'
     },
+  typer: {
+      type: Date,
+      default: 'date'
+
+  },
     placeholder: {
       type: String,
       default: ''
@@ -26,7 +31,11 @@ const props = defineProps({
     errorMessage: {
       type: String,
       default: ''
-    }
+    },
+  maxlength: {
+    type: Number,
+    default: null
+  }
 })
 
 const showPassword = ref(false)
@@ -52,7 +61,8 @@ const hasError = computed(() => props.errorMessage !== '')
         class="p-2 rounded-md border border-slate-300 outline-green-600 w-full"
         :class="{ 'outline-red-500': hasError }" 
         :value="modelValue" 
-        @input="$emit('update:modelValue', $event.target.value)" 
+        @input="$emit('update:modelValue', $event.target.value)"
+        :maxlength="maxlength"
       />
       
       <button 

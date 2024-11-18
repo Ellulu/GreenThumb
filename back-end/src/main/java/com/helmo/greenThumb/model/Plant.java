@@ -46,9 +46,10 @@ public class Plant {
         this.id = id;
     }
 
-    public Plant(String name, double monthlyWaterFrequency, Variety variety, List<Task> taskList,User user) {
+    public Plant(String name, double monthlyWaterFrequency,LightLevel lightLevel, Variety variety, List<Task> taskList,User user) {
         this.name = name;
         this.monthlyWaterFrequency = monthlyWaterFrequency;
+        this.lightLevel= lightLevel;
         this.variety = variety;
         this.taskList = taskList;
         this.owner = user;

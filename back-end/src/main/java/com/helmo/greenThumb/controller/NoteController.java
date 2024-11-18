@@ -31,4 +31,17 @@ public class NoteController {
     public ResponseEntity<Iterable<Note>> getAllNotes() {
         return ResponseEntity.ok(noteService.findAll());
     }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> editNote(@PathVariable Long id, @RequestBody Note note) {
+        noteService.edit(id, note);
+        return ResponseEntity.status(HttpStatus.OK).body("La note a bien été modifiée");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteNote(@PathVariable Long id) {
+        noteService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body("La note a bien été supprimée");
+    }
 }

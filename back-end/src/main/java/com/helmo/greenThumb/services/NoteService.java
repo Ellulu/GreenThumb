@@ -24,4 +24,15 @@ public class NoteService  {
     public List<Note> findAll() {
         return noteRepository.findAll();
     }
+
+    public void edit(Long id, Note note) {
+        Note noteToEdit = noteRepository.findById(id).orElseThrow();
+        noteToEdit.setContent(note.getContent());
+        noteToEdit.setTitle(note.getTitle());
+        noteRepository.save(noteToEdit);
+    }
+
+    public void delete(Long id) {
+        noteRepository.deleteById(id);
+    }
 }

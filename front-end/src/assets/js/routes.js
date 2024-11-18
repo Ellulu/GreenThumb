@@ -13,6 +13,7 @@ import NoteFormView from "@/views/NoteFormView.vue";
 import PostsView from "@/views/PostsView.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import ProfileView from "../../views/ProfileView.vue";
+import CalendarView from "@/views/CalendarView.vue";
 
 const routes = [
   {
@@ -50,6 +51,10 @@ const routes = [
       {
         path: "posts",
         component: PostsView,
+      },
+      {
+        path: "calendar",
+        component: CalendarView,
       },
       {
         path: "profile",
