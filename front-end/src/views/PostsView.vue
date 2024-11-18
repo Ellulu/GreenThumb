@@ -55,9 +55,9 @@
         <template v-else>
           <div v-for="article in articles" :key="article.id" class="bg-amber-50 rounded-lg shadow p-4">
             <div class="flex items-center space-x-4 mb-4">
-              <img :src="article.author.profilePhoto || '/placeholder.svg?height=48&width=48'" alt="User Avatar" class="w-12 h-12 rounded-full" />
+              <img :src="article.author.imageUrl || '/placeholder.svg?height=48&width=48'" alt="User Avatar" class="w-12 h-12 rounded-full" />
               <div>
-                <h3 class="font-bold">{{ article.author.firstName }} {{ article.author.lastName }}</h3>
+                <h3 class="font-bold">{{ article.author.fullname }}</h3>
                 <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
               </div>
             </div>
@@ -74,12 +74,12 @@
             <div class="flex justify-between text-green-600">
               <div class ="flex justify-between">
               <button @click="likeArticle(article)" class="flex items-center space-x-1 hover:text-green-700 m-2">
-                <ThumbsUpIcon :class="{'text-green-700': article.liked}" class="w-5 h-5" />
-                <span>{{ article.rating.likeCount }}</span>
+                <ThumbsUpIcon :class="{'text-green-700': article.rating.hasLike}" class="w-5 h-5" />
+                <span>{{ article.rating.likes }}</span>
               </button>
               <button @click="dislikeArticle(article)" class="flex items-center space-x-1 hover:text-red-600 m-2">
-                <ThumbsDownIcon :class="{'text-red-600': article.disliked}" class="w-5 h-5" />
-                <span>{{ article.rating.dislikeCount }}</span>
+                <ThumbsDownIcon :class="{'text-red-600': article.rating.hasDislike}" class="w-5 h-5" />
+                <span>{{ article.rating.dislikes }}</span>
               </button>
               </div>
               <button @click="showComments(article)" class="flex items-center space-x-1 hover:text-green-700">
@@ -160,8 +160,10 @@ const showComments = (article) => {
 onMounted(async () => {
   try {
     if (articleStore.articles.length === 0) {
+      console.log("fetching articles")
       await articleStore.fetchArticles()
     }
+    console.log(articleStore.articles)
     articles.value = articleStore.articles
     isLoading.value = false
   } catch (err) {

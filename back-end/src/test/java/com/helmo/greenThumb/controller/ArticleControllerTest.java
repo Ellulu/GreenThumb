@@ -1,6 +1,7 @@
 package com.helmo.greenThumb.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.helmo.greenThumb.dto.ArticleDTO;
 import com.helmo.greenThumb.model.Article;
 import com.helmo.greenThumb.services.ArticleService;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +76,7 @@ class ArticleControllerTest {
         article2.setText("artoicle de test 2");
         article2.setDate(new Date());
 
-        List<Article> articles = Arrays.asList(article1, article2);
+        List<ArticleDTO> articles = null;// TODO: switch article dto
 
         Mockito.when(articleService.getAllArticles()).thenReturn(articles);
 

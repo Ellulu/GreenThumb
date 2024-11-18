@@ -1,8 +1,10 @@
 package com.helmo.greenThumb.controller;
 
 
+import com.helmo.greenThumb.dto.ArticleDTO;
 import com.helmo.greenThumb.model.Article;
 import com.helmo.greenThumb.services.ArticleService;
+import com.helmo.greenThumb.services.FirebaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +19,14 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+
     @PostMapping
     public Article createArticle(@RequestBody Article article) {
         return articleService.createArticle(article);
     }
 
     @GetMapping
-    public List<Article> getAllArticles() {
+    public List<ArticleDTO> getAllArticles() {
         return articleService.getAllArticles();
     }
 
@@ -39,7 +42,7 @@ public class ArticleController {
     @PutMapping("/{articleId}/like")
     public ResponseEntity<String> updateLikeOrDislike(
             @PathVariable Long articleId,
-            @RequestParam Long userId,
+            @RequestParam String userId,
             @RequestParam boolean isLike) {
 
         try {

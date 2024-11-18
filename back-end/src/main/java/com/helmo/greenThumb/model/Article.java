@@ -105,4 +105,17 @@ public class Article {
     public void setAuthor(User author) {
         this.author = author;
     }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", text='" + text + '\'' +
+                ", date=" + date +
+                ", files=" + files +
+                ", ratings=" + ratings +
+                ", author=" + author +
+                '}';
+    }
 }

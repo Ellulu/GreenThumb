@@ -13,11 +13,8 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(RatingRepository ratingRepository, UserRepository userRepository, PlantRepository plantRepository,
                                    ArticleRepository articleRepository, EventRepository eventRepository,VarietyRepository varietyRepository) {
-        if (true) return args -> {
-
-        };// A RETIRER SI vous voulez seeddata
         return args -> {
-
+            if (userRepository.count()!=0){ return ;}
             // Créer des utilisateurs (User)
             Variety variety1 = new Variety();
             variety1.setName("Common");
