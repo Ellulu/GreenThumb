@@ -7,8 +7,13 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String content;
     private String title;
+
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -14,7 +14,7 @@ public class LoadDatabase {
     CommandLineRunner initDatabase(RatingRepository ratingRepository, UserRepository userRepository, PlantRepository plantRepository,
                                    ArticleRepository articleRepository, EventRepository eventRepository,VarietyRepository varietyRepository) {
         return args -> {
-            if (userRepository.count()!=0){ return ;}
+            if (userRepository.count() > 0) {return;}
             // Créer des utilisateurs (User)
             Variety variety1 = new Variety();
             variety1.setName("Common");
@@ -30,10 +30,10 @@ public class LoadDatabase {
             user2 = userRepository.save(user2);
 
             // Créer des plantes (Plant)
-            Plant plant1 = new Plant("Ficus", 3.5, variety1, new ArrayList<>(), user1);
+            Plant plant1 = new Plant("Ficus", 3.5,LightLevel.MEDIUM, variety1, new ArrayList<>(),user1);
             plant1 = plantRepository.save(plant1);
 
-            Plant plant2 = new Plant("Aloe Vera", 2.0, variety1, new ArrayList<>(), user2);
+            Plant plant2 = new Plant("Aloe Vera", 2.0,LightLevel.HIGH, variety1, new ArrayList<>(),user2);
             plant2 = plantRepository.save(plant2);  // Sauvegarder la plante
 
             user1.setPlants(Arrays.asList(plant1));

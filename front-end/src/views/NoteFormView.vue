@@ -29,9 +29,11 @@
       </div>
     </main>
     <div v-if="showNoteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md max-h-screen overflow-y-auto">
+      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md max-h-screen">
         <h2 class="text-2xl font-bold text-primary mb-4">{{ selectedNote.title }}</h2>
-        <p class="text-gray-600 scroll-auto">{{ selectedNote.content }}</p>
+        <p class="text-gray-600 whitespace-pre-wrap break-words overflow-y-auto max-h-80">
+          {{ selectedNote.content }}
+        </p>
         <div class="flex justify-end mt-4">
           <Button @click="showNoteModal = false" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
             Fermer
@@ -39,6 +41,7 @@
         </div>
       </div>
     </div>
+
 
     <ModalForm
         :show="showAddModal"
