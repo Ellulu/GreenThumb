@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
+import _ from "underscore";
 import Title from "@/components/Title.vue";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
@@ -8,7 +9,7 @@ import logo from "../assets/img/default.jpg";
 
 const userStore = useUserStore();
 
-const name = ref(userStore.user.displayName.split(" ")[1] || "");
+const name = ref(_.rest(userStore.user.displayName.split(" ")) || "");
 const firstName = ref(userStore.user.displayName.split(" ")[0] || "");
 const email = ref(userStore.user.email);
 const emailError = ref("");

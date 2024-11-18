@@ -16,6 +16,7 @@
     "lucide-vue-next": "^0.453.0",
     "pinia": "^2.2.6",
     "pinia-plugin-persistedstate": "^4.1.1",
+    "underscore": "^1.13.7",
     "vue": "^3.5.10",
     "vue-router": "^4.4.5"
   },
