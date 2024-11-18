@@ -1,10 +1,7 @@
 <template>
-  <div>
+  <div class="mx-5 mt-14 md:mt-[1.5%] md:ml-0 md:mr-5">
+    <Title>Calendrier</Title>
 
-    <TitleBackground>
-      <Title_2 class="text-white">Calendrier</Title_2>
-
-    </TitleBackground>
     <Button @click="openModalEvent" class="m-3 bg-green-600 text-white">+ Ajouter un évènement</Button>
 
     <vue-cal  :view="currentView" @view-change="onViewChange" :events="eventsCalendar" class=" z-10 border rounded-lg border-green-600" :time="false" :disable-views="['years', 'year', 'month']" />
@@ -35,7 +32,7 @@
 
         </div>
         <div>
-          <Input v-model="event.cycle" type="number" required id="integerImute"  name="Répéter tous les X jour" ></Input>
+          <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour"></Input>
         </div>
       </template>
     </ModalForm>
@@ -72,8 +69,7 @@ import Input from '@/components/Input.vue';
 
 import {useEventStore} from '@/stores/useEventStore.js';
 import {usePlantStore} from '@/stores/usePlantStore.js';
-import {Title_2} from "@/components/index.js";
-import TitleBackground from "@/components/TitleBackground.vue";
+import Title from '../components/Title.vue';
 
 const plantStore = usePlantStore();
 const eventStore = useEventStore();
@@ -83,9 +79,9 @@ const currentView = ref("week");
 
 const event = ref({
   description: '',
-  eventDate: null,
+  eventDate: new Date(),
   user_id: 'A123ze45',
-  cycle: null,
+  cycle: 0,
   plant: {},
 });
 
@@ -127,9 +123,9 @@ async function handleSubmit() {
 
   event.value = {
     description: '',
-    eventDate: null,
+    eventDate: new Date(),
     user_id: 'A123ze45',
-    cycle: null,
+    cycle: 0,
     plant: {},
   };
   closeModal();

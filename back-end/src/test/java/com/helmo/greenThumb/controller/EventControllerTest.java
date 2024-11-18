@@ -1,6 +1,5 @@
 package com.helmo.greenThumb.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.services.EventService;

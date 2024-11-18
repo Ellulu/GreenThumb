@@ -1,11 +1,9 @@
 <template>
-  <div v-if="show" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-
+  <div v-if="show" @click="closeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-[100]"></div>
+    <div v-if="show" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-lg shadow-xl w-full max-w-md z-[101]">
       <h2 class="text-2xl font-bold text-green-600 mb-4">{{ title }}</h2>
 
-
-      <form @submit.prevent >
+      <form @submit.prevent>
 
         <slot name="form-content"></slot>
 
@@ -25,7 +23,6 @@
         </div>
       </form>
     </div>
-  </div>
 </template>
 
 <script>

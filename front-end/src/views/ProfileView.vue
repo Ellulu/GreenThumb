@@ -11,7 +11,7 @@ const menuItems = [
 </script>
 
 <template>
-  <div class="mt-14 md:mt-0 md:mr-5">
+  <div class="mt-14 md:mt-[1.5%] md:mr-5">
     <Title>Votre profil</Title>
 
     <div

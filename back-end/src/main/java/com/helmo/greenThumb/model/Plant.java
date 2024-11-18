@@ -1,10 +1,7 @@
 package com.helmo.greenThumb.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.aspectj.weaver.ast.Var;
-import org.springframework.data.annotation.Persistent;
 
 import java.util.List;
 

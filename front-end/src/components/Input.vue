@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 
 const props = defineProps({
     modelValue: {
-      type: String,
+      type: [String, Number, Date],
       required: true
     },
     name: {
@@ -15,11 +15,6 @@ const props = defineProps({
       type: String,
       default: 'text'
     },
-  typer: {
-      type: Date,
-      default: 'date'
-
-  },
     placeholder: {
       type: String,
       default: ''
