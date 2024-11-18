@@ -4,6 +4,7 @@ import {
   updateProfile,
   signOut,
   signInWithPopup,
+  deleteUser,
 } from "firebase/auth";
 import { auth, googleProvider } from "../assets/js/firebase";
 import ApiService from "@/services/ApiService";
@@ -15,45 +16,68 @@ export const useUserStore = defineStore("user", () => {
   const user = ref({
     displayName: "",
     email: "",
+    uid: "",
   });
   const isLoggedIn = ref(false);
   const router = useRouter();
 
   const register = async (email, password, displayName) => {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(user);
-
-    await updateProfile(auth.currentUser, { displayName: displayName }).then(
-      () => {
-        user.value.displayName = displayName;
-        user.value.email = email;
-        isLoggedIn.value = true;
-      }
+    const createdUser = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
     );
+    console.log(createdUser);
 
-    // await ApiService.post("/users", { uid: user.uid }).then(() =>
-    //   router.push("/dashboard")
-    // );
+    await updateProfile(auth.currentUser, { displayName }).then(() => {
+      user.value = {
+        displayName: displayName,
+        email: email,
+        uid: createdUser.user.uid,
+      };
+      isLoggedIn.value = true;
+    });
+
+    await ApiService.post("/users", { uid: user.value.uid })
+      .then(() => router.push("/posts"))
+      .catch(async () => {
+        await deleteUser(createdUser);
+      });
   };
 
   const loginWithGoogle = async () => {
-    signInWithPopup(auth, googleProvider).then((userCredential) => {
+    await signInWithPopup(auth, googleProvider).then((userCredential) => {
       const signedInUser = userCredential.user;
-      console.log(signedInUser);
-      user.value.displayName = signedInUser.displayName;
-      user.value.email = signedInUser.email;
+      user.value = {
+        displayName: signedInUser.displayName,
+        email: signedInUser.email,
+        uid: signedInUser.uid,
+      };
       isLoggedIn.value = true;
-      //   router.push("/dashboard");
     });
+
+    await ApiService.get(`/users/${user.value.uid}`)
+      .then(() => {
+        router.push("/posts");
+      })
+      .catch(async (error) => {
+        if (error.status === 404) {
+          await ApiService.post("/users", { uid: user.value.uid });
+          router.push("/posts");
+        }
+      });
   };
 
   const login = async (email, password) => {
     signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-      const SignedInUser = userCredential.user;
-      user.value.displayName = SignedInUser.displayName;
-      user.value.email = SignedInUser.email;
+      const signedInUser = userCredential.user;
+      user.value = {
+        displayName: signedInUser.displayName,
+        email: signedInUser.email,
+        uid: signedInUser.uid,
+      };
       isLoggedIn.value = true;
-      router.push("/dashboard");
+      router.push("/posts");
     });
   };
 
@@ -62,6 +86,7 @@ export const useUserStore = defineStore("user", () => {
       user.value = {
         displayName: "",
         email: "",
+        uid: "",
       };
       isLoggedIn.value = false;
       router.push("/login");
