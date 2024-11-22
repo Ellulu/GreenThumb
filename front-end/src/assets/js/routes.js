@@ -1,5 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
+import { onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from "../../stores/userStore";
+import { auth } from "./firebase";
 
 import DashboardView from "../../views/DashboardView.vue";
 import HomeView from "../../views/HomeView.vue";
@@ -14,6 +16,18 @@ import PostsView from "@/views/PostsView.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import ProfileView from "../../views/ProfileView.vue";
 import CalendarView from "@/views/CalendarView.vue";
+
+const checkAuth = (next) => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Utilisateur connecté :", user);
+      next();
+    } else {
+      console.log("Utilisateur déconnecté");
+      next("/login");
+    }
+  })
+}
 
 const routes = [
   {
@@ -39,14 +53,7 @@ const routes = [
       {
         path: "profile/edit",
         component: EditProfileView,
-        beforeEnter: (to, from, next) => {
-          const userStore = useUserStore();
-          if (!userStore.isLoggedIn) {
-            next("/login");
-          } else {
-            next();
-          }
-        },
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "posts",
@@ -67,14 +74,7 @@ const routes = [
   {
     path: "/dashboard",
     component: DashboardView,
-    beforeEnter: (to, from, next) => {
-      const userStore = useUserStore();
-      if (!userStore.isLoggedIn) {
-        next("/posts");
-      } else {
-        next();
-      }
-    },
+    beforeEnter: (to, from, next) => checkAuth(next),
   },
   { path: "/404", component: NotFoundView },
   { path: "/:pathMatch(.*)*", redirect: "/404" },

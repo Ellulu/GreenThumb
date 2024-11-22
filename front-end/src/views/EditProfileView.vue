@@ -8,10 +8,11 @@ import Button from "@/components/Button.vue";
 import logo from "../assets/img/default.jpg";
 
 const userStore = useUserStore();
+const { user } = userStore;
 
-const name = ref(_.rest(userStore.user.displayName.split(" ")) || "");
-const firstName = ref(userStore.user.displayName.split(" ")[0] || "");
-const email = ref(userStore.user.email);
+const name = ref(`${_.rest(user.displayName.split(" "))}` || "");
+const firstName = ref(user.displayName.split(" ")[0] || "");
+const email = ref(user.email);
 const emailError = ref("");
 const oldPassword = ref("");
 const oldPasswordError = ref("");

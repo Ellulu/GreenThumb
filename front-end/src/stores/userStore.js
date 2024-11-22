@@ -5,6 +5,8 @@ import {
   signOut,
   signInWithPopup,
   deleteUser,
+  setPersistence,
+  browserLocalPersistence
 } from "firebase/auth";
 import { auth, googleProvider } from "../assets/js/firebase";
 import ApiService from "@/services/ApiService";
@@ -13,32 +15,21 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useUserStore = defineStore("user", () => {
-  const user = ref({
-    displayName: "",
-    email: "",
-    uid: "",
-  });
-  const isLoggedIn = ref(false);
+  const user = ref(auth.currentUser);
   const router = useRouter();
 
   const register = async (email, password, displayName) => {
+    await setPersistence(auth, browserLocalPersistence);
+
     const createdUser = await createUserWithEmailAndPassword(
       auth,
       email,
       password,
     );
-    console.log(createdUser);
 
-    await updateProfile(auth.currentUser, { displayName }).then(() => {
-      user.value = {
-        displayName: displayName,
-        email: email,
-        uid: createdUser.user.uid,
-      };
-      isLoggedIn.value = true;
-    });
+    await updateProfile(auth.currentUser, { displayName });
 
-    await ApiService.post("/users", { uid: user.value.uid })
+    await ApiService.post("/users", { uid: auth.currentUser.uid })
       .then(() => router.push("/posts"))
       .catch(async () => {
         await deleteUser(createdUser);
@@ -46,15 +37,9 @@ export const useUserStore = defineStore("user", () => {
   };
 
   const loginWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider).then((userCredential) => {
-      const signedInUser = userCredential.user;
-      user.value = {
-        displayName: signedInUser.displayName,
-        email: signedInUser.email,
-        uid: signedInUser.uid,
-      };
-      isLoggedIn.value = true;
-    });
+    await setPersistence(auth, browserLocalPersistence);
+
+    await signInWithPopup(auth, googleProvider);
 
     await ApiService.get(`/users/${user.value.uid}`)
       .then(() => {
@@ -62,36 +47,25 @@ export const useUserStore = defineStore("user", () => {
       })
       .catch(async (error) => {
         if (error.status === 404) {
-          await ApiService.post("/users", { uid: user.value.uid });
+          await ApiService.post("/users", { uid: auth.currentUser.uid });
           router.push("/posts");
         }
       });
   };
 
   const login = async (email, password) => {
-    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-      const signedInUser = userCredential.user;
-      user.value = {
-        displayName: signedInUser.displayName,
-        email: signedInUser.email,
-        uid: signedInUser.uid,
-      };
-      isLoggedIn.value = true;
-      router.push("/posts");
-    });
+    await setPersistence(auth, browserLocalPersistence);
+    
+    await signInWithEmailAndPassword(auth, email, password);
+    
+    router.push("/posts");
   };
 
   const logout = async () => {
     signOut(auth).then(() => {
-      user.value = {
-        displayName: "",
-        email: "",
-        uid: "",
-      };
-      isLoggedIn.value = false;
       router.push("/login");
     });
   };
 
-  return { user, isLoggedIn, login, logout, register, loginWithGoogle };
+  return { user, login, logout, register, loginWithGoogle };
 });

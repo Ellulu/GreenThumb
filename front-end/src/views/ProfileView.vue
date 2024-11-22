@@ -1,7 +1,10 @@
 <script setup>
 import { RouterLink } from "vue-router";
+import { useUserStore } from "../stores/userStore";
 import Title from "../components/Title.vue";
-import { LeafIcon, NotebookPen, Edit } from "lucide-vue-next";
+import { LeafIcon, NotebookPen, Edit, LogOut } from "lucide-vue-next";
+
+const userStore = useUserStore();
 
 const menuItems = [
   { name: "Vos plantes", path: "/profile/plants", icon: LeafIcon },
@@ -26,6 +29,14 @@ const menuItems = [
         <component :is="item.icon" class="h-5 w-5"></component>
         <p>{{ item.name }}</p>
       </RouterLink>
+
+      <button
+        class="w-full flex md:flex-col md:w-1/3 md:max-w-80 items-center gap-4 bg-red-600 text-white rounded-md drop-shadow-md p-2 md:p-4 hover:bg-red-700 transition-all ease-in-out duration-200"
+        @click="userStore.logout()"
+      >
+      <LogOut class="h-5 w-5" />
+        <p>Déconnexion</p>
+      </button>
     </div>
   </div>
 </template>
