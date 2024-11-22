@@ -37,3 +37,8 @@ Thumbs.db
 .idea/
 .vscode/
 **/.vscode/
+
+# Env
+**/.env.production
+**/.env.development
+**/.env
