@@ -1,7 +1,6 @@
 package com.helmo.greenThumb.controller;
 
 import com.helmo.greenThumb.model.Event;
-import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.services.EventService;
 import com.helmo.greenThumb.services.PlantService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,7 @@
 package com.helmo.greenThumb.controller;
 
-import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.model.Variety;
-import com.helmo.greenThumb.services.PlantService;
 import com.helmo.greenThumb.services.VarietyService;
-import jakarta.persistence.PostUpdate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

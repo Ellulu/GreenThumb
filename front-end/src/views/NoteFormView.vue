@@ -1,7 +1,10 @@
 <template>
   <div class="bg-white min-h-screen mr-5">
-    <header class="bg-green-600 rounded-lg bg-primary text-white p-4 shadow-md">
-      <h1 class="text-2xl font-bold">Flower Notes</h1>
+    <header>
+      <TitleBackground >
+        <Title_2 class="text-white">Notes</Title_2>
+      </TitleBackground>
+
     </header>
 
 
@@ -13,16 +16,17 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div v-for="(note, index) in notes" :key="index" class="bg-white text-center p-4 rounded shadow border border-green-600">
           <h2 class="text-xl font-semibold text-green-600 mb-3 truncate-title">{{ note.title }}</h2>
-          <p class="text-gray-600 line-clamp-3 mb-3">{{ note.content }}</p>
+          <p class="text-gray-600 line-clamp-3 mb-3" >{{ note.content }}</p>
           <div class="flex justify-between">
-            <Button @click="openNoteModal(note)" class="bg-green-600 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded mb-4">
-              <Plus class="inline mr-2 w-5 h-5"/>
+
+            <Button @click="openEditModal(note, index)" class="bg-green-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 flex items-center justify-center">
+              <Edit class="inline "/>
             </Button>
-            <Button @click="openEditModal(note, index)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 flex items-center justify-center">
-              <Edit class="inline mr-2 w-5 h-5"/>
+            <Button  v-if="note.content.length > maxContentLength" @click="openNoteModal(note)" class="bg-green-600 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded mb-4">
+              <Plus class="inline "/>
             </Button>
             <Button @click="deleteNoteEvent(note)" class="bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
-              <Trash class="inline mr-2 w-5 h-5"/>
+              <Trash class="inline "/>
             </Button>
           </div>
         </div>
@@ -53,7 +57,7 @@
       <template #form-content>
         <div class="mb-4">
 
-          <Input v-model="title" type="text" id="noteTitle" required name="Titre">
+          <Input v-model="title" type="text" id="noteTitle" required name="Titre" maxlength="30">
           </Input>
         </div>
         <div class="mb-4">
@@ -71,8 +75,8 @@
     >
       <template #form-content>
         <div class="mb-4">
-          <label for="editTitle" class="block text-gray-700 font-bold mb-2">Titre</label>
-          <input v-model="title" type="text" id="editTitle" name="editTitle" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+          <label for="editTitle" class="block text-gray-700 font-bold mb-2" >Titre</label>
+          <input v-model="title" type="text" id="editTitle" name="editTitle" class="w-full px-3 py-2 border border-gray-300 rounded" maxlength="30" required>
         </div>
         <div class="mb-4">
           <label for="editContent" class="block text-gray-700 font-bold mb-2">Contenu</label>
@@ -99,22 +103,29 @@ import { toRefs } from 'vue';
 import {Trash } from "lucide-vue-next";
 import {Edit } from "lucide-vue-next";
 import {Plus } from "lucide-vue-next";
+import TitleBackground from "@/components/TitleBackground.vue";
+
+import {Title_2} from "@/components/index.js";
 const noteStore = useNoteStore();
 const showAddModal = ref(false);
 const showEditModal = ref(false)
 const showNoteModal = ref(false);
 const selectedNote = ref({});
 
-
+const maxContentLength = 100
 const title = ref('');
 const content = ref('');
+const id = ref(null);
 const {fetchNotes,deleteNote,createNote,editNote} = noteStore;
 const { notes } = toRefs(noteStore);
+
+
+
 
 function openEditModal(note) {
   title.value = note.title
   content.value = note.content
-  selectedNote.value = note;
+  id.value = note.id
   showEditModal.value = true
 }
 
@@ -137,6 +148,9 @@ async function deleteNoteEvent(note) {
 
 
 function closeModal() {
+  title.value = '';
+  content.value = '';
+  id.value=null;
   showAddModal.value = false;
   showEditModal.value = false
   showNoteModal.value = false;
@@ -150,9 +164,10 @@ const handleEditSubmit = async ()=> {
 
 
   try {
-    await editNote({ id: selectedNote.value.id, title: title.value, content: content.value });
+    await editNote({ id: id.value, title: title.value, content: content.value });
     title.value = '';
     content.value = '';
+    id.value=null;
 
     closeModal();
   } catch (error) {
