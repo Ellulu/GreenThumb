@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import APIService from '@/services/APIService';
+import APIService from '@/services/ApiService';
 import {ref} from "vue";
 
 export const useNoteStore = defineStore('note', () => {
