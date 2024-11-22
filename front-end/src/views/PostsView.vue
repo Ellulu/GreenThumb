@@ -84,7 +84,7 @@
               </div>
               <button @click="showComments(article)" class="flex items-center space-x-1 hover:text-green-700">
                 <MessageCircleIcon class="w-5 h-5" />
-                <span>{{ article.comments || 0 }}</span>
+                <span>{{ article.comments.length || 0 }}</span>
               </button>
             </div>
           </div>
@@ -111,16 +111,13 @@ const formatDate = (dateString) => {
 }
 
 const addArticle = () => {
+  console.log(useUserStore.user)
   if (newArticle.value.trim()) {
     const newArticleObj = {
       id: Date.now(),
       title: 'Nouveau article',
       text: newArticle.value,
-      author: {
-        firstName: 'Current',
-        lastName: 'User',
-        profilePhoto: '/placeholder.svg?height=48&width=48'
-      },
+      user_id: useUserStore.user.id,
       date: new Date().toISOString(),
       files: [],
       rating: { likeCount: 0, dislikeCount: 0 },
@@ -129,6 +126,7 @@ const addArticle = () => {
       disliked: false
     }
     articles.value.unshift(newArticleObj)
+    articleStore.createArticle(newArticleObj)
     newArticle.value = ''
   }
 }

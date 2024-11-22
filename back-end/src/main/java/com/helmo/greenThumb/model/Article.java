@@ -50,14 +50,6 @@ public class Article {
         this.ratings = ratings;
     }
 
-    public long getLikeCount() {
-        return ratings.stream().filter(Rating::isLiked).count();
-    }
-
-    public long getDislikeCount() {
-        return ratings.stream().filter(rating -> !rating.isLiked()).count();
-    }
-
     public Long getId() {
         return id;
     }
