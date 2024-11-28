@@ -16,6 +16,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+
+    private String title;
+
     private String description;
 
 
@@ -99,5 +103,11 @@ public class Event {
     public void setPlant(Plant plant) {
         this.plant = plant;
     }
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

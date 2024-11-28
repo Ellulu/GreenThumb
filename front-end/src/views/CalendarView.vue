@@ -15,8 +15,11 @@
         class="z-30"
     >
       <template #form-content>
+        <div>
+          <Input v-model="event.title" type="text" id="eventTitle" required name="titre" />
+        </div>
         <div class="mb-4">
-          <Input v-model="event.description" type="text" id="eventTitle" required name="Description" />
+          <Input v-model="event.description" type="text" id="eventDescription" required name="Description" />
         </div>
         <div>
 
@@ -37,6 +40,9 @@
       </template>
     </ModalForm>
   </div>
+  <div v-if="loading" class="loading-overlay">
+    <img src="@/assets/img/greenthumb.png" alt="Feuille" class="spinner-image" />
+  </div>
 </template>
 
 <style>
@@ -55,7 +61,30 @@
 .vuecal__event-title{
   border: 2px solid #ffffff;
 }
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #333;
+}
+.spinner-image {
+  width: 100px;
+  height: 100px;
+  animation: spin 1s linear infinite;
+}
 
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 
 <script setup>
@@ -76,8 +105,9 @@ const eventStore = useEventStore();
 const eventsCalendar = ref([]);
 const showModal = ref(false);
 const currentView = ref("week");
-
+const loading = ref(false);
 const event = ref({
+  title:'',
   description: '',
   eventDate: new Date(),
   user_id: 'A123ze45',
@@ -86,6 +116,8 @@ const event = ref({
 });
 
 async function onViewChange(viewData) {
+  loading.value = true;
+  try {
   const startDate = new Date(viewData.startDate);
   const endDate = new Date(viewData.endDate);
 
@@ -97,7 +129,7 @@ async function onViewChange(viewData) {
   const formattedEvents = useEventStore().events.map(event => ({
     start: new Date(event.eventDate),
     end: new Date(event.eventDate),
-    title: event.description
+    title: event.title
   }));
 
 
@@ -105,6 +137,8 @@ async function onViewChange(viewData) {
 
   if (JSON.stringify(eventsCalendar.value) !== JSON.stringify(formattedEvents)) {
     eventsCalendar.value = [...formattedEvents];
+  }} finally {
+    loading.value = false;
   }
 
 }
@@ -122,6 +156,7 @@ async function handleSubmit() {
   await eventStore.createEvent(event.value);
 
   event.value = {
+    title:'',
     description: '',
     eventDate: new Date(),
     user_id: 'A123ze45',
@@ -134,6 +169,7 @@ async function handleSubmit() {
 
 
 onMounted(async () => {
+
   await plantStore.fetchPlants();
 let  currentDate = new Date();
   let startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));

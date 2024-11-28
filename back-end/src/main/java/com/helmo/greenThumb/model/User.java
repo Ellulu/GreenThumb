@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,6 +23,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "subscriber_id")
     )
     private List<User> subscribers;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Note> notes = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -94,5 +98,13 @@ public class User {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 }

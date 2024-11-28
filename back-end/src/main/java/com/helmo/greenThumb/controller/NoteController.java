@@ -1,5 +1,6 @@
 package com.helmo.greenThumb.controller;
 import com.helmo.greenThumb.model.Note;
+import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.services.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,10 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.CREATED).body("La note a bien été créée");
     }
 
-    @GetMapping
-    public ResponseEntity<Iterable<Note>> getAllNotes() {
-        return ResponseEntity.ok(noteService.findAll());
+    @GetMapping("/{user}")
+    public ResponseEntity<Iterable<Note>> getAllNotes(@PathVariable("user") String userUid) {
+        System.out.println(userUid);
+        return ResponseEntity.ok(noteService.findAllNoteByUser(userUid));
     }
 
 
