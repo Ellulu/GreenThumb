@@ -44,14 +44,14 @@ public class NoteService  {
     }
 
     public List<Note> findAllNoteByUser(String userUid) {
-        User finduser = userRepository.findById(userUid).orElse(null);
+        User findUser = userRepository.findById(userUid).orElse(null);
 
-        if (finduser == null) {
+        if (findUser == null) {
             return Collections.emptyList();
         }
-        return noteRepository.findAll().stream()
-                .filter(note -> note.getUser().getUid().equals(userUid))
-                .collect(Collectors.toList());
+        List<Note> tests  = noteRepository.findByUser(findUser);
+
+        return tests;
 
 
     }

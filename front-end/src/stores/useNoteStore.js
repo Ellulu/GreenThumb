@@ -12,8 +12,12 @@ export const useNoteStore = defineStore('note', () => {
 
 
                 const response = await APIService.get(`/notes/${userStore.user.uid}`);
-                console.log(response)
-                console.log(response.data)
+
+
+                console.log("Réponse complète :", response);
+                console.log("Données reçues :", response.data);
+
+
                 notes.value = response.data;
 
             } catch (error) {

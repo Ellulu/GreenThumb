@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @RestController
@@ -29,9 +30,13 @@ public class NoteController {
     }
 
     @GetMapping("/{user}")
-    public ResponseEntity<Iterable<Note>> getAllNotes(@PathVariable("user") String userUid) {
-        System.out.println(userUid);
-        return ResponseEntity.ok(noteService.findAllNoteByUser(userUid));
+    public ResponseEntity<List<Note>> getAllNotes(@PathVariable("user") String userUid) {
+        List<Note> notes = noteService.findAllNoteByUser(userUid);
+        for(Note nn : notes){
+            System.out.println(nn.getTitle());
+        }
+
+        return ResponseEntity.ok(notes);
     }
 
 
