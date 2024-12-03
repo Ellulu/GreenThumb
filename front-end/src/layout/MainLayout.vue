@@ -23,7 +23,7 @@ const menuItems = [
 const isMobileScreen = ref(false);
 
 const checkIfMobileScreen = () => {
-  if (window.innerWidth <= 640) {
+  if (window.innerWidth <= 767) {
     isMobileScreen.value = true;
     return;
   }

@@ -2,6 +2,7 @@ package com.helmo.greenThumb.controller;
 
 
 import com.helmo.greenThumb.dto.ArticleDTO;
+import com.helmo.greenThumb.dto.LikeRequestDTO;
 import com.helmo.greenThumb.model.Article;
 import com.helmo.greenThumb.services.ArticleService;
 import com.helmo.greenThumb.services.FirebaseService;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/articles")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
 public class ArticleController {
 
     @Autowired
@@ -22,6 +23,8 @@ public class ArticleController {
 
     @PostMapping
     public Article createArticle(@RequestBody Article article) {
+
+        System.out.println("creating article :"+article.toString());
         return articleService.createArticle(article);
     }
 
@@ -39,18 +42,24 @@ public class ArticleController {
     public void deleteArticle(@PathVariable Long id) {
         articleService.deleteArticle(id);
     }
-    @PutMapping("/{articleId}/like")
+    @PostMapping("/{articleId}/like")
     public ResponseEntity<String> updateLikeOrDislike(
             @PathVariable Long articleId,
-            @RequestParam String userId,
-            @RequestParam boolean isLike) {
+            @RequestBody LikeRequestDTO likeRequest) {
+        System.out.println("articleId: " + articleId);
+        System.out.println("likeRequest reçu : " + likeRequest);
+
+        if (likeRequest == null) {
+            return ResponseEntity.badRequest().body("Corps de la requête manquant ou mal formé.");
+        }
 
         try {
-            articleService.likeOrDislikeArticle(articleId, userId, isLike);
-            return ResponseEntity.ok("Reaction updated successfully");
+            articleService.likeOrDislikeArticle(articleId, likeRequest.userId(), likeRequest.isLike());
+            return ResponseEntity.ok("Réaction mise à jour avec succès.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 }
 

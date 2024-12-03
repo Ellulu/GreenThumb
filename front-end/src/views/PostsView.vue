@@ -11,6 +11,12 @@
 
     <main class="max-w-2xl mx-auto mt-4 px-4">
       <div class="bg-amber-50 rounded-lg shadow p-4 mb-4">
+        <Input
+          v-model="newArticleTitle"
+          name="Titre de l'article"
+          placeholder="Titre de l'article"
+          required
+        />
         <textarea
           v-model="newArticle"
           placeholder="Quoi de neuf ?"
@@ -28,7 +34,7 @@
           <button
             @click="addArticle"
             class="bg-green-500 text-white px-4 py-2 rounded-full font-bold hover:bg-green-600 transition"
-            :disabled="!newArticle.trim()"
+            :disabled="!newArticle.trim() || !newArticleTitle.trim()"
           >
             Nouvel Article
           </button>
@@ -72,19 +78,19 @@
               </ul>
             </div>
             <div class="flex justify-between text-green-600">
-              <div class ="flex justify-between">
-              <button @click="likeArticle(article)" class="flex items-center space-x-1 hover:text-green-700 m-2">
-                <ThumbsUpIcon :class="{'text-green-700': article.rating.hasLike}" class="w-5 h-5" />
-                <span>{{ article.rating.likes }}</span>
-              </button>
-              <button @click="dislikeArticle(article)" class="flex items-center space-x-1 hover:text-red-600 m-2">
-                <ThumbsDownIcon :class="{'text-red-600': article.rating.hasDislike}" class="w-5 h-5" />
-                <span>{{ article.rating.dislikes }}</span>
-              </button>
+              <div class="flex justify-between">
+                <button @click="likeArticle(article)" class="flex items-center space-x-1 hover:text-green-700 m-2">
+                  <ThumbsUpIcon :class="{'text-green-700': article.rating.hasLike}" class="w-5 h-5" />
+                  <span>{{ article.rating.likes }}</span>
+                </button>
+                <button @click="dislikeArticle(article)" class="flex items-center space-x-1 hover:text-red-600 m-2">
+                  <ThumbsDownIcon :class="{'text-red-600': article.rating.hasDislike}" class="w-5 h-5" />
+                  <span>{{ article.rating.dislikes }}</span>
+                </button>
               </div>
               <button @click="showComments(article)" class="flex items-center space-x-1 hover:text-green-700">
                 <MessageCircleIcon class="w-5 h-5" />
-                <span>{{ article.comments.length || 0 }}</span>
+                <span>{{ 0 }}</span>
               </button>
             </div>
           </div>
@@ -99,60 +105,68 @@ import { ref, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/useArticleStore'
 import { useUserStore } from '@/stores/userStore';
 import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, ThumbsUpIcon, ThumbsDownIcon } from 'lucide-vue-next'
+import Input from '@/components/Input.vue';
 
 const articleStore = useArticleStore()
 const isLoading = ref(true)
 const newArticle = ref('')
+const newArticleTitle = ref('')
 const articles = ref([])
-
+const userStore = useUserStore();
+const user = userStore.user;
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
   return new Date(dateString).toLocaleDateString('fr-FR', options)
 }
-
+onMounted(()=> {
+  console.log("michel"+user)
+})
 const addArticle = () => {
-  console.log(useUserStore.user)
-  if (newArticle.value.trim()) {
+  console.log(user)
+  if (newArticle.value.trim() && newArticleTitle.value.trim()) {
     const newArticleObj = {
       id: Date.now(),
-      title: 'Nouveau article',
+      title: newArticleTitle.value,
       text: newArticle.value,
-      user_id: useUserStore.user.id,
+      author: {
+        uid: user.uid,
+        
+        imageUrl: user.photoURL
+      },
       date: new Date().toISOString(),
       files: [],
-      rating: { likeCount: 0, dislikeCount: 0 },
-      comments: 0,
-      liked: false,
-      disliked: false
+      rating: { likes: 0, dislikes: 0 },
     }
     articles.value.unshift(newArticleObj)
     articleStore.createArticle(newArticleObj)
     newArticle.value = ''
+    newArticleTitle.value = ''
   }
 }
 
 const likeArticle = (article) => {
   if (article.disliked) {
     article.disliked = false
-    article.rating.dislikeCount--
+    article.rating.dislikes--
   }
   article.liked = !article.liked
-  article.rating.likeCount += article.liked ? 1 : -1
-  articleStore.likeOrDislikeArticle(article.id, useUserStore.user.id,true)//TODO vérfier apres ajout userid
+  article.rating.likes += article.liked ? 1 : -1
+  articleStore.likeArticle(article.id, userStore.user.uid)
 }
 
 const dislikeArticle = (article) => {
   if (article.liked) {
     article.liked = false
-    article.rating.likeCount--
+    article.rating.likes--
   }
   article.disliked = !article.disliked
-  article.rating.dislikeCount += article.disliked ? 1 : -1
-  articleStore.likeOrDislikeArticle(article.id, useUserStore.user.id,false)//TODO vérfier apres ajout userid
+  article.rating.dislikes += article.disliked ? 1 : -1
+  articleStore.dislikeArticle(article.id, userStore.user.uid)
 }
 
 const showComments = (article) => {
-  console.log(`Afficher les commentaires pour l'article ${article.id}`)
+  
+  console.log(`Afficher les commentaires pour l'article ${article.id}: ${article.comments}`)
 }
 
 onMounted(async () => {
@@ -163,6 +177,7 @@ onMounted(async () => {
     }
     console.log(articleStore.articles)
     articles.value = articleStore.articles
+    articles.value.sort((a, b) => new Date(b.date) - new Date(a.date));
     isLoading.value = false
   } catch (err) {
     console.error("Erreur lors du chargement des articles:", err)

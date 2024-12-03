@@ -1,6 +1,7 @@
 package com.helmo.greenThumb.model;
 
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -27,12 +28,14 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private Set<Rating> ratings;
 
-
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
 
+    //TODO ADD COMMENTS
     public Article() {
         ratings = new HashSet<>();
     }
@@ -107,5 +110,13 @@ public class Article {
                 ", ratings=" + ratings +
                 ", author=" + author +
                 '}';
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

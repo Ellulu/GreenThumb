@@ -17,17 +17,17 @@ import EditProfileView from "@/views/EditProfileView.vue";
 import ProfileView from "../../views/ProfileView.vue";
 import CalendarView from "@/views/CalendarView.vue";
 
-const checkAuth = (next) => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Utilisateur connecté :", user);
-      next();
-    } else {
-      console.log("Utilisateur déconnecté");
-      next("/login");
-    }
-  })
-}
+const checkAuth = (to, from, next) => {
+  const userStore = useUserStore();
+
+  if (userStore.user) {
+    console.log("Utilisateur connecté :", userStore.user);
+    next();
+  } else {
+    console.log("Utilisateur déconnecté");
+    next("/login");
+  }
+};
 
 const routes = [
   {
@@ -37,6 +37,7 @@ const routes = [
       {
         path: "",
         component: HomeView,
+        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
       {
         path: "test",
@@ -45,27 +46,32 @@ const routes = [
       {
         path: "profile/notes",
         component: NoteFormView,
+        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
       {
         path: "profile/plants",
         component: PlantView,
+        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
       {
         path: "profile/edit",
         component: EditProfileView,
-        beforeEnter: (to, from, next) => checkAuth(next),
+        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
       {
         path: "posts",
         component: PostsView,
+        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
       {
         path: "calendar",
         component: CalendarView,
+        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
       {
         path: "profile",
         component: ProfileView,
+        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
     ],
   },
@@ -74,11 +80,12 @@ const routes = [
   {
     path: "/dashboard",
     component: DashboardView,
-    beforeEnter: (to, from, next) => checkAuth(next),
+    beforeEnter: checkAuth,
   },
   { path: "/404", component: NotFoundView },
   { path: "/:pathMatch(.*)*", redirect: "/404" },
 ];
+
 
 const router = createRouter({
   history: createWebHistory(),

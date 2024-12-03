@@ -10,5 +10,5 @@ public record ArticleDTO(
         String date,
         List<String> files,
         RatingDTO rating,
-        List<String> comments
+        List<com.helmo.greenThumb.model.Comment> comments
 ) {}

@@ -38,11 +38,24 @@ export const useArticleStore = defineStore('article', {
         this.error = `Failed to delete article with id: ${id}`;
       }
     },
-    async likeOrDislikeArticle(id,userid,isLike){
+    async likeArticle(id, userId) {
       try {
-        await APIService.put(`/articles/${id}`,{id,userid,isLike});
+        const requestData = { userId: userId, isLike: true };
+        console.log("Données envoyées :", requestData);
+    
+        const response = await APIService.post(`/articles/${id}/like`, requestData);
+        console.log("Réponse reçue :", response.data);
       } catch (error) {
-        this.error = `Failed to like this article: ${id}`;
+        console.error("Erreur lors de l'appel API:", error);
+        this.error = error.response?.data?.message || `Failed to like article with id: ${id}`;
+      }
+    },
+    async dislikeArticle(id, userId) {
+      try {
+        const requestData = { userId: userId, isLike: false };    
+        const response = await APIService.post(`/articles/${id}/like`, requestData);
+      } catch (error) {
+        this.error = error.response?.data?.message || `Failed to dislike article with id: ${id}`;
       }
     }
   }
