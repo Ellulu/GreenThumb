@@ -1,20 +1,20 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { onAuthStateChanged } from "firebase/auth";
-import { useUserStore } from "../../stores/userStore";
+import { useUserStore } from "@/stores/userStore";
 import { auth } from "./firebase";
 
-import DashboardView from "../../views/DashboardView.vue";
-import HomeView from "../../views/HomeView.vue";
-import LoginView from "../../views/LoginView.vue";
-import RegisterView from "../../views/RegisterView.vue";
-import NotFoundView from "../../views/NotFoundView.vue";
-import TestView from "../../views/TestView.vue";
-import MainLayout from "../../layout/MainLayout.vue";
-import PlantView from "../../views/PlantView.vue";
+import DashboardView from "@/views/DashboardView.vue";
+import HomeView from "@/views/HomeView.vue";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
+import TestView from "@/views/TestView.vue";
+import MainLayout from "@/layout/MainLayout.vue";
+import PlantView from "@/views/PlantView.vue";
 import NoteFormView from "@/views/NoteFormView.vue";
 import PostsView from "@/views/PostsView.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
-import ProfileView from "../../views/ProfileView.vue";
+import ProfileView from "@/views/ProfileView.vue";
 import CalendarView from "@/views/CalendarView.vue";
 
 const checkAuth = (next) => {
