@@ -29,7 +29,7 @@ public class User {
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Event> events;
 

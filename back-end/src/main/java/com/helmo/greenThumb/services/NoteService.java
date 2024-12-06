@@ -49,9 +49,9 @@ public class NoteService  {
         if (findUser == null) {
             return Collections.emptyList();
         }
-        List<Note> tests  = noteRepository.findByUser(findUser);
 
-        return tests;
+
+        return noteRepository.findByUser(findUser);
 
 
     }

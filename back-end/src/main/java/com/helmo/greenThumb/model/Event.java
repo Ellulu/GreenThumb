@@ -26,10 +26,12 @@ public class Event {
 
     private int cycle;
 
+
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
-    private User author;
+    private User user;
 
 
     @ManyToOne
@@ -81,8 +83,8 @@ public class Event {
         return files;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setUser(User author) {
+        this.user = author;
     }
 
     public void setFiles(List<String> files) {
@@ -109,5 +111,8 @@ public class Event {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public User getUser() {
+        return user;
     }
 }

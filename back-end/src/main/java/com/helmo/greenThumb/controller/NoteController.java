@@ -32,9 +32,7 @@ public class NoteController {
     @GetMapping("/{user}")
     public ResponseEntity<List<Note>> getAllNotes(@PathVariable("user") String userUid) {
         List<Note> notes = noteService.findAllNoteByUser(userUid);
-        for(Note nn : notes){
-            System.out.println(nn.getTitle());
-        }
+
 
         return ResponseEntity.ok(notes);
     }

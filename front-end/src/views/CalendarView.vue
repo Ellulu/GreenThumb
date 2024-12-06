@@ -4,8 +4,25 @@
 
     <Button @click="openModalEvent" class="m-3 bg-green-600 text-white">+ Ajouter un évènement</Button>
 
-    <vue-cal  :view="currentView" @view-change="onViewChange" :events="eventsCalendar" class=" z-10 border rounded-lg border-green-600" :time="false" :disable-views="['years', 'year', 'month']" />
-
+    <vue-cal
+        :view="currentView"
+        @view-change="onViewChange"
+        :events="eventsCalendar"
+        class="z-10 border rounded-lg border-green-600"
+        :time="false"
+        :disable-views="['years', 'year', 'month']"
+    >
+      <template v-slot:event="props">
+        <div class="vuecal__event">
+          <span>{{ props.event.title }}</span>
+          <!-- Affiche la description de l'événement avec un scroll -->
+          <div v-if="props.event.description" class="vuecal__event-description">
+            <p>Description : </p>
+            {{ props.event.description }}
+          </div>
+        </div>
+      </template>
+    </vue-cal>
     <ModalForm
         :show="showModal"
         title="Ajouter un Event"
@@ -35,7 +52,7 @@
 
         </div>
         <div>
-          <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour"></Input>
+          <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour" min="1"></Input>
         </div>
       </template>
     </ModalForm>
@@ -85,6 +102,16 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+.vuecal__event-description {
+  max-width: 100%; /* Vous pouvez ajuster cette largeur selon le besoin de votre mise en page */
+  white-space: nowrap; /* Empêche le texte de se couper et force le défilement horizontal */
+  overflow-x: auto;  /* Ajoute une barre de défilement horizontale si le contenu dépasse la largeur */
+  font-size: 0.875rem; /* Ajustez la taille de la police selon vos besoins */
+  padding: 5px;
+  background-color: rgba(0, 128, 0, 0.5);
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 </style>
 
 <script setup>
@@ -94,6 +121,7 @@ import 'vue-cal/dist/vuecal.css';
 import Button from '../components/Button.vue';
 import ModalForm from '@/components/ModalForm.vue';
 import Input from '@/components/Input.vue';
+
 
 
 import {useEventStore} from '@/stores/useEventStore.js';
@@ -106,14 +134,16 @@ const eventsCalendar = ref([]);
 const showModal = ref(false);
 const currentView = ref("week");
 const loading = ref(false);
+
 const event = ref({
   title:'',
   description: '',
   eventDate: new Date(),
-  user_id: 'A123ze45',
+  user: {},
   cycle: 0,
   plant: {},
 });
+
 
 async function onViewChange(viewData) {
   loading.value = true;
@@ -129,7 +159,8 @@ async function onViewChange(viewData) {
   const formattedEvents = useEventStore().events.map(event => ({
     start: new Date(event.eventDate),
     end: new Date(event.eventDate),
-    title: event.title
+    title: event.title,
+    description: event.description
   }));
 
 
@@ -153,24 +184,30 @@ function closeModal() {
 }
 async function handleSubmit() {
 
-  await eventStore.createEvent(event.value);
+try{
+console.log("event début"+event.value.title)
+  await eventStore.createEvent(event);
 
-  event.value = {
+
+}finally {
+ event.value = {
     title:'',
     description: '',
     eventDate: new Date(),
-    user_id: 'A123ze45',
+    user: {},
     cycle: 0,
     plant: {},
   };
-  closeModal();
+ closeModal();
   window.location.reload();
+}
+
 }
 
 
 onMounted(async () => {
 
-  await plantStore.fetchPlants();
+  //await plantStore.fetchPlants();
 let  currentDate = new Date();
   let startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
   let endOfWeek = new Date(startOfWeek);

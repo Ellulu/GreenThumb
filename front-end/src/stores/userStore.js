@@ -16,6 +16,7 @@ import { ref } from "vue";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref(auth.currentUser);
+  const uid = ref(auth.currentUser.uid || '');
   const router = useRouter();
 
   const register = async (email, password, displayName) => {
@@ -30,7 +31,11 @@ export const useUserStore = defineStore("user", () => {
     await updateProfile(auth.currentUser, { displayName });
 
     await ApiService.post("/users", { uid: auth.currentUser.uid })
-      .then(() => router.push("/posts"))
+      .then(() =>{
+        uid.value = auth.currentUser.uid;
+        router.push("/posts");
+      })
+
       .catch(async () => {
         await deleteUser(createdUser);
       });
@@ -43,6 +48,7 @@ export const useUserStore = defineStore("user", () => {
 
     await ApiService.get(`/users/${user.value.uid}`)
       .then(() => {
+        uid.value = auth.currentUser.uid;
         router.push("/posts");
       })
       .catch(async (error) => {
@@ -57,15 +63,16 @@ export const useUserStore = defineStore("user", () => {
     await setPersistence(auth, browserLocalPersistence);
     
     await signInWithEmailAndPassword(auth, email, password);
-    
+    uid.value = auth.currentUser.uid;
     router.push("/posts");
   };
 
   const logout = async () => {
     signOut(auth).then(() => {
       router.push("/login");
+      uid.value = '';
     });
   };
 
-  return { user, login, logout, register, loginWithGoogle };
+  return { user, uid, login, logout, register, loginWithGoogle };
 });
