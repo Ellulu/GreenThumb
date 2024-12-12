@@ -45,7 +45,7 @@ export const useUserStore = defineStore("user", () => {
   
       await signInWithPopup(auth, googleProvider);
   
-      await ApiService.get(`/users/${user.value.uid}`)
+      await ApiService.get(`/users/${auth.currentUser.uid}`)
         .then(() => {
           router.push("/posts");
         })
