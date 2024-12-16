@@ -10,44 +10,17 @@ export const useEventStore = defineStore('event', {
   actions: {
      async fetchEvents(startDate, endDate) {
          try {
-             //const userStore = useUserStore();
-            // console.log("sending request")
-             //console.log(userStore.user.uid)
-        //const response = await APIService.get(`/events/${userStore.user.uid}`);
-        const response = await APIService.get(`/events/zUaX99sOrsUNMrcx9SmU9YhJfXp2`);
-             console.log("response received")
-        let evts = response.data;
+
+             console.log("fetching events")
+             const response = await APIService.post(`/events/zUaX99sOrsUNMrcx9SmU9YhJfXp2`, {
+                 startDate: startDate,
+                 endDate: endDate
+             });
+                console.log("response received")
+             console.log(response.data)
+                this.events =  response.data;
 
 
-
-        let enventList = [];
-      for(let evt of evts) {
-
-
-        for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
-
-
-            const currentDate = new Date(date);
-            const setupDate = new Date(evt.eventDate);
-
-
-
-            const diffDays = Math.floor((currentDate - setupDate) / (1000 * 60 * 60 * 24)); // Arrondir au jour près
-
-
-            if (diffDays >= 0 && diffDays % evt.cycle === 0) {
-
-
-                let newEvent = { ...evt };
-
-                newEvent.eventDate = new Date(currentDate);
-
-                enventList.push(newEvent);
-            }
-
-        }
-      }
-      this.events = enventList;
 
 
          } catch (error) {
@@ -56,7 +29,15 @@ export const useEventStore = defineStore('event', {
 
 
 
-    },
+    }
+
+    /*
+    async fetchToDayEvent(dalitasks,date){
+
+
+    }*/
+    ,
+
     async fetchEvent(id) {
       try {
         const response = await APIService.get(`/events/${id}`);

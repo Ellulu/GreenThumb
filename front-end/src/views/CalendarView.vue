@@ -14,12 +14,16 @@
     >
       <template v-slot:event="props">
         <div class="vuecal__event">
+          <Button @click="showDescription(props.event)" class="hover:bg-blue-700">
+
+
           <span>{{ props.event.title }}</span>
-          <!-- Affiche la description de l'événement avec un scroll -->
-          <div v-if="props.event.description" class="vuecal__event-description">
-            <p>Description : </p>
-            {{ props.event.description }}
-          </div>
+            <EventDisplay v-if="showEvent" :event="props.event" @close="closeModal" />
+          </Button>
+
+
+
+
         </div>
       </template>
     </vue-cal>
@@ -32,34 +36,34 @@
         class="z-30"
     >
       <template #form-content>
-        <div>
+
           <Input v-model="event.title" type="text" id="eventTitle" required name="titre" />
-        </div>
-        <div class="mb-4">
+
+
           <Input v-model="event.description" type="text" id="eventDescription" required name="Description" />
-        </div>
-        <div>
+
+
 
           <Input v-model="event.eventDate" type="date" required name="Commencer à partir de cette date"/>
 
-        </div>
-        <div>
+
           <label for="eventDate" class="block text-gray-700 font-bold mb-2">Lier une plante</label>
           <select v-model="event.plant" required >
 
             <option v-for="plant in plantStore.plants" :key="plant" :value="plant">{{ plant.name }}</option>
           </select>
 
-        </div>
-        <div>
+
+
           <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour" min="1"></Input>
-        </div>
+
       </template>
     </ModalForm>
   </div>
   <div v-if="loading" class="loading-overlay">
     <img src="@/assets/img/greenthumb.png" alt="Feuille" class="spinner-image" />
   </div>
+
 </template>
 
 <style>
@@ -102,16 +106,7 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-.vuecal__event-description {
-  max-width: 100%; /* Vous pouvez ajuster cette largeur selon le besoin de votre mise en page */
-  white-space: nowrap; /* Empêche le texte de se couper et force le défilement horizontal */
-  overflow-x: auto;  /* Ajoute une barre de défilement horizontale si le contenu dépasse la largeur */
-  font-size: 0.875rem; /* Ajustez la taille de la police selon vos besoins */
-  padding: 5px;
-  background-color: rgba(0, 128, 0, 0.5);
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+
 </style>
 
 <script setup>
@@ -127,6 +122,7 @@ import Input from '@/components/Input.vue';
 import {useEventStore} from '@/stores/useEventStore.js';
 import {usePlantStore} from '@/stores/usePlantStore.js';
 import Title from '../components/Title.vue';
+import EventDisplay from "@/components/EventDisplay.vue";
 
 const plantStore = usePlantStore();
 const eventStore = useEventStore();
@@ -134,8 +130,10 @@ const eventsCalendar = ref([]);
 const showModal = ref(false);
 const currentView = ref("week");
 const loading = ref(false);
+const showEvent = ref(false);
 
 const event = ref({
+
   title:'',
   description: '',
   eventDate: new Date(),
@@ -144,14 +142,27 @@ const event = ref({
   plant: {},
 });
 
+async function showDescription(event) {
+  console.log(event.title);
+  console.log(event.description);
+  console.log(event.plant.name);
+  showEvent.value = true;
+}
 
 async function onViewChange(viewData) {
   loading.value = true;
   try {
+    /*
   const startDate = new Date(viewData.startDate);
   const endDate = new Date(viewData.endDate);
-
-
+    const formattedStartDate = startDate.toISOString().split('T')[0];
+    const formattedEndDate = endDate.toISOString().split('T')[0];
+*/
+    const startDate = new Date(viewData.startDate).toISOString().split('T')[0];
+    const endDate = new Date(viewData.endDate).toISOString().split('T')[0];
+console.log("début"+startDate);
+console.log("fin"+endDate);
+    console.log("avant fetch")
   await useEventStore().fetchEvents(startDate, endDate);
 
 
@@ -160,7 +171,9 @@ async function onViewChange(viewData) {
     start: new Date(event.eventDate),
     end: new Date(event.eventDate),
     title: event.title,
-    description: event.description
+    description: event.description,
+    plant: event.plant,
+    cycle: event.cycle,
   }));
 
 
@@ -181,7 +194,9 @@ function openModalEvent() {
 
 function closeModal() {
   showModal.value = false;
+  showEvent.value = false;
 }
+
 async function handleSubmit() {
 
 try{
@@ -191,6 +206,7 @@ console.log("event début"+event.value.title)
 
 }finally {
  event.value = {
+
     title:'',
     description: '',
     eventDate: new Date(),
@@ -212,7 +228,7 @@ let  currentDate = new Date();
   let startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
   let endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
-    onViewChange({startDate: startOfWeek.toISOString().split('T')[0],
+   await onViewChange({startDate: startOfWeek.toISOString().split('T')[0],
       endDate: endOfWeek.toISOString().split('T')[0],
       view: "week",
       events: [

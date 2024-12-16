@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/events")
@@ -27,11 +30,29 @@ public class EventController {
       eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.CREATED).body("l'event a bien été créé");
     }
-
+/**
     @GetMapping("/{uid}")
     public ResponseEntity<List<Event>> getUserEvents(@PathVariable("uid") String userUid) {
         List<Event> events = eventService.getAllEvents(userUid);
         return ResponseEntity.ok(events) ;
+    }
+    **/
+
+@PostMapping("/{userId}")
+public ResponseEntity<List<Event>> getEvents(
+        @PathVariable String userId,
+        @RequestBody Map<String, String> requestBody
+) {
+
+
+   LocalDate start = LocalDate.parse(requestBody.get("startDate"));
+    LocalDate end = LocalDate.parse(requestBody.get("endDate"));
+
+        List<Event> events = eventService.getAllEvents(userId, start, end);
+        System.out.println(events.size());
+        System.out.println(events);
+       return ResponseEntity.ok(events) ;
+
     }
 
   /*  @GetMapping("/{id}")

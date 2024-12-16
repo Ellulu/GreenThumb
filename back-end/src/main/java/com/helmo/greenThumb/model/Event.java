@@ -44,6 +44,17 @@ public class Event {
     @ElementCollection
     private List<String> files;
 
+    public Event(Long id ,String title, String description, int cycle, Plant plant, User user, Date eventDate) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.cycle = cycle;
+        this.plant = plant;
+        this.user = user;
+        this.eventDate = eventDate;
+    }
+    public Event() {
+    }
 
 
     public void addEvent() {

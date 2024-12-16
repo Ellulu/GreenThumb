@@ -1,15 +1,60 @@
 <script setup>
-import { useUserStore } from '../stores/userStore'
+import { ref } from 'vue';
+import Title_2 from "../components/Title_2.vue";
+import TaskDisplay from "@/components/CardEventDisplay.vue";
+import {onMounted} from "vue";
+import {useEventStore} from "@/stores/useEventStore";
+const enventStore = useEventStore();
 
-const userStore = useUserStore()
+const displayTasks = ref([]);
+
+
+/*
+const testevent = ref([{
+  title: 'test',
+  description: 'tessdfgsdfgsdfgsdfgsdfgsdfgt',
+  eventDate: new Date(),
+  user: {},
+  cycle: 0,
+  plant: {},
+
+},{
+  title: 'grzgzegzeg',
+  description: 'tessdfgsdfgsdfgsdfgsdfgsdfgt',
+  eventDate: new Date(),
+  user: {},
+  cycle: 0,
+  plant: {},
+
+}
+
+])*/
+
+
+
+async function fetchEvents() {
+  let  currentDate = new Date();
+  const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1)).toISOString().split('T')[0];
+
+  await enventStore.fetchEvents(startOfWeek, startOfWeek);
+  displayTasks.value = enventStore.events;
+
+
+}
+
+onMounted(() => {
+  fetchEvents();
+});
+
 </script>
 
 <template>
-    <div>
-        <h1>Dashboard</h1>
-        <p>Bienvenue {{ userStore.user.displayName }}</p>
-        <p>Vous êtes connecté avec l'email {{ userStore.user.email }}</p>
 
-        <button class="bg-red-500 text-white p-2 rounded-md" @click="userStore.logout">Déconnexion</button>
-    </div>
+  <div>
+    <Title_2>Tàches du jours</Title_2>
+  </div>
+
+    <TaskDisplay   :daily-task="displayTasks"/>
+
+
 </template>

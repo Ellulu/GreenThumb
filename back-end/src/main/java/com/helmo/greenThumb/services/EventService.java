@@ -4,9 +4,11 @@ import com.helmo.greenThumb.infrastructures.UserRepository;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.infrastructures.EventRepository;
 import com.helmo.greenThumb.model.User;
+import com.helmo.greenThumb.utils.EventUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,14 +27,17 @@ public class EventService {
         return   eventRepository.save(event);
     }
 
-    public List<Event> getAllEvents(String userUid) {
+    /*
+    public List<Event> getAllEvents(String userUid ) {
         User findUser = userRepository.findById(userUid).orElse(null);
 
         if (findUser == null) {
             return Collections.emptyList();
         }
-        return eventRepository.findByUser(findUser);
-    }
+        List<Event> events = eventRepository.findAllByUser(findUser);
+        EventUtils.calculateRecurringEvents(events,) ;
+        return ;
+    }*/
 
     public Event getEventById(Long id) {
         return eventRepository.findById(id).orElse(null);
@@ -40,5 +45,16 @@ public class EventService {
 
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
+    }
+
+    public List<Event> getAllEvents(String userId, LocalDate startDate, LocalDate endDate) {
+        User findUser = userRepository.findById(userId).orElse(null);
+
+        if (findUser == null) {
+            return Collections.emptyList();
+        }
+        List<Event> events = eventRepository.findByUser(findUser);
+
+        return    EventUtils.calculateRecurringEvents(events,startDate,endDate) ;
     }
 }
