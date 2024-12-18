@@ -58,7 +58,7 @@ const toggle = () => {
         <div class="flex items-center space-x-2" v-if="isMenuOpen">
           <ChevronsLeft class="h-5 w-5" />
           <Transition name="fade">
-            <span>Collapse</span>
+            <span>Réduire</span>
           </Transition>
         </div>
         <ChevronsRight class="h-5 w-5" v-else />

@@ -1,10 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { onAuthStateChanged } from "firebase/auth";
-import { useUserStore } from "@/stores/userStore";
 import { auth } from "./firebase";
 
-import DashboardView from "@/views/DashboardView.vue";
-import HomeView from "@/views/HomeView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
@@ -33,27 +30,11 @@ const routes = [
   {
     path: "/",
     component: MainLayout,
+    redirect: {path: "posts"},
     children: [
-      {
-        path: "",
-        component: HomeView,
-      },
       {
         path: "test",
         component: TestView,
-      },
-      {
-        path: "profile/notes",
-        component: NoteFormView,
-      },
-      {
-        path: "profile/plants",
-        component: PlantView,
-      },
-      {
-        path: "profile/edit",
-        component: EditProfileView,
-        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "posts",
@@ -62,20 +43,32 @@ const routes = [
       {
         path: "calendar",
         component: CalendarView,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "profile",
         component: ProfileView,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
+      {
+        path: "profile/notes",
+        component: NoteFormView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+      },
+      {
+        path: "profile/plants",
+        component: PlantView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+      },
+      {
+        path: "profile/edit",
+        component: EditProfileView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+      }
     ],
   },
   { path: "/login", component: LoginView },
   { path: "/register", component: RegisterView },
-  {
-    path: "/dashboard",
-    component: DashboardView,
-    beforeEnter: (to, from, next) => checkAuth(next),
-  },
   { path: "/404", component: NotFoundView },
   { path: "/:pathMatch(.*)*", redirect: "/404" },
 ];

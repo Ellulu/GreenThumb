@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <Title_2>Mes Plantes</Title_2>
+    <Title>Mes Plantes</Title>
     
     <div v-if="loading" class="text-center py-8">
       <Loader2Icon class="animate-spin h-8 w-8 mx-auto text-green-600" />
@@ -129,7 +129,7 @@
 <script setup>
 import { onMounted, ref, watchEffect } from 'vue';
 import { usePlantStore } from '@/stores/usePlantStore';
-import { Button, Title_2, Title_3, Text, ProgressBar, ImageBox, FormBox, Input, Select, Error } from '../components';
+import { Button, Title, Title_3, Text, ProgressBar, ImageBox, FormBox, Input, Select, Error } from '../components';
 import { SunIcon, DropletIcon, EditIcon, TrashIcon, PlusIcon, LeafIcon, Loader2Icon } from 'lucide-vue-next';
 
 const lightLevelOptions = [

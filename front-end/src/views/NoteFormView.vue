@@ -1,12 +1,6 @@
 <template>
   <div class="bg-white min-h-screen mr-5">
-    <header>
-      <TitleBackground >
-        <Title_2 class="text-white">Notes</Title_2>
-      </TitleBackground>
-
-    </header>
-
+    <Title>Mes notes</Title>
 
     <main class="container mx-auto p-4">
       <Button @click="showAddModal = true" class="bg-green-600 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded mb-4">
@@ -46,7 +40,6 @@
       </div>
     </div>
 
-
     <ModalForm
         :show="showAddModal"
         title="Ajouter Une Note"
@@ -84,12 +77,7 @@
         </div>
       </template>
     </ModalForm>
-
-
-    </div>
-
-
-
+  </div>
 </template>
 
 <script setup>
@@ -103,9 +91,9 @@ import { toRefs } from 'vue';
 import {Trash } from "lucide-vue-next";
 import {Edit } from "lucide-vue-next";
 import {Plus } from "lucide-vue-next";
-import TitleBackground from "@/components/TitleBackground.vue";
 
-import {Title_2} from "@/components/index.js";
+import {Title} from "@/components/index.js";
+
 const noteStore = useNoteStore();
 const showAddModal = ref(false);
 const showEditModal = ref(false)
@@ -118,9 +106,6 @@ const content = ref('');
 const id = ref(null);
 const {fetchNotes,deleteNote,createNote,editNote} = noteStore;
 const { notes } = toRefs(noteStore);
-
-
-
 
 function openEditModal(note) {
   title.value = note.title
@@ -136,16 +121,11 @@ function openNoteModal(note) {
 
 async function deleteNoteEvent(note) {
   try{
-
-
-  await deleteNote( note.id);
-
+    await deleteNote( note.id);
   }catch (error) {
     console.error("Erreur de connexion au serveur:", error);
   }
-
 }
-
 
 function closeModal() {
   title.value = '';
@@ -155,10 +135,6 @@ function closeModal() {
   showEditModal.value = false
   showNoteModal.value = false;
 }
-
-
-
-
 
 const handleEditSubmit = async ()=> {
 
@@ -176,8 +152,6 @@ const handleEditSubmit = async ()=> {
 
 
 const handleSubmit = async () => {
-
-
   try {
     console.log(notes)
   await createNote({
@@ -198,12 +172,12 @@ const handleSubmit = async () => {
 onMounted(async () => {
   await fetchNotes();
 });
-
 </script>
 
 <style scoped>
 .line-clamp-3 {
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -216,6 +190,7 @@ onMounted(async () => {
 
 .line-clamp-3 {
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
