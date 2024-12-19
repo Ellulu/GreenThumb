@@ -11,7 +11,7 @@ import java.util.*;
 public class EventUtils {
 
 
-    public static List<Event> calculateRecurringEvents(List<Event> events, LocalDate startDate, LocalDate endDate) {
+    public static List<Event> calculateRecurringEvents(List<Event> events, LocalDate startDate, LocalDate endDate,boolean usage) {
         List<Event> recurringEvents = new ArrayList<>();
         long cpt = 0;
         for (Event evt : events) {
@@ -28,6 +28,9 @@ public class EventUtils {
                     // Convertir LocalDate en Date sans problème de fuseau horaire
                     Date formattedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
+                    if(usage){
+
+
                     Event newEvent =new Event(cpt, evt.getTitle(), evt.getDescription(), evt.getCycle(), evt.getPlant(), evt.getUser(),formattedDate);
                     cpt++;
 
@@ -35,7 +38,9 @@ public class EventUtils {
                     System.out.println("Event title: " + newEvent.getTitle());
                     System.out.println("Event date: " + newEvent.getEventDate());
 
-                    recurringEvents.add(newEvent);
+                    recurringEvents.add(newEvent);   }else {
+                        recurringEvents.add(evt);
+                    }
                 }
             }
         }

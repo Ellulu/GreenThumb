@@ -34,7 +34,7 @@ const testevent = ref([{
 
 async function fetchEvents() {
   let  currentDate = new Date();
-  const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1)).toISOString().split('T')[0];
+  const startOfWeek = new Date().toISOString().split('T')[0];;
 
   await enventStore.fetchEvents(startOfWeek, startOfWeek);
   displayTasks.value = enventStore.events;

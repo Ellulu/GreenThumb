@@ -18,7 +18,7 @@
 
 
           <span>{{ props.event.title }}</span>
-            <EventDisplay v-if="showEvent" :event="props.event" @close="closeModal" />
+            <EventDisplay class="z-30" v-if="showEvent" :event="props.event" @close="closeModal" />
           </Button>
 
 

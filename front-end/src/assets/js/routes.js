@@ -37,18 +37,25 @@ const routes = [
       {
         path: "",
         component: HomeView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+
       },
       {
         path: "test",
         component: TestView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+
       },
       {
         path: "profile/notes",
         component: NoteFormView,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "profile/plants",
         component: PlantView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+
       },
       {
         path: "profile/edit",
@@ -58,14 +65,19 @@ const routes = [
       {
         path: "posts",
         component: PostsView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+
       },
       {
         path: "calendar",
         component: CalendarView,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "profile",
         component: ProfileView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+
       },
     ],
   },

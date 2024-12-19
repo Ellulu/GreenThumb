@@ -44,6 +44,11 @@ public class Event {
     @ElementCollection
     private List<String> files;
 
+
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<NotificationLog> notificationLogs;
+
     public Event(Long id ,String title, String description, int cycle, Plant plant, User user, Date eventDate) {
         this.id = id;
         this.title = title;
@@ -125,5 +130,12 @@ public class Event {
     }
     public User getUser() {
         return user;
+    }
+    public List<NotificationLog> getNotificationLogs() {
+        return notificationLogs;
+    }
+
+    public void setNotificationLogs(List<NotificationLog> notificationLogs) {
+        this.notificationLogs = notificationLogs;
     }
 }
