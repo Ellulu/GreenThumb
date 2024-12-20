@@ -13,11 +13,11 @@ import {
 } from "lucide-vue-next";
 
 const menuItems = [
-  { name: "Posts", path: "/posts", icon: NewspaperIcon },
-  { name: "Calendar", path: "/calendar", icon: CalendarIcon },
-  { name: "Community", path: "/community", icon: UsersIcon },
-  { name: "Profile", path: "/profile", icon: UserIcon },
-  { name: "Help", path: "/help", icon: HelpCircleIcon },
+  { name: "Fil d'actualité", path: "/posts", icon: NewspaperIcon },
+  { name: "Calendrier", path: "/calendar", icon: CalendarIcon },
+  { name: "Communauté", path: "/community", icon: UsersIcon },
+  { name: "Mon profil", path: "/profile", icon: UserIcon },
+  { name: "Aide", path: "/help", icon: HelpCircleIcon },
 ];
 
 const isMobileScreen = ref(false);

@@ -1,13 +1,6 @@
 <template>
-  <div class="min-h-screen bg-green-50">
-    <header class="bg-green-600 text-white p-4 sticky top-0 z-10">
-      <div class="max-w-2xl mx-auto flex justify-between items-center">
-        <h1 class="text-xl font-bold">Green Thumb</h1>
-        <button class="p-2 rounded-full hover:bg-green-700 transition">
-          <UserIcon class="w-6 h-6" />
-        </button>
-      </div>
-    </header>
+  <div class="min-h-screen">
+    <Title>Pour vous</Title>
 
     <main class="max-w-2xl mx-auto mt-4 px-4">
       <div class="bg-white rounded-lg shadow p-4 mb-4">
@@ -98,6 +91,7 @@
 import { ref, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/useArticleStore'
 import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, ThumbsUpIcon, ThumbsDownIcon } from 'lucide-vue-next'
+import Title from '../components/Title.vue'
 
 const articleStore = useArticleStore()
 const isLoading = ref(true)

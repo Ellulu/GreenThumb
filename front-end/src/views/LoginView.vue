@@ -6,12 +6,15 @@ import GoogleSignIn from "../components/GoogleSignIn.vue";
 import Input from "../components/Input.vue";
 import Button from "../components/Button.vue";
 import Title from "../components/Title.vue";
+import ErrorSpan from "../components/ErrorSpan.vue";
 
 const userStore = useUserStore();
 
+const isLoading = ref(false);
 const email = ref("");
 const emailError = ref("");
 const password = ref("");
+const globalError = ref("");
 const rememberMe = ref(false);
 
 watch(email, (value) => {
@@ -22,14 +25,15 @@ watch(email, (value) => {
   }
 });
 
-// TODO: add remember me feature
 // TODO: add forgot password feature
-// TODO: add error handling
 const handleSubmit = async () => {
   try {
-    await userStore.login(email.value, password.value);
+    isLoading.value = true;
+    await userStore.login(email.value, password.value, rememberMe.value);
+    isLoading.value = false;
   } catch (error) {
-    console.log(error);
+    isLoading.value = false;
+    globalError.value = error.message;
   }
 };
 </script>
@@ -40,6 +44,7 @@ const handleSubmit = async () => {
   >
     <Title class="mb-5">Connectez-vous à votre compte</Title>
 
+    <ErrorSpan v-if="globalError">{{ globalError }}</ErrorSpan>
     <form @submit.prevent="handleSubmit" class="flex flex-col gap-4 w-5/6">
       <Input
         name="Email"
@@ -71,7 +76,7 @@ const handleSubmit = async () => {
         >
       </div>
 
-      <Button type="submit" class="text-white bg-green-600 hover:bg-green-700"
+      <Button type="submit" class="text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-400" :disabled="isLoading"
         >Se connecter</Button
       >
     </form>

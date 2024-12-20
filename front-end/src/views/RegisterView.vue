@@ -9,10 +9,12 @@ import {
 import GoogleSignIn from "../components/GoogleSignIn.vue";
 import Input from "../components/Input.vue";
 import Button from "../components/Button.vue";
-import Title from "../components/Title_3.vue";
+import Title from "../components/Title.vue";
+import ErrorSpan from "../components/ErrorSpan.vue";
 
 const userStore = useUserStore();
 
+const isLoading = ref(false);
 const name = ref("");
 const firstName = ref("");
 const email = ref("");
@@ -21,6 +23,7 @@ const password = ref("");
 const passwordError = ref("");
 const confirmPassword = ref("");
 const confirmPasswordError = ref("");
+const globalError = ref("");
 
 watch(email, (value) => {
   if (!isEmailValid(value)) {
@@ -47,16 +50,18 @@ watch(confirmPassword, (value) => {
   }
 });
 
-// TODO: add error handling
 const handleSubmit = async () => {
   try {
+    isLoading.value = true;
     await userStore.register(
       email.value,
       password.value,
       firstName.value + " " + name.value
     );
+    isLoading.value = false;
   } catch (error) {
-    console.log(error);
+    isLoading.value = false;
+    globalError.value = error.message;
   }
 };
 </script>
@@ -67,6 +72,7 @@ const handleSubmit = async () => {
   >
     <Title class="mb-5">Créer un compte</Title>
 
+    <ErrorSpan v-if="globalError">{{ globalError }}</ErrorSpan>
     <form @submit.prevent="handleSubmit" class="flex flex-col gap-4 w-5/6">
       <div class="flex gap-2 w-full">
         <Input
@@ -110,7 +116,7 @@ const handleSubmit = async () => {
         :errorMessage="confirmPasswordError"
         required
       />
-      <Button type="submit" class="bg-green-600 hover:bg-green-700 text-white"
+      <Button type="submit" class="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400" :disabled="isLoading"
         >S'enregistrer</Button
       >
     </form>
