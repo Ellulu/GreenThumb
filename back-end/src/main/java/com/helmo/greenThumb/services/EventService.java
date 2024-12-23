@@ -22,10 +22,11 @@ public class EventService {
     @Autowired
     private UserRepository userRepository;
 
-    public Event createEvent(Event event) {
+    public Event createEvent(String uid,Event event) {
 
-
-
+        User findUser = userRepository.findById(uid).orElse
+                (null);
+        event.setUser(findUser);
         return   eventRepository.save(event);
     }
 

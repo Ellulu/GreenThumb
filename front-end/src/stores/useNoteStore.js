@@ -11,7 +11,7 @@ export const useNoteStore = defineStore('note', () => {
             try {
                 console.log(userStore.uid);
                // const response = await APIService.get(`/notes/${userStore.uid}`);
-                const response = await APIService.get(`/notes/zUaX99sOrsUNMrcx9SmU9YhJfXp2`);
+                const response = await APIService.get(`/notes`);
 
 
 

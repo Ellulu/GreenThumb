@@ -1,4 +1,3 @@
-
 package com.helmo.greenThumb.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +11,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // Utilisé pour envoyer des messages au client
-        config.setApplicationDestinationPrefixes("/app"); // Utilisé pour recevoir des messages du client
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws") // Point d'entrée des WebSocket
+                .setAllowedOrigins("http://localhost:5173") // Autorise le front-end
+                .withSockJS(); // Active SockJS
     }
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/topic"); // Configure le broker
+        registry.setApplicationDestinationPrefixes("/app");
     }
 }

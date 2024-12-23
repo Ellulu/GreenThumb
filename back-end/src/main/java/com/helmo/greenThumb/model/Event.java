@@ -138,4 +138,6 @@ public class Event {
     public void setNotificationLogs(List<NotificationLog> notificationLogs) {
         this.notificationLogs = notificationLogs;
     }
+
+
 }

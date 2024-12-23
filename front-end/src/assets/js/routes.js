@@ -13,6 +13,7 @@ import PostsView from "@/views/PostsView.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import CalendarView from "@/views/CalendarView.vue";
+import DashboardView from "@/views/DashboardView.vue";
 
 const checkAuth = (next) => {
   onAuthStateChanged(auth, (user) => {
@@ -35,6 +36,10 @@ const routes = [
       {
         path: "test",
         component: TestView,
+      },
+      {
+        path: "dashboard",
+        component: DashboardView,
       },
       {
         path: "posts",

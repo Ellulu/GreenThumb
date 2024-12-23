@@ -1,5 +1,6 @@
 package com.helmo.greenThumb.controller;
 
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.services.EventService;
 import com.helmo.greenThumb.services.PlantService;
@@ -25,9 +26,9 @@ public class EventController {
     private PlantService plantService;
 
     @PostMapping
-    public ResponseEntity<String> createEvent(@RequestBody Event event) {
+    public ResponseEntity<String> createEvent(    @RequestAttribute("firebaseToken") FirebaseToken token,@RequestBody Event event) {
 
-      eventService.createEvent(event);
+      eventService.createEvent(token.getUid(),event);
         return ResponseEntity.status(HttpStatus.CREATED).body("l'event a bien été créé");
     }
 /**
@@ -38,17 +39,17 @@ public class EventController {
     }
     **/
 
-@PostMapping("/{userId}")
+@GetMapping("/events")
 public ResponseEntity<List<Event>> getEvents(
-        @PathVariable String userId,
+        @RequestAttribute("firebaseToken") FirebaseToken token,
         @RequestBody Map<String, String> requestBody
 ) {
-
+System.out.println(token.getUid());
 
    LocalDate start = LocalDate.parse(requestBody.get("startDate"));
     LocalDate end = LocalDate.parse(requestBody.get("endDate"));
 
-        List<Event> events = eventService.getAllEvents(userId, start, end);
+        List<Event> events = eventService.getAllEvents(token.getUid(), start, end);
         System.out.println(events.size());
         System.out.println(events);
        return ResponseEntity.ok(events) ;

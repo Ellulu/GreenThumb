@@ -1,34 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import {onUnmounted, ref} from 'vue';
 import Title_2 from "../components/Title_2.vue";
 import TaskDisplay from "@/components/CardEventDisplay.vue";
 import {onMounted} from "vue";
 import {useEventStore} from "@/stores/useEventStore";
-const enventStore = useEventStore();
+import { useNotificationStore } from '@/stores/useNotification';
 
+const enventStore = useEventStore();
+const notificationStore = useNotificationStore();
 const displayTasks = ref([]);
 
-
-/*
-const testevent = ref([{
-  title: 'test',
-  description: 'tessdfgsdfgsdfgsdfgsdfgsdfgt',
-  eventDate: new Date(),
-  user: {},
-  cycle: 0,
-  plant: {},
-
-},{
-  title: 'grzgzegzeg',
-  description: 'tessdfgsdfgsdfgsdfgsdfgsdfgt',
-  eventDate: new Date(),
-  user: {},
-  cycle: 0,
-  plant: {},
-
-}
-
-])*/
 
 
 
@@ -43,9 +24,13 @@ async function fetchEvents() {
 }
 
 onMounted(() => {
+  notificationStore.connectWebSocket();
   fetchEvents();
 });
-
+onUnmounted(() => {
+  notificationStore.disconnectWebSocket(); // Déconnexion à la fermeture du composant
+});
+const notifications = notificationStore.notifications;
 </script>
 
 <template>
@@ -56,5 +41,12 @@ onMounted(() => {
 
     <TaskDisplay   :daily-task="displayTasks"/>
 
-
+  <div>
+    <h2>Notifications</h2>
+    <ul>
+      <li v-for="(notification, index) in notifications" :key="index">
+        {{ notification }}
+      </li>
+    </ul>
+  </div>
 </template>

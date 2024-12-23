@@ -24,7 +24,10 @@ public class NoteService  {
         this.userRepository = userRepository;
     }
 
-    public Note saveNote(Note note) {
+    public Note saveNote(String uid,Note note) {
+        User findUser = userRepository.findById(uid).orElse
+                (null);
+        note.setUser(findUser);
         return noteRepository.save(note);
     }
 

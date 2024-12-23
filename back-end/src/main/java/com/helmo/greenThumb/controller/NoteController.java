@@ -1,4 +1,5 @@
 package com.helmo.greenThumb.controller;
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Note;
 import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.services.NoteService;
@@ -24,14 +25,14 @@ public class NoteController {
 
 
     @PostMapping
-    public ResponseEntity<String> createNote(@RequestBody Note note) {
-        noteService.saveNote(note);
+    public ResponseEntity<String> createNote(   @RequestAttribute("firebaseToken") FirebaseToken token,@RequestBody Note note) {
+        noteService.saveNote(token.getUid(),note);
         return ResponseEntity.status(HttpStatus.CREATED).body("La note a bien été créée");
     }
 
     @GetMapping("/{user}")
-    public ResponseEntity<List<Note>> getAllNotes(@PathVariable("user") String userUid) {
-        List<Note> notes = noteService.findAllNoteByUser(userUid);
+    public ResponseEntity<List<Note>> getAllNotes(@RequestAttribute("firebaseToken") FirebaseToken token) {
+        List<Note> notes = noteService.findAllNoteByUser(token.getUid());
 
 
         return ResponseEntity.ok(notes);

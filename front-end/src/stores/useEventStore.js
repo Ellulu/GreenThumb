@@ -12,9 +12,11 @@ export const useEventStore = defineStore('event', {
          try {
 
              console.log("fetching events")
-             const response = await APIService.post(`/events/zUaX99sOrsUNMrcx9SmU9YhJfXp2`, {
-                 startDate: startDate,
-                 endDate: endDate
+             const response = await APIService.get('/events', {
+                 params: {
+                     startDate: startDate,
+                     endDate: endDate
+                 }
              });
                 console.log("response received")
              console.log(response.data)

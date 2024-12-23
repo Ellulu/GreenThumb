@@ -21,6 +21,8 @@ public class NotificationLog {
 
     private boolean isSent = false;
 
+    private boolean isRead = false;
+
     public NotificationLog(LocalDateTime now, Event event) {
         this.notificationDate = now;
         this.event = event;
@@ -30,6 +32,7 @@ public class NotificationLog {
     public NotificationLog() {
 
     }
+
 
     public Event getEvent() {
         return event;
@@ -56,5 +59,13 @@ public class NotificationLog {
 
     public boolean timeMatch() {
         return notificationDate.toLocalDate().isEqual(LocalDate.now());
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 }

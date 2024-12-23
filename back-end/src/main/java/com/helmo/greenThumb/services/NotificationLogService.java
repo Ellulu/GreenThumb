@@ -14,13 +14,13 @@ import java.util.List;
 @Service
 public class NotificationLogService {
 
-    private final SimpMessagingTemplate messagingTemplate;
+
 
     private final NotificationLogRepository notificationLogRepository;
     private final EventService eventService;
 
-    public NotificationLogService(SimpMessagingTemplate messagingTemplate, NotificationLogRepository notificationLogRepository, EventService eventService) {
-        this.messagingTemplate = messagingTemplate;
+    public NotificationLogService( NotificationLogRepository notificationLogRepository, EventService eventService) {
+
 
         this.notificationLogRepository = notificationLogRepository;
         this.eventService = eventService;
@@ -31,6 +31,9 @@ public class NotificationLogService {
         notificationLogRepository.save(notificationLog);
     }
 
+    public List<NotificationLog> getAllNotificationLogs() {
+        return notificationLogRepository.findByIsSentFalse();
+    }
 
 
     private NotificationLog notificationLogExists(Event event) {
@@ -86,5 +89,10 @@ public class NotificationLogService {
         int retentionDays = 30;
       cleanOldLogs(retentionDays);
         System.out.println("Old notification logs cleaned.");
+    }
+
+    public void save(NotificationLog log) {
+
+        notificationLogRepository.save(log);
     }
 }
