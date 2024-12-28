@@ -14,6 +14,7 @@ import EditProfileView from "@/views/EditProfileView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import CalendarView from "@/views/CalendarView.vue";
 import DashboardView from "@/views/DashboardView.vue";
+import EditEventView from "@/views/EditEventView.vue";
 
 const checkAuth = (next) => {
   onAuthStateChanged(auth, (user) => {
@@ -48,6 +49,11 @@ const routes = [
       {
         path: "calendar",
         component: CalendarView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+      },
+      {
+        path: "calendar/editevents",
+        component: EditEventView,
         beforeEnter: (to, from, next) => checkAuth(next),
       },
       {

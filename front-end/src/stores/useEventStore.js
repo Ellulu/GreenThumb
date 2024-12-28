@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import APIService from '@/services/ApiService';
 import { useUserStore } from '@/stores/useUserStore';
+import * as events from "node:events";
 export const useEventStore = defineStore('event', {
   state: () => ({
     events: [],
@@ -12,11 +13,9 @@ export const useEventStore = defineStore('event', {
          try {
 
              console.log("fetching events")
-             const response = await APIService.get('/events', {
-                 params: {
-                     startDate: startDate,
-                     endDate: endDate
-                 }
+             const response = await APIService.post('/events/get', {
+                 startDate: startDate,
+                 endDate: endDate
              });
                 console.log("response received")
              console.log(response.data)
@@ -33,11 +32,7 @@ export const useEventStore = defineStore('event', {
 
     }
 
-    /*
-    async fetchToDayEvent(dalitasks,date){
 
-
-    }*/
     ,
 
     async fetchEvent(id) {
@@ -47,23 +42,39 @@ export const useEventStore = defineStore('event', {
       } catch (error) {
         this.error = `Failed to load event with id: ${id}`;
       }
+    },    async fetchAllEvent() {
+      try {
+
+        const response = await APIService.post(`/events/all`);
+
+        this.events = response.data;
+
+      } catch (error) {
+        this.error = `Failed to load event with id: ${id}`;
+      }
     },
     async createEvent(eventData) {
       try {
-          const userStore = useUserStore();
+          await APIService.post('/events/create', eventData.value);
+      } catch (error) {
+        this.error = 'Failed to create event';
+      }
+    },async editEvent(id,eventData) {
+      try {
+          console.log("editing event")
+            await APIService.put(`/events/${id}`, eventData.value);
+          console.log("request sent")
 
-    eventData.value.user = userStore.user
-
-
-
-        await APIService.post('/events', eventData.value);
       } catch (error) {
         this.error = 'Failed to create event';
       }
     },
     async deleteEvent(id) {
       try {
+
         await APIService.delete(`/events/${id}`);
+
+
       } catch (error) {
         this.error = `Failed to delete event with id: ${id}`;
       }

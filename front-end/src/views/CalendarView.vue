@@ -15,15 +15,15 @@
       <template v-slot:event="props">
         <div class="vuecal__event">
           <Button @click="showDescription(props.event)" class="hover:bg-blue-700">
-
-
-          <span>{{ props.event.title }}</span>
-            <EventDisplay class="z-30" v-if="showEvent" :event="props.event" @close="closeModal" />
+            <span>{{ props.event.title }}</span>
           </Button>
 
-
-
-
+          <EventDisplay
+              v-if="selectedEvent && selectedEvent.id === props.event.id"
+              class="z-30"
+              :event="selectedEvent"
+              @close="closeModal"
+          />
         </div>
       </template>
     </vue-cal>
@@ -132,6 +132,10 @@ const currentView = ref("week");
 const loading = ref(false);
 const showEvent = ref(false);
 
+const selectedEvent = ref(null);
+
+
+
 const event = ref({
 
   title:'',
@@ -141,23 +145,16 @@ const event = ref({
   cycle: 0,
   plant: {},
 });
+// Fonction appelée lors du clic sur un événement
+const showDescription = (event) => {
+  selectedEvent.value = event;
+};
 
-async function showDescription(event) {
-  console.log(event.title);
-  console.log(event.description);
-  console.log(event.plant.name);
-  showEvent.value = true;
-}
 
 async function onViewChange(viewData) {
   loading.value = true;
   try {
-    /*
-  const startDate = new Date(viewData.startDate);
-  const endDate = new Date(viewData.endDate);
-    const formattedStartDate = startDate.toISOString().split('T')[0];
-    const formattedEndDate = endDate.toISOString().split('T')[0];
-*/
+
     const startDate = new Date(viewData.startDate).toISOString().split('T')[0];
     const endDate = new Date(viewData.endDate).toISOString().split('T')[0];
 console.log("début"+startDate);
@@ -172,7 +169,7 @@ console.log("fin"+endDate);
     end: new Date(event.eventDate),
     title: event.title,
     description: event.description,
-    plant: event.plant,
+    plant: event.plant.name,
     cycle: event.cycle,
   }));
 
@@ -186,15 +183,17 @@ console.log("fin"+endDate);
   }
 
 }
-
-function openModalEvent() {
+//!!! ATTENTION QUAND DAns les plants on récupe bien le user a modifier
+async function  openModalEvent() {
   showModal.value = true;
+  await plantStore.fetchPlants();
 }
 
 
 function closeModal() {
   showModal.value = false;
   showEvent.value = false;
+  selectedEvent.value = null;
 }
 
 async function handleSubmit() {
@@ -223,7 +222,7 @@ console.log("event début"+event.value.title)
 
 onMounted(async () => {
 
-  //await plantStore.fetchPlants();
+
 let  currentDate = new Date();
   let startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
   let endOfWeek = new Date(startOfWeek);

@@ -3,14 +3,12 @@ package com.helmo.greenThumb.services;
 import com.helmo.greenThumb.infrastructures.UserRepository;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.infrastructures.EventRepository;
-import com.helmo.greenThumb.model.NotificationLog;
 import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.utils.EventUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,6 +48,7 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
+
     public List<Event>  getAllEventForBack(){
         User findUser = userRepository.findById("zUaX99sOrsUNMrcx9SmU9YhJfXp2").orElse(null);
 
@@ -61,7 +60,18 @@ public class EventService {
         return    EventUtils.calculateRecurringEvents(events, LocalDate.now(),LocalDate.now(),false) ;
     }
 
-    public List<Event> getAllEvents(String userId, LocalDate startDate, LocalDate endDate) {
+    public List<Event> getAllEventsForUser(String userId) {
+        User findUser = userRepository.findById(userId).orElse(null);
+
+        if (findUser == null) {
+            return Collections.emptyList();
+        }
+
+        return eventRepository.findByUser(findUser);
+    }
+
+
+    public List<Event> getEventsFromDate(String userId, LocalDate startDate, LocalDate endDate) {
         User findUser = userRepository.findById(userId).orElse(null);
 
         if (findUser == null) {
@@ -73,4 +83,16 @@ public class EventService {
     }
 
 
+    public void editEvent(Long id, Event event) {
+        Event eventToEdit = eventRepository.findById(id).orElseThrow();
+        eventToEdit.setEventDate(event.getEventDate());
+        eventToEdit.setTitle(event.getTitle());
+        eventToEdit.setDescription(event.getDescription());
+        eventToEdit.setCycle(event.getCycle());
+        eventToEdit.setPlant(event.getPlant());
+
+        eventRepository.save(eventToEdit);
+
+
+    }
 }

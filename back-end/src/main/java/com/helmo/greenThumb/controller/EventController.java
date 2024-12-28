@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class EventController {
     @Autowired
     private PlantService plantService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<String> createEvent(    @RequestAttribute("firebaseToken") FirebaseToken token,@RequestBody Event event) {
 
       eventService.createEvent(token.getUid(),event);
@@ -38,28 +37,35 @@ public class EventController {
         return ResponseEntity.ok(events) ;
     }
     **/
-
-@GetMapping("/events")
-public ResponseEntity<List<Event>> getEvents(
-        @RequestAttribute("firebaseToken") FirebaseToken token,
-        @RequestBody Map<String, String> requestBody
-) {
+@PostMapping("/get")
+public ResponseEntity<List<Event>> getEvents(@RequestAttribute("firebaseToken") FirebaseToken token,
+                                             @RequestBody Map<String, String> requestBody) {
 System.out.println(token.getUid());
 
    LocalDate start = LocalDate.parse(requestBody.get("startDate"));
     LocalDate end = LocalDate.parse(requestBody.get("endDate"));
 
-        List<Event> events = eventService.getAllEvents(token.getUid(), start, end);
+        List<Event> events = eventService.getEventsFromDate(token.getUid(), start, end);
         System.out.println(events.size());
         System.out.println(events);
        return ResponseEntity.ok(events) ;
 
     }
 
-  /*  @GetMapping("/{id}")
-    public Event getEventById(@PathVariable Long id) {
-        return eventService.getEventById(id);
-    }*/
+
+    @PostMapping("/all")
+    public ResponseEntity<List<Event>> getAllEvents(@RequestAttribute("firebaseToken") FirebaseToken token) {
+        List<Event> events = eventService.getAllEventsForUser( token.getUid());
+        return ResponseEntity.ok(events);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> editEvent( @PathVariable Long id,@RequestBody Event event) {
+    System.out.println("Requête bien reçue");
+        eventService.editEvent( id,event);
+        return ResponseEntity.status(HttpStatus.OK).body("L'event a bien été modifié");
+    }
 
     @DeleteMapping("/{id}")
     public void deleteEvent(@PathVariable Long id) {

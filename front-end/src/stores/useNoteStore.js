@@ -11,7 +11,7 @@ export const useNoteStore = defineStore('note', () => {
             try {
                 console.log(userStore.uid);
                // const response = await APIService.get(`/notes/${userStore.uid}`);
-                const response = await APIService.get(`/notes`);
+                const response = await APIService.post(`/notes/get`);
 
 
 
@@ -38,7 +38,7 @@ export const useNoteStore = defineStore('note', () => {
         const createNote = async (noteData) => {
             try {
                 noteData.user = userStore.user;
-                await APIService.post('/notes', noteData);
+                await APIService.post('/notes/create', noteData);
                 notes.value.push(noteData);
                 console.log(noteData.value);
             } catch (error) {

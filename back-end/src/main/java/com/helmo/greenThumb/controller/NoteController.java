@@ -23,14 +23,13 @@ public class NoteController {
         this.noteService = noteService;
     }
 
-
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<String> createNote(   @RequestAttribute("firebaseToken") FirebaseToken token,@RequestBody Note note) {
         noteService.saveNote(token.getUid(),note);
         return ResponseEntity.status(HttpStatus.CREATED).body("La note a bien été créée");
     }
 
-    @GetMapping("/{user}")
+    @PostMapping("/get")
     public ResponseEntity<List<Note>> getAllNotes(@RequestAttribute("firebaseToken") FirebaseToken token) {
         List<Note> notes = noteService.findAllNoteByUser(token.getUid());
 

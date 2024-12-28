@@ -1,8 +1,6 @@
 <script setup>
-import {ref} from 'vue';
-import { defineProps, onMounted } from 'vue';
+import { ref, defineProps, onMounted } from 'vue';
 import Button from "@/components/Button.vue";
-import Title_2 from "@/components/Title_2.vue";
 import Title_3 from "@/components/Title_3.vue";
 
 const props = defineProps({
@@ -12,9 +10,7 @@ const props = defineProps({
   }
 });
 
-
 const showFullDescriptions = ref([]);
-
 
 onMounted(() => {
   showFullDescriptions.value = props.dailyTask.map(() => false);
@@ -27,26 +23,21 @@ function toggleDescription(index) {
 
 <template>
   <div>
-
     <div
         v-for="(task, index) in dailyTask"
         :key="index"
         class="border-green-600 bg border-2 p-4 mb-4 flex flex-col gap-2 text-center"
     >
-      <title_3 class="text-green-600">{{ task.title }}</title_3>
+      <Title_3 class="text-green-600">{{ task.title }}</Title_3>
       <p>
-      <span >
-         Plante: {{task.plant.name}}
-        </span>
+        <span>Plante: {{ task.plant?.name || 'Plante inconnue' }}</span>
       </p>
-
       <p>
-        <span >Description: </span>
+        <span>Description: </span>
         <span v-if="!showFullDescriptions[index]">
-          {{ task.description.substring(0, 20) }}...
+          {{ task.description?.substring(0, 20) || 'Pas de description' }}...
         </span>
-
-        <span v-else> {{ task.description }}</span>
+        <span v-else>{{ task.description || 'Pas de description' }}</span>
       </p>
       <Button
           @click="toggleDescription(index)"
@@ -55,6 +46,10 @@ function toggleDescription(index) {
         {{ showFullDescriptions[index] ? '-' : '+' }}
       </Button>
 
+
+      <div class="flex gap-2 justify-center mt-4">
+        <slot :task="task" :index="index"></slot>
+      </div>
     </div>
   </div>
 </template>
