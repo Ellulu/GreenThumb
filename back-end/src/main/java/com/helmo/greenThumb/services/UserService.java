@@ -2,6 +2,7 @@ package com.helmo.greenThumb.services;
 
 import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.infrastructures.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,4 +33,19 @@ public class UserService {
     public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
+    public void subscribe(String currentUserId, String targetUserId) {
+        User currentUser = userRepository.findById(currentUserId).orElseThrow();
+        User targetUser = userRepository.findById(targetUserId).orElseThrow();
+        currentUser.getSubscribers().add(targetUser);
+        userRepository.save(currentUser);
+    }
+
+    public void unsubscribe(String currentUserId, String targetUserId) {
+        User currentUser = userRepository.findById(currentUserId).orElseThrow();
+        User targetUser = userRepository.findById(targetUserId).orElseThrow();
+        currentUser.getSubscribers().remove(targetUser);
+        userRepository.save(currentUser);
+    }
+
+
 }

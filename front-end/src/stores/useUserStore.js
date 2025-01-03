@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import APIService from '@/services/APIService';
-
 export const useUserStore = defineStore('user', {
   state: () => ({
     users: [],
     user: null,
+    userCheck: null,
     error: null,
   }),
   actions: {
@@ -14,6 +14,20 @@ export const useUserStore = defineStore('user', {
         this.users = response.data; 
       } catch (error) {
         this.error = 'Failed to load users';
+      }
+    },
+    async subscribe(userId) {
+      try {
+        await APIService.post(`/users/${userId}/subscribe`);
+      } catch (error) {
+        console.error("Erreur lors de l'abonnement :", error);
+      }
+    },
+    async unsubscribe(userId) {
+      try {
+        await APIService.post(`/users/${userId}/unsubscribe`);
+      } catch (error) {
+        console.error("Erreur lors du désabonnement :", error);
       }
     },
     async fetchUser(id) {

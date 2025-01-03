@@ -28,6 +28,17 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
+    @PostMapping("/{userId}/subscribe")
+    public ResponseEntity<Void> subscribe(@PathVariable String userId, User currentUser) {// TODO: en attente de la récupération du user qui envoie la requete
+        userService.subscribe(currentUser.getUid(), userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{userId}/unsubscribe")
+    public ResponseEntity<Void> unsubscribe(@PathVariable String userId, User currentUser) {// TODO: en attente de la récupération du user qui envoie la requete
+        userService.unsubscribe(currentUser.getUid(), userId);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserRecord> getUserById(@PathVariable("id") String id) {

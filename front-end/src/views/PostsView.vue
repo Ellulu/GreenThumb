@@ -68,7 +68,7 @@
               />
               <div>
                 <router-link
-                  :to="`/user/${article.author.UID}`"
+                  :to="`/profile/${article.author.UID}`"
                   class="font-bold text-green-700 hover:underline"
                 >
                   {{ article.author.fullname }}

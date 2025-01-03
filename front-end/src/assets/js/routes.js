@@ -69,10 +69,11 @@ const routes = [
         beforeEnter: (to, from, next)=>checkAuth(to, from, next),
       },
       {
-        path: "profile",
+        path: "/profile/:userId?",
         component: ProfileView,
-        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
-      },
+        props: true,
+      },      
+      
     ],
   },
   { path: "/login", component: LoginView },
