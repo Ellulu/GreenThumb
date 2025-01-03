@@ -22,7 +22,8 @@
     "underscore": "^1.13.7",
     "vue": "^3.5.10",
     "vue-cal": "^4.10.0",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",

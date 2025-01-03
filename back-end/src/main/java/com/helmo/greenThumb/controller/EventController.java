@@ -40,7 +40,7 @@ public class EventController {
 @PostMapping("/get")
 public ResponseEntity<List<Event>> getEvents(@RequestAttribute("firebaseToken") FirebaseToken token,
                                              @RequestBody Map<String, String> requestBody) {
-System.out.println(token.getUid());
+
 
    LocalDate start = LocalDate.parse(requestBody.get("startDate"));
     LocalDate end = LocalDate.parse(requestBody.get("endDate"));
