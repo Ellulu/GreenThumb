@@ -16,16 +16,22 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+
+    private String title;
+
     private String description;
 
 
 
     private int cycle;
 
+
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
-    private User author;
+    private User user;
 
 
     @ManyToOne
@@ -38,6 +44,22 @@ public class Event {
     @ElementCollection
     private List<String> files;
 
+
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<NotificationLog> notificationLogs;
+
+    public Event(Long id ,String title, String description, int cycle, Plant plant, User user, Date eventDate) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.cycle = cycle;
+        this.plant = plant;
+        this.user = user;
+        this.eventDate = eventDate;
+    }
+    public Event() {
+    }
 
 
     public void addEvent() {
@@ -77,8 +99,8 @@ public class Event {
         return files;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setUser(User author) {
+        this.user = author;
     }
 
     public void setFiles(List<String> files) {
@@ -99,5 +121,23 @@ public class Event {
     public void setPlant(Plant plant) {
         this.plant = plant;
     }
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public User getUser() {
+        return user;
+    }
+    public List<NotificationLog> getNotificationLogs() {
+        return notificationLogs;
+    }
+
+    public void setNotificationLogs(List<NotificationLog> notificationLogs) {
+        this.notificationLogs = notificationLogs;
+    }
+
 
 }

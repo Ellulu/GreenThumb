@@ -30,6 +30,10 @@ const props = defineProps({
   maxlength: {
     type: Number,
     default: null
+  },
+  min: {
+    type: Number,
+    default: null
   }
 })
 
@@ -58,6 +62,7 @@ const hasError = computed(() => props.errorMessage !== '')
         :value="modelValue" 
         @input="$emit('update:modelValue', $event.target.value)"
         :maxlength="maxlength"
+        :min="min"
       />
       
       <button 

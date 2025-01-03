@@ -15,6 +15,7 @@ back-end/pom.xml.versionsBackup
 back-end/log/
 back-end/.DS_Store
 back-end/src/main/resources/greenthumb-54c99-firebase-adminsdk-4l1mr-6b4f5c9b96.json
+back-end/src/main/resources/greenthumb-54c99-firebase-adminsdk-4l1mr-6b4f5c9b96.json
 
 # Logs
 *.log
@@ -41,3 +42,8 @@ Thumbs.db
 codecheck.py
 .gitignore
 full_code.txt
+
+# Env
+**/.env.production
+**/.env.development
+**/.env

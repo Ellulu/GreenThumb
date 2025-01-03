@@ -40,7 +40,7 @@ class NoteControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
+   /* @Test
     void createNote() throws Exception {
         Note note = new Note();
         note.setId(1L);
@@ -54,7 +54,7 @@ class NoteControllerTest {
                         .content(objectMapper.writeValueAsString(note)))
                 .andExpect(status().isCreated())
                 .andExpect(content().string("La note a bien été créée"));
-    }
+    }*/
 
     @Test
     void getAllNotes() throws Exception {

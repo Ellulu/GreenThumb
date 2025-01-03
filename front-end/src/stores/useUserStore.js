@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import APIService from '@/services/APIService';
+import APIService from '@/services/ApiService';
+
 export const useUserStore = defineStore('user', {
   state: () => ({
     users: [],

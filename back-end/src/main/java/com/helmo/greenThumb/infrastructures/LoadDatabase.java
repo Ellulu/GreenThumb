@@ -66,7 +66,7 @@ public class LoadDatabase {
             event1.setDescription("Plant Workshop");
             event1.setEventDate(new Date());
             event1.setFiles(Arrays.asList("workshop.pdf"));
-            event1.setAuthor(user1);
+            event1.setUser(user1);
             eventRepository.save(event1);
         };
 
