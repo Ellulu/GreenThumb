@@ -61,9 +61,18 @@
         <template v-else>
           <div v-for="article in articles" :key="article.id" class="bg-amber-50 rounded-lg shadow p-4">
             <div class="flex items-center space-x-4 mb-4">
-              <img :src="article.author.imageUrl || '/placeholder.svg?height=48&width=48'" alt="User Avatar" class="w-12 h-12 rounded-full" />
+              <img
+                :src="article.author.imageUrl || '/placeholder.svg?height=48&width=48'"
+                alt="User Avatar"
+                class="w-12 h-12 rounded-full"
+              />
               <div>
-                <h3 class="font-bold">{{ article.author.fullname }}</h3>
+                <router-link
+                  :to="`/user/${article.author.UID}`"
+                  class="font-bold text-green-700 hover:underline"
+                >
+                  {{ article.author.fullname }}
+                </router-link>
                 <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
               </div>
             </div>
@@ -112,7 +121,7 @@ const isLoading = ref(true)
 const newArticle = ref('')
 const newArticleTitle = ref('')
 const articles = ref([])
-const userStore = useUserStore();
+const userStore = useUserStore()
 const user = userStore.user;
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
@@ -149,6 +158,7 @@ const likeArticle = (article) => {
     article.disliked = false
     article.rating.dislikes--
   }
+  console.log(article.author)
   article.liked = !article.liked
   article.rating.likes += article.liked ? 1 : -1
   articleStore.likeArticle(article.id, userStore.user.uid)

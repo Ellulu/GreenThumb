@@ -38,3 +38,6 @@ Thumbs.db
 .idea/
 .vscode/
 **/.vscode/
+codecheck.py
+.gitignore
+full_code.txt

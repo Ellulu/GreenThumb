@@ -1,6 +1,8 @@
 package com.helmo.greenThumb.controller;
 
+import com.google.firebase.auth.UserRecord;
 import com.helmo.greenThumb.model.User;
+import com.helmo.greenThumb.services.FirebaseService;
 import com.helmo.greenThumb.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final FirebaseService firebaseService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, FirebaseService firebaseService) {
+        this.firebaseService = firebaseService;
         this.userService = userService;
     }
 
@@ -26,8 +30,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") String id) {
-        User user = userService.getUserById(id);
+    public ResponseEntity<UserRecord> getUserById(@PathVariable("id") String id) {
+        UserRecord user = firebaseService.getUserByUid(id);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
