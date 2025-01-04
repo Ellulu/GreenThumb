@@ -47,4 +47,14 @@ public class EventUtils {
 
         return recurringEvents;
     }
+
+    public static boolean isEventToday(Event event) {
+
+        LocalDate eventLocalDate = event.getEventDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+        long diffDays = java.time.temporal.ChronoUnit.DAYS.between(eventLocalDate,   currentDate);
+        System.out.println("diffDays: " + diffDays);
+
+        return diffDays >= 0 && diffDays % event.getCycle() == 0;
+    }
 }

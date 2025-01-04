@@ -3,6 +3,7 @@ package com.helmo.greenThumb.controller;
 import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.services.EventService;
+import com.helmo.greenThumb.services.NotificationLogService;
 import com.helmo.greenThumb.services.PlantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+
+import static com.helmo.greenThumb.utils.EventUtils.isEventToday;
 
 @RestController
 @RequestMapping("/api/events")
@@ -23,11 +26,17 @@ public class EventController {
 
     @Autowired
     private PlantService plantService;
+    @Autowired
+    private  NotificationLogService notificationLogService;
 
     @PostMapping("/create")
     public ResponseEntity<String> createEvent(    @RequestAttribute("firebaseToken") FirebaseToken token,@RequestBody Event event) {
 
-      eventService.createEvent(token.getUid(),event);
+     Event createdevent =  eventService.createEvent(token.getUid(),event);
+
+        if(isEventToday(createdevent)){
+            notificationLogService.saveNotifForNewEvent(createdevent);
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body("l'event a bien été créé");
     }
 /**

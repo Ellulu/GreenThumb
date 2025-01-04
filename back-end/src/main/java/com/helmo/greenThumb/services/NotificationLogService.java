@@ -4,7 +4,6 @@ package com.helmo.greenThumb.services;
 import com.helmo.greenThumb.infrastructures.NotificationLogRepository;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.model.NotificationLog;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +57,12 @@ public class NotificationLogService {
 
             saverNotification(new NotificationLog(LocalDateTime.now(), event));
         }
+
+    }
+
+    public void saveNotifForNewEvent(Event event){
+
+            saverNotification(new NotificationLog(LocalDateTime.now(), event));
 
     }
 

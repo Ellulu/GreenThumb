@@ -3,20 +3,40 @@ import { RouterView } from "vue-router";
 import Navbar from "@/components/Navbar.vue";
 import Footer from "../components/Footer.vue";
 import MobileNavbar from "../components/MobileNavbar.vue";
-import { onMounted, onUnmounted, ref } from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
+import {useWebSocketStore} from "@/stores/useWebSocketStore.js";
+
+const latestMessage = ref("");
+const notif = ref(null);
 import {
   NewspaperIcon,
   CalendarIcon,
   UsersIcon,
   UserIcon,
-  HelpCircleIcon,
+  HelpCircleIcon, BellIcon,
 } from "lucide-vue-next";
+import NotificationPopup from "@/components/Notification.vue";
+const webSocketStore = useWebSocketStore();
+const notifications = webSocketStore.notifications;
+watch(
+    () => notifications,
+    (newVal) => {
+      if (newVal.length > 0) {
+        const newNotification = newVal[newVal.length - 1];
+        latestMessage.value = newNotification.message || "Nouvelle notification !";
 
+
+        notif.value.show();
+      }
+    },
+    { deep: true }
+);
 const menuItems = [
   { name: "Fil d'actualité", path: "/posts", icon: NewspaperIcon },
   { name: "Calendrier", path: "/calendar", icon: CalendarIcon },
   { name: "Communauté", path: "/community", icon: UsersIcon },
   { name: "Mon profil", path: "/profile", icon: UserIcon },
+  { name: "Notification", path: "/notification", icon: BellIcon },
   { name: "Aide", path: "/help", icon: HelpCircleIcon },
 ];
 
@@ -31,17 +51,21 @@ const checkIfMobileScreen = () => {
   isMobileScreen.value = false;
 };
 
-onMounted(() => {
+onMounted(async () => {
   checkIfMobileScreen();
   window.addEventListener("resize", checkIfMobileScreen);
+  await webSocketStore.connectWebSocket();
 });
 
-onUnmounted(() => {
+onUnmounted(async () => {
   window.removeEventListener("resize", checkIfMobileScreen);
+  await webSocketStore.disconnectWebSocket();
+
 });
 </script>
 
 <template>
+
   <div class="min-h-screen flex flex-col md:grid md:grid-cols-[auto_1fr] gap-4">
     <MobileNavbar :menuItems="menuItems" v-if="isMobileScreen" />
     <Navbar :menuItems="menuItems" v-else />
@@ -53,7 +77,11 @@ onUnmounted(() => {
             <component :is="Component"></component>
           </transition>
         </RouterView>
+
       </main>
+
+
+        <NotificationPopup ref="notif" message="latestMessage" :duration="3000" />
 
       <Footer v-if="!isMobileScreen"></Footer>
     </div>
