@@ -18,8 +18,8 @@ public class PlantService {
         this.varietyRepository = varietyRepository;
     }
 
-    public List<Plant> getAllPlants() {
-        return plantRepository.findAll();
+    public List<Plant> getAllPlants(String uid) {
+        return plantRepository.findAllByOwnerUid(uid);
     }
 
     public Plant addOrUpdatePlant(Plant plant) {

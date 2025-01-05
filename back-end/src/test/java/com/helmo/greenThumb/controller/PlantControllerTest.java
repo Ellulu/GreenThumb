@@ -55,7 +55,7 @@ class PlantControllerTest {
 
         List<Plant> plants = Arrays.asList(plant1, plant2);
 
-        Mockito.when(plantService.getAllPlants()).thenReturn(plants);
+        Mockito.when(plantService.getAllPlants("")).thenReturn(plants);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/plants")
                         .contentType(MediaType.APPLICATION_JSON))

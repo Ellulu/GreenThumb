@@ -16,8 +16,8 @@ public class DTOConverter {
     public DTOConverter(){
 
     }
-    public ArticleDTO toArticleDTO(Article article, UserRecord author){
-        return new ArticleDTO(article.getId(),article.getTitle(),article.getText(),toAuthorDTO(author),article.getDate().toString(),article.getFiles(),toRatingDTO(article.getRatings(),article.getAuthor().getUid()),article.getComments());
+    public ArticleDTO toArticleDTO(Article article, UserRecord author,String uid){
+        return new ArticleDTO(article.getId(),article.getTitle(),article.getText(),toAuthorDTO(author),article.getDate().toString(),article.getFiles(),toRatingDTO(article.getRatings(),uid),article.getComments());
     }
     public AuthorDTO toAuthorDTO(UserRecord author){
         return new AuthorDTO(author.getDisplayName(),author.getPhotoUrl(), author.getUid());
@@ -27,6 +27,7 @@ public class DTOConverter {
         int dislikes = 0;
         boolean likedByAuthor = false;
         boolean dislikedByAuthor = false;
+        System.out.println("rating uid:"+authorUID);
         for (var r : ratings) {
             if(r.isLiked()){
                 likes++;

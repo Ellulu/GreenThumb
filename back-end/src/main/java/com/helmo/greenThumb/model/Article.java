@@ -1,5 +1,7 @@
 package com.helmo.greenThumb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -29,13 +31,13 @@ public class Article {
     private Set<Rating> ratings;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
 
-    //TODO ADD COMMENTS
     public Article() {
         ratings = new HashSet<>();
     }

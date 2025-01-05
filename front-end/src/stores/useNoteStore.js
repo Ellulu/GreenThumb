@@ -1,22 +1,16 @@
 import { defineStore } from 'pinia';
 import APIService from '@/services/ApiService';
 import {ref} from "vue";
-import { useUserStore } from '@/stores/useUserStore';
+import { useDBUserStore } from '@/stores/DBUserStore';
 export const useNoteStore = defineStore('note', () => {
         const notes = ref([]);
         const error = ref(null);
-        const userStore = useUserStore();
+        const userStore = useDBUserStore();
 
         const fetchNotes = async () => {
             try {
                 console.log(userStore.uid);
-               // const response = await APIService.get(`/notes/${userStore.uid}`);
                 const response = await APIService.post(`/notes/get`);
-
-
-
-
-
                 notes.value = response.data;
 
             } catch (error) {

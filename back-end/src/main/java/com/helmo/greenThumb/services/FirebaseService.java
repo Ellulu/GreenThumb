@@ -14,7 +14,6 @@ public class FirebaseService {
     }
     public void listAllUsers() {
         try {
-            // Obtenir la liste des utilisateurs
             ListUsersPage page = FirebaseAuth.getInstance().listUsers(null);
             while (page != null) {
                 for (ExportedUserRecord user : page.getValues()) {
@@ -22,7 +21,6 @@ public class FirebaseService {
                     System.out.println("Email: " + user.getEmail());
                     System.out.println("Phone: " + user.getPhoneNumber());
                 }
-                // Passer à la page suivante si elle existe
                 page = page.getNextPage();
             }
         } catch (Exception e) {

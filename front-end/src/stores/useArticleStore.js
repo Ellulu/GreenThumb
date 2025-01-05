@@ -24,6 +24,34 @@ export const useArticleStore = defineStore('article', {
         this.error = `Failed to load article with id: ${id}`;
       }
     },
+    async fetchComments(articleId) {
+      try {
+        const response = await APIService.get(`/articles/${articleId}/comments`);
+        return response.data;
+      } catch (error) {
+        this.error = `Failed to load comments for article with id: ${articleId}`;
+      }
+    },
+    
+    async addComment(articleId, comment) {
+      try {
+        const response = await APIService.post(`/articles/${articleId}/comments`, {
+          userId: comment.userId, // Aligné avec le backend
+          content: comment.content, // Correspond à `content`
+        });
+        return response.data; // Retourne le commentaire créé
+      } catch (error) {
+        this.error = `Failed to add comment to article with id: ${articleId}`;
+      }
+    },
+    
+    async deleteComment(commentId) {
+      try {
+        await APIService.delete(`/articles/${commentId}/comments`);
+      } catch (error) {
+        this.error = `Failed to delete comment with id: ${commentId}`;
+      }
+    },    
     async createArticle(articleData) {
       try {
         await APIService.post('/articles', articleData);
@@ -38,9 +66,9 @@ export const useArticleStore = defineStore('article', {
         this.error = `Failed to delete article with id: ${id}`;
       }
     },
-    async likeArticle(id, userId) {
+    async likeArticle(id) {
       try {
-        const requestData = { userId: userId, isLike: true };
+        const requestData = true;
         console.log("Données envoyées :", requestData);
     
         const response = await APIService.post(`/articles/${id}/like`, requestData);
@@ -50,9 +78,9 @@ export const useArticleStore = defineStore('article', {
         this.error = error.response?.data?.message || `Failed to like article with id: ${id}`;
       }
     },
-    async dislikeArticle(id, userId) {
+    async dislikeArticle(id) {
       try {
-        const requestData = { userId: userId, isLike: false };    
+        const requestData = false;
         const response = await APIService.post(`/articles/${id}/like`, requestData);
       } catch (error) {
         this.error = error.response?.data?.message || `Failed to dislike article with id: ${id}`;

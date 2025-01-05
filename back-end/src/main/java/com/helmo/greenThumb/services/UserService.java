@@ -33,19 +33,31 @@ public class UserService {
     public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
-    public void subscribe(String currentUserId, String targetUserId) {
-        User currentUser = userRepository.findById(currentUserId).orElseThrow();
-        User targetUser = userRepository.findById(targetUserId).orElseThrow();
-        currentUser.getSubscribers().add(targetUser);
+    public boolean isFollowing(String userId, String targetUserId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getFollowing().stream()
+                .anyMatch(subscription -> subscription.getUid().equals(targetUserId));
+    }
+    public void followUser(String currentUserId, String userIdToFollow) {
+        User currentUser = userRepository.findById(currentUserId).orElse(null);
+        User userToFollow = userRepository.findById(userIdToFollow)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!currentUser.getFollowing().contains(userToFollow)) {
+            currentUser.getFollowing().add(userToFollow);
+            userRepository.save(currentUser);
+        }
+    }
+
+    public void unfollowUser(String currentUserId, String userIdToUnfollow) {
+        User currentUser = userRepository.findById(currentUserId).orElse(null);
+        User userToUnfollow = userRepository.findById(userIdToUnfollow)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        currentUser.getFollowing().remove(userToUnfollow);
         userRepository.save(currentUser);
     }
 
-    public void unsubscribe(String currentUserId, String targetUserId) {
-        User currentUser = userRepository.findById(currentUserId).orElseThrow();
-        User targetUser = userRepository.findById(targetUserId).orElseThrow();
-        currentUser.getSubscribers().remove(targetUser);
-        userRepository.save(currentUser);
-    }
 
 
 }

@@ -34,13 +34,10 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public List<ArticleDTO> getAllArticles() {
+    public List<ArticleDTO> getAllArticles(String uid) {
         List<ArticleDTO> articleDTOS = new ArrayList<>();
         for (Article a : articleRepository.findAll()){
-            firebaseService.listAllUsers();
-            System.out.println(a.getAuthor().getUid());
-            System.out.println(firebaseService.getUserByUid(a.getAuthor().getUid()));
-            articleDTOS.add(DTO_CONVERTER.toArticleDTO(a,firebaseService.getUserByUid(a.getAuthor().getUid())));
+            articleDTOS.add(DTO_CONVERTER.toArticleDTO(a,firebaseService.getUserByUid(a.getAuthor().getUid()),uid));
         }
         return articleDTOS;
     }
@@ -61,7 +58,6 @@ public class ArticleService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Vérifier si une réaction existe déjà
         Rating existingRating = ratingRepository.findByArticleAndUser(article, user).orElse(null);
 
         if (existingRating != null) {

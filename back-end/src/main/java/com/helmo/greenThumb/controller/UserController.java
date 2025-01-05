@@ -3,8 +3,10 @@ package com.helmo.greenThumb.controller;
 import com.google.firebase.auth.UserRecord;
 import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.services.FirebaseService;
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,21 +30,39 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
-    @PostMapping("/{userId}/subscribe")
-    public ResponseEntity<Void> subscribe(@PathVariable String userId, User currentUser) {// TODO: en attente de la récupération du user qui envoie la requete
-        userService.subscribe(currentUser.getUid(), userId);
-        return ResponseEntity.ok().build();
+    @PostMapping("/{id}/follow")
+    public ResponseEntity<String> followUser(
+            @RequestAttribute("firebaseToken") FirebaseToken token,
+            @PathVariable String id
+    ) {
+        try {
+            String currentUserId = token.getUid();
+            userService.followUser(currentUserId, id);
+            return ResponseEntity.ok("User followed");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error following user");
+        }
     }
 
-    @PostMapping("/{userId}/unsubscribe")
-    public ResponseEntity<Void> unsubscribe(@PathVariable String userId, User currentUser) {// TODO: en attente de la récupération du user qui envoie la requete
-        userService.unsubscribe(currentUser.getUid(), userId);
-        return ResponseEntity.ok().build();
+    @PostMapping("/{id}/unfollow")
+    public ResponseEntity<String> unfollowUser(
+            @RequestAttribute("firebaseToken") FirebaseToken token,
+            @PathVariable String id
+    ) {
+        try {
+            String currentUserId = token.getUid();
+
+            userService.unfollowUser(currentUserId, id);
+            return ResponseEntity.ok("User unfollowed");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error unfollowing user");
+        }
     }
+
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserRecord> getUserById(@PathVariable("id") String id) {
-        UserRecord user = firebaseService.getUserByUid(id);
+    public ResponseEntity<User> getUserById(@PathVariable("id") String id) {
+        User user = userService.getUserById(id);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {

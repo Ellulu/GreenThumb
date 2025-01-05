@@ -78,7 +78,7 @@ class ArticleControllerTest {
 
         List<ArticleDTO> articles = null;// TODO: switch article dto
 
-        Mockito.when(articleService.getAllArticles()).thenReturn(articles);
+        Mockito.when(articleService.getAllArticles("")).thenReturn(articles);//TODO:update article
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/articles")
                         .contentType(MediaType.APPLICATION_JSON))

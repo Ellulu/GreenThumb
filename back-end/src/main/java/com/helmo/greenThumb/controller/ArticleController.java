@@ -1,6 +1,7 @@
 package com.helmo.greenThumb.controller;
 
 
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.dto.ArticleDTO;
 import com.helmo.greenThumb.dto.LikeRequestDTO;
 import com.helmo.greenThumb.model.Article;
@@ -29,14 +30,15 @@ public class ArticleController {
     }
 
     @GetMapping
-    public List<ArticleDTO> getAllArticles() {
-        return articleService.getAllArticles();
+    public List<ArticleDTO> getAllArticles(@RequestAttribute("firebaseToken") FirebaseToken token) {
+        return articleService.getAllArticles(token.getUid());
     }
 
     @GetMapping("/{id}")
     public Article getArticleById(@PathVariable Long id) {
         return articleService.getArticleById(id);
     }
+
 
     @DeleteMapping("/{id}")
     public void deleteArticle(@PathVariable Long id) {
@@ -45,16 +47,14 @@ public class ArticleController {
     @PostMapping("/{articleId}/like")
     public ResponseEntity<String> updateLikeOrDislike(
             @PathVariable Long articleId,
-            @RequestBody LikeRequestDTO likeRequest) {
+            @RequestAttribute("firebaseToken") FirebaseToken token,
+            @RequestBody boolean isLike) {
         System.out.println("articleId: " + articleId);
-        System.out.println("likeRequest reçu : " + likeRequest);
+        System.out.println("likeRequest reçu : " + isLike);
 
-        if (likeRequest == null) {
-            return ResponseEntity.badRequest().body("Corps de la requête manquant ou mal formé.");
-        }
 
         try {
-            articleService.likeOrDislikeArticle(articleId, likeRequest.userId(), likeRequest.isLike());
+            articleService.likeOrDislikeArticle(articleId, token.getUid(), isLike);
             return ResponseEntity.ok("Réaction mise à jour avec succès.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

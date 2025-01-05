@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -14,7 +15,7 @@ public class User {
     private String uid;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Plant> plants;
 
     @ManyToMany
@@ -23,14 +24,14 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id")
     )
-    private List<User> subscribers;
+    private List<User> following;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Event> events;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
@@ -39,18 +40,6 @@ public class User {
 
 
 
-    public void createProfile() {
-        // Implémentation
-    }
-
-    public boolean authenticate() {
-        // Implémentation
-        return true;
-    }
-
-    public void addPlant() {
-        // Implémentation
-    }
     public void setPlants(List<Plant> plants) {
         this.plants = plants;
     }
@@ -58,17 +47,6 @@ public class User {
         return plants;
     }
 
-    public void followUser() {
-        // Implémentation
-    }
-
-    public List<User> listSubscriptions() {
-        return subscribers;
-    }
-
-    public void editAccount() {
-        // Implémentation
-    }
 
     public String getUid() {
         return uid;
@@ -78,12 +56,12 @@ public class User {
         this.uid = uid;
     }
 
-    public List<User> getSubscribers() {
-        return subscribers;
+    public List<User> getFollowing() {
+        return following;
     }
 
-    public void setSubscribers(List<User> subscribers) {
-        this.subscribers = subscribers;
+    public void setFollowing(List<User> following) {
+        this.following = following;
     }
 
     public List<Event> getEvents() {
@@ -108,5 +86,25 @@ public class User {
 
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(uid, user.uid);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", following=" + following.size() +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid);
     }
 }

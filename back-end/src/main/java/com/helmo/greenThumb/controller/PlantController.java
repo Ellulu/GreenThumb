@@ -1,5 +1,6 @@
 package com.helmo.greenThumb.controller;
 
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.services.PlantService;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,8 @@ public class PlantController {
     }
 
     @GetMapping
-    public List<Plant> getAllPlants() {
-        return plantService.getAllPlants();
+    public List<Plant> getAllPlants(@RequestAttribute("firebaseToken") FirebaseToken token) {
+        return plantService.getAllPlants(token.getUid());
     }
 
 

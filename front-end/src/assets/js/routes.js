@@ -45,7 +45,7 @@ const routes = [
       {
         path: "posts",
         component: PostsView,
-        beforeEnter: (to, from, next)=>checkAuth(to, from, next),
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "calendar",
@@ -58,7 +58,7 @@ const routes = [
         beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
-        path: "/profile/:userId?",
+        path: "profile",
         component: ProfileView,
         beforeEnter: (to, from, next) => checkAuth(next),
       },
@@ -84,7 +84,6 @@ const routes = [
   { path: "/404", component: NotFoundView },
   { path: "/:pathMatch(.*)*", redirect: "/404" },
 ];
-
 
 const router = createRouter({
   history: createWebHistory(),
