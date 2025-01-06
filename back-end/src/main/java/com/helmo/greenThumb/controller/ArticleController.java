@@ -25,7 +25,6 @@ public class ArticleController {
     @PostMapping
     public Article createArticle(@RequestBody Article article) {
 
-        System.out.println("creating article :"+article.toString());
         return articleService.createArticle(article);
     }
 
@@ -49,10 +48,6 @@ public class ArticleController {
             @PathVariable Long articleId,
             @RequestAttribute("firebaseToken") FirebaseToken token,
             @RequestBody boolean isLike) {
-        System.out.println("articleId: " + articleId);
-        System.out.println("likeRequest reçu : " + isLike);
-
-
         try {
             articleService.likeOrDislikeArticle(articleId, token.getUid(), isLike);
             return ResponseEntity.ok("Réaction mise à jour avec succès.");

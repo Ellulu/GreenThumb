@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { useUserStore } from "@/stores/userStore";
+
 
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
@@ -16,17 +16,17 @@ import CalendarView from "@/views/CalendarView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import EditEventView from "@/views/EditEventView.vue";
 
-const checkAuth = (next) => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Utilisateur connecté :", user);
-      next();
-    } else {
-      console.log("Utilisateur déconnecté");
-      next("/login");
-    }
-  })
-}
+const checkAuth = async (next) => {
+  const userStore = useUserStore();
+  if (!userStore.isInitialized) {
+    await userStore.initializeUser();
+  }
+  if (userStore.user) {
+    next();
+  } else {
+    next("/login");
+  }
+};
 
 const routes = [
   {

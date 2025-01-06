@@ -36,20 +36,7 @@
 
       <div class="space-y-4">
         <template v-if="isLoading">
-          <div v-for="n in 5" :key="n" class="bg-amber-50 rounded-lg shadow p-4 animate-pulse">
-            <div class="flex items-center space-x-4 mb-4">
-              <div class="w-12 h-12 bg-green-200 rounded-full"></div>
-              <div class="flex-1">
-                <div class="h-4 bg-green-200 rounded w-1/4 mb-2"></div>
-                <div class="h-3 bg-green-200 rounded w-1/2"></div>
-              </div>
-            </div>
-            <div class="space-y-2">
-              <div class="h-4 bg-green-200 rounded"></div>
-              <div class="h-4 bg-green-200 rounded"></div>
-              <div class="h-4 bg-green-200 rounded w-5/6"></div>
-            </div>
-          </div>
+            <PostsLoader/>
         </template>
         <template v-else>
           <div v-for="article in articles" :key="article.id" class="bg-amber-50 rounded-lg shadow p-4">
@@ -63,12 +50,12 @@
                 <div class="flex items-center justify-between">
                   <p class="font-bold">{{ article.author.fullname }}</p>
                   <button
-                    v-if="article.author.UID!=user.uid"
-                    @click="toggleFollow(article.author.UID)"
-                    :class="isFollowing(article.author.UID) ? 'bg-red-100 text-red-500 hover:bg-red-200' : 'bg-green-100 text-green-500 hover:bg-green-200'"
+                    v-if="article.author.uid!=user.uid"
+                    @click="toggleFollow(article.author)"
+                    :class="isFollowing(article.author) ? 'bg-red-100 text-red-500 hover:bg-red-200' : 'bg-green-100 text-green-500 hover:bg-green-200'"
                     class="px-3 py-1 text-sm rounded-full font-medium transition"
                   >
-                    {{ isFollowing(article.author.UID) ? 'Unfollow' : 'Follow' }}
+                    {{ isFollowing(article.author) ? 'Unfollow' : 'Follow' }}
                   </button>
                 </div>
                 <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
@@ -84,23 +71,12 @@
                 </li>
               </ul>
             </div>
-            <div class="flex justify-between text-green-600">
-              <div class="flex space-x-4">
-                <button @click="likeArticle(article)" class="flex items-center space-x-1 hover:text-green-700">
-                  <ThumbsUpIcon :class="{'text-green-700': article.rating.hasLike}" class="w-5 h-5" />
-                  <span>{{ article.rating.likes }}</span>
-                </button>
-                <button @click="dislikeArticle(article)" class="flex items-center space-x-1 hover:text-red-600">
-                  <ThumbsDownIcon :class="{'text-red-600': article.rating.hasDislike}" class="w-5 h-5" />
-                  <span>{{ article.rating.dislikes }}</span>
-                </button>
-                <button @click="toggleComments(article.id)" class="flex items-center space-x-1 hover:text-blue-600">
-                  <MessageCircleIcon :class="{'text-blue-600': article.showComments}" class="w-5 h-5" />
-                  <span>{{ article.comments ? article.comments.length : 0 }}</span>
-                </button>
-              </div>
-            </div>
-            
+            <ArticleActions
+            :article="article"
+            @like="likeArticle(article)"
+            @dislike="dislikeArticle(article)"
+            @toggle-comments="toggleComments(article.id)"
+            />
               <transition name="fade">
                 <div v-if="article.showComments" class="mt-4 space-y-4">
                   <div v-for="comment in article.comments" :key="comment.id" class="flex space-x-3 p-3 bg-gray-50 rounded-lg">
@@ -147,8 +123,10 @@ import { useArticleStore } from '@/stores/useArticleStore'
 import { useUserStore } from '@/stores/userStore';
 import { useDBUserStore } from '@/stores/dbUserStore';
 import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, ThumbsUpIcon, ThumbsDownIcon } from 'lucide-vue-next'
-import Title from '../components/Title.vue'
-import Title_3 from '../components/Title_3.vue'
+import Title from '../components/Title.vue';
+import Title_3 from '../components/Title_3.vue';
+import ArticleActions from '../components/ArticleActions.vue'
+import PostsLoader from '../components/PostsLoader.vue';
 import Input from '@/components/Input.vue';
 
 const articleStore = useArticleStore()
@@ -160,6 +138,8 @@ const newComment = ref("");
 const authUserStore = useUserStore()
 const dBUserStore = useDBUserStore()
 const user = authUserStore.user;
+
+
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
   return new Date(dateString).toLocaleDateString('fr-FR', options)
@@ -172,6 +152,7 @@ const addArticle = () => {
       title: newArticleTitle.value,
       text: newArticle.value,
       author: {
+        fullname: user.displayName,
         uid: user.uid,
         imageUrl: user.photoURL
       },
@@ -214,19 +195,25 @@ const toggleComments = async (articleId) => {
   const article = articles.value.find((a) => a.id === articleId);
   if (!article.showComments) {
     article.comments = await articleStore.fetchComments(articleId);
-    console.log(article)
   }
   article.showComments = !article.showComments;
 };
 
 const addComment = async (articleId) => {
   if (newComment.value.trim()) {
-    const comment = await articleStore.addComment(articleId, {
+    await articleStore.addComment(articleId, {
       userId: user.uid, 
       content: newComment.value,
     });
+    console.log("user:",user);
+    const showComment = {
+      imageUrl : user.photoURL,
+      username : user.displayName,
+      text     : newComment.value
+    }
     const article = articles.value.find((a) => a.id === articleId);
-    article.comments.push(comment);
+    article.comments.push(showComment);
+    console.log(article.comments)
     newComment.value = "";
   }
 };
@@ -238,13 +225,8 @@ const deleteComment = async (articleId, commentId) => {
 
 onMounted(async () => {
   try {
-
-
     if (!dBUserStore.user || dBUserStore.user.uid !== user) {
-      console.log("Chargement de l'utilisateur depuis la base de données...");
       await dBUserStore.fetchUser(user.uid);
-    } else {
-      console.log("Utilisateur déjà chargé :", dBUserStore.user);
     }
     if (articleStore.articles.length === 0) {
       await articleStore.fetchArticles()
@@ -257,15 +239,15 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
-const toggleFollow = async (userId) => {
-  if (isFollowing(userId)) {
-    await dBUserStore.unfollowUser(userId);
+const toggleFollow = async (user) => {
+  if (isFollowing(user)) {
+    await dBUserStore.unfollowUser(user);
   } else {
-    await dBUserStore.followUser(userId);
+    await dBUserStore.followUser(user);
   }
 };
 
-const isFollowing = (userId) => {
-  return dBUserStore.user?.following?.some(follower => follower.uid === userId);
+const isFollowing = (user) => {
+  return dBUserStore.user?.following?.some(follower => follower.uid === user.uid);
 };
 </script>

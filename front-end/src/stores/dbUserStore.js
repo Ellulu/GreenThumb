@@ -18,22 +18,23 @@ export const useDBUserStore = defineStore('dbUser', {
         this.error = 'Failed to load users';
       }
     },
-    async followUser(userId) {
+    async followUser(user) {
       try {
-        await APIService.post(`/users/${userId}/follow`);
+        await APIService.post(`/users/${user.uid}/follow`);
         if (!this.user.following) this.user.following = [];
-        this.user.following.push(userId);
+        this.user.following.push(user);
       } catch (error) {
         console.error("Erreur lors du suivi de l'utilisateur :", error);
       }
     },
     
-    async unfollowUser(userId) {
+    async unfollowUser(user) {
       try {
-        await APIService.post(`/users/${userId}/unfollow`);
+        await APIService.post(`/users/${user.uid}/unfollow`);
         if (this.user.following) {
-          this.user.following = this.user.following.filter(id => id !== userId);
+          this.user.following = this.user.following.filter(following => following.uid !== user.uid);
         }
+
       } catch (error) {
         console.error("Erreur lors du désabonnement :", error);
       }
@@ -42,7 +43,6 @@ export const useDBUserStore = defineStore('dbUser', {
       try {
         const response = await APIService.get(`/users/${id}`);
         this.user = response.data; 
-        console.log(this.user)
       } catch (error) {
         this.error = `Failed to load user with id: ${id}`;
       }

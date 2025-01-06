@@ -36,7 +36,7 @@ public class ArticleService {
 
     public List<ArticleDTO> getAllArticles(String uid) {
         List<ArticleDTO> articleDTOS = new ArrayList<>();
-        for (Article a : articleRepository.findAll()){
+        for (Article a : articleRepository.findTop15ByOrderByDateDesc()){
             articleDTOS.add(DTO_CONVERTER.toArticleDTO(a,firebaseService.getUserByUid(a.getAuthor().getUid()),uid));
         }
         return articleDTOS;
