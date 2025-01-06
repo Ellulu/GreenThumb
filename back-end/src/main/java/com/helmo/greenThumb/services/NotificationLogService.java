@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -99,5 +100,15 @@ public class NotificationLogService {
     public void save(NotificationLog log) {
 
         notificationLogRepository.save(log);
+    }
+
+    public List<NotificationLog> findAllNotificationByUser(String uid) {
+        List<NotificationLog> notiflist= notificationLogRepository.findByEventUserUid(uid);
+
+        return (notiflist.isEmpty())? new ArrayList<>() : notiflist;
+    }
+
+    public void delete(Long id) {
+        notificationLogRepository.deleteById(id);
     }
 }

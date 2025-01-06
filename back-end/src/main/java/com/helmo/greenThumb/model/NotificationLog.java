@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 
 @Entity
 public class NotificationLog {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,6 +40,13 @@ public class NotificationLog {
         return event;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     public void setEvent(Event event) {
         this.event = event;
     }
