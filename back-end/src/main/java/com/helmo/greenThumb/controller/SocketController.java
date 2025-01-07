@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public class SocketController {
         for (NotificationLog log : logs) {
             String userId = log.getEvent().getUser().getUid();
 
-            if (sessionManager.isUserConnected(userId)) { // Vérifie si l'utilisateur est connecté
+            if (sessionManager.isUserConnected(userId)) {
                 Map<String, String> notification = new HashMap<>();
                 notification.put("title", "Nouvelle tache a effectuer");
                 notification.put("body", "Message spécifique pour l'utilisateur");

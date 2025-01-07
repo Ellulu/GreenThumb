@@ -54,12 +54,20 @@ const checkIfMobileScreen = () => {
 onMounted(async () => {
   checkIfMobileScreen();
   window.addEventListener("resize", checkIfMobileScreen);
-  await webSocketStore.connectWebSocket();
+  try {
+    await webSocketStore.connectWebSocket();
+  } catch (error) {
+    console.error("Erreur lors de la connexion WebSocket :", error);
+  }
 });
 
 onUnmounted(async () => {
   window.removeEventListener("resize", checkIfMobileScreen);
-  await webSocketStore.disconnectWebSocket();
+  try {
+    await webSocketStore.disconnectWebSocket();
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion WebSocket :", error);
+  }
 
 });
 </script>
@@ -73,17 +81,16 @@ onUnmounted(async () => {
     <div class="w-full flex flex-col mt-5">
       <main class="mb-5">
         <RouterView v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component"></component>
-          </transition>
+          <component :is="Component"></component>
         </RouterView>
 
       </main>
 
 
-        <NotificationPopup ref="notif" message="latestMessage" :duration="3000" />
+      <NotificationPopup ref="notif" :message="latestMessage" :duration="3000" />
 
       <Footer v-if="!isMobileScreen"></Footer>
     </div>
   </div>
 </template>
+

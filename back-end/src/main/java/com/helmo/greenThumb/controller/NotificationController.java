@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 
 @RestController
@@ -20,12 +19,16 @@ public class NotificationController {
     NotificationLogService notificationLogService;
 
 
-
-
     @PostMapping("/get")
     private ResponseEntity<List<NotificationLog>> getNotification(@RequestAttribute("firebaseToken") FirebaseToken token){
         List<NotificationLog>  notify = notificationLogService.findAllNotificationByUser(token.getUid());
+        long count = 0;
 
+        for (NotificationLog n : notify){
+            Event event = n.getEvent();
+            n.setEvent(new Event(count,event.getTitle(),event.getDescription(),event.getCycle(),event.getPlant(),event.getUser(),event.getEventDate()));
+            count++;
+        }
         return ResponseEntity.ok(notify);
 
 

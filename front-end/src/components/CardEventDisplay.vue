@@ -22,7 +22,7 @@ function toggleDescription(index) {
 </script>
 
 <template>
-  <div>
+  <div class="mx-auto max-w-lg">
     <div
         v-for="(task, index) in dailyTask"
         :key="index"
@@ -32,7 +32,7 @@ function toggleDescription(index) {
       <p>
         <span>Plante: {{ task.plant?.name || 'Plante inconnue' }}</span>
       </p>
-      <p>
+      <p class="break-words overflow-hidden">
         <span>Description: </span>
         <span v-if="!showFullDescriptions[index]">
           {{ task.description?.substring(0, 20) || 'Pas de description' }}...

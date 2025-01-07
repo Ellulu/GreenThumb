@@ -39,13 +39,10 @@ public class EventController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("l'event a bien été créé");
     }
-/**
-    @GetMapping("/{uid}")
-    public ResponseEntity<List<Event>> getUserEvents(@PathVariable("uid") String userUid) {
-        List<Event> events = eventService.getAllEvents(userUid);
-        return ResponseEntity.ok(events) ;
-    }
-    **/
+
+
+
+
 @PostMapping("/get")
 public ResponseEntity<List<Event>> getEvents(@RequestAttribute("firebaseToken") FirebaseToken token,
                                              @RequestBody Map<String, String> requestBody) {

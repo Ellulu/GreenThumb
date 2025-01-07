@@ -1,6 +1,7 @@
 package com.helmo.greenThumb.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ public class NotificationLog {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @JsonManagedReference
     private Event event;
 
 
@@ -23,7 +25,7 @@ public class NotificationLog {
 
     private boolean isSent = false;
 
-    private boolean isRead = false;
+
 
     public NotificationLog(LocalDateTime now, Event event) {
         this.notificationDate = now;
@@ -70,11 +72,5 @@ public class NotificationLog {
         return notificationDate.toLocalDate().isEqual(LocalDate.now());
     }
 
-    public boolean isRead() {
-        return isRead;
-    }
 
-    public void setRead(boolean read) {
-        isRead = read;
-    }
 }

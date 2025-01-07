@@ -47,6 +47,7 @@ public class Event {
 
 
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    @JsonBackReference
     private List<NotificationLog> notificationLogs;
 
     public Event(Long id ,String title, String description, int cycle, Plant plant, User user, Date eventDate) {

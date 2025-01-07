@@ -42,6 +42,7 @@ const routes = [
       {
         path: "dashboard",
         component: DashboardView,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "posts",
