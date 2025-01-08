@@ -17,7 +17,7 @@ public class EventUtils {
         for (Event evt : events) {
             // Conversion de la date d'événement en LocalDate
             LocalDate eventLocalDate = evt.getEventDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
+            if(evt.getCycle() !=0){
             for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
                 long diffDays = java.time.temporal.ChronoUnit.DAYS.between(eventLocalDate, date);
 
@@ -43,8 +43,12 @@ public class EventUtils {
                     }
                 }
             }
+        }else{
+                if (!eventLocalDate.isBefore(startDate) && !eventLocalDate.isAfter(endDate)){
+                    recurringEvents.add(evt);
+                }
+            }
         }
-
         return recurringEvents;
     }
 

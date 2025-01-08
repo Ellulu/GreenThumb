@@ -28,7 +28,7 @@
     <select v-model="event.plant" required >
       <option v-for="plant in plantStore.plants" :key="plant" :value="plant">{{ plant.name }}</option>
     </select>
-    <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour" min="1"></Input>
+    <Input v-model="event.cycle" type="number" required id="integerImute"  name="Répéter tous les X jours (0 pour aucune répètitions)" min="0"></Input>
   </template>
  </ModalForm>
 

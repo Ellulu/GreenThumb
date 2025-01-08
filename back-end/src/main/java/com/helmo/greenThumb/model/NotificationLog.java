@@ -17,7 +17,6 @@ public class NotificationLog {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    @JsonManagedReference
     private Event event;
 
 

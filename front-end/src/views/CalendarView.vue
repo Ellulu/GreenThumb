@@ -15,7 +15,7 @@
     >
       <template v-slot:event="props">
         <div class="vuecal__event">
-          <Button @click="showDescription(props.event)" class="hover:bg-blue-700">
+          <Button @click="showDescription(props.event)" class="hover:bg-green-800">
             <span>{{ props.event.title }}</span>
           </Button>
 
@@ -56,7 +56,7 @@
 
 
 
-          <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour" min="1"></Input>
+          <Input v-model="event.cycle" type="number" required id="integerImute"  name="Répéter tous les X jours (0 pour aucune répètitions)" min="0"></Input>
 
       </template>
     </ModalForm>

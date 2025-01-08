@@ -30,7 +30,7 @@ const handleCancel = () => {
 <template>
 
 
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
     <div
         class="flex flex-col justify-between border-2 border-green-600 rounded-lg p-4 bg-white text-green-600
            w-full max-w-[500px] min-w-[500px] max-h-[400px] min-h-[400px] overflow-y-auto"
@@ -39,7 +39,12 @@ const handleCancel = () => {
       <p><span class="font-bold">Description:</span> {{ event.description }}</p>
       <p><span class="font-bold">Plante:</span> {{ event.plant }}</p>
       <p><span class="font-bold">Date:</span> {{ formatDate(event.start) }}</p>
-      <p><span class="font-bold">Ce répète tous les:</span> {{ event.cycle }} <span class="font-bold">jours </span></p>
+      <p v-if="event.cycle === 0">
+        <span class="font-bold">Cet événement ne se répète pas.</span>
+      </p>
+      <p v-else>
+        <span class="font-bold">Ce répète tous les:</span> {{ event.cycle }} <span class="font-bold">jours</span>
+      </p>
       <button
           type="button"
           @click="handleCancel"
