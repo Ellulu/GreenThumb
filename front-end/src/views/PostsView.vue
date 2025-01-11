@@ -180,26 +180,23 @@ const addArticle = () => {
 }
 
 const likeArticle = (article) => {
-  if (article.disliked || article.rating.hasDislike) {
+  if ( article.rating.hasDislike) {
     article.rating.hasDislike = false
-    article.disliked = false
     article.rating.dislikes--
   }
-  article.liked = !article.liked
   article.rating.hasLike = !article.rating.hasLike
-  article.rating.likes += article.liked ? 1 : -1
+  article.rating.likes += article.rating.hasLike ? 1 : -1
   articleStore.likeArticle(article.id)
 }
 
 const dislikeArticle = (article) => {
-  if (article.liked|| article.rating.hasLike) {
-    article.liked = false
+  console.log("before",article.rating.hasDislike)
+  if (article.rating.hasLike) {
     article.rating.hasLike = false
     article.rating.likes--
   }
-  article.disliked = !article.disliked
   article.rating.hasDislike = !article.rating.hasDislike
-  article.rating.dislikes += article.disliked ? 1 : -1
+  article.rating.dislikes += article.rating.hasDislike ? 1 : -1
   articleStore.dislikeArticle(article.id)
 }
 
@@ -253,6 +250,7 @@ onMounted(async () => {
     articles.value = articleStore.articles
     articles.value.sort((a, b) => new Date(b.date) - new Date(a.date));
     isLoading.value = false
+    console.log(articles.value)
   } catch (err) {
     console.error("Erreur lors du chargement des articles:", err)
     isLoading.value = false
