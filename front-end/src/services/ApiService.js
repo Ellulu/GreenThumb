@@ -23,7 +23,20 @@ apiClient.interceptors.request.use(async (config) => {
 
 export default {
   get: (url) => apiClient.get(url),
-  post: (url, data) => apiClient.post(url, data),
+  post: (url, data, isMultipart = false) => {
+    if (isMultipart) {
+      const formData = new FormData();
+      formData.append("file", data);
+
+      return apiClient.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    }
+
+    return apiClient.post(url, data);
+  },
   put: (url, data) => apiClient.put(url, data),
   delete: (url) => apiClient.delete(url),
 };

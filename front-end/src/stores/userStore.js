@@ -89,10 +89,7 @@ export const useUserStore = defineStore("user", () => {
     if (!file) throw new Error("No file provided");
 
     try {
-      const fileRef = firebaseRef(storage, `profile_pictures/${auth.currentUser.uid}/${file.name}`);
-      await uploadBytes(fileRef, file);
-      const downloadURL = await getDownloadURL(fileRef);
-      await updateProfile(auth.currentUser, { photoURL: downloadURL });
+      const response = await ApiService.post('/users/upload', file, true);
     } catch (error) {
       throw new Error("Erreur lors de la mise à jour de la photo de profil");
     }
