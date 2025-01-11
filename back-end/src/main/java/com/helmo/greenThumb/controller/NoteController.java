@@ -25,6 +25,7 @@ public class NoteController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createNote(   @RequestAttribute("firebaseToken") FirebaseToken token,@RequestBody Note note) {
+        System.out.println("note = " + token.getUid());
         noteService.saveNote(token.getUid(),note);
         return ResponseEntity.status(HttpStatus.CREATED).body("La note a bien été créée");
     }

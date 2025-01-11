@@ -1,9 +1,10 @@
 <template>
   <div class="mx-5 mt-14 md:mt-[1.5%] md:ml-0 md:mr-5">
     <Title>Calendrier</Title>
-
+<div class="flex  justify-between">
     <Button @click="openModalEvent" class="m-3 bg-green-600 text-white">+ Ajouter un évènement</Button>
-
+    <Button  @click="navigateToEditEvent" class="m-3 bg-green-600 text-white">Éditer les évènement</Button>
+</div>
     <vue-cal
         :view="currentView"
         @view-change="onViewChange"
@@ -14,7 +15,7 @@
     >
       <template v-slot:event="props">
         <div class="vuecal__event">
-          <Button @click="showDescription(props.event)" class="hover:bg-blue-700">
+          <Button @click="showDescription(props.event)" class="hover:bg-green-800">
             <span>{{ props.event.title }}</span>
           </Button>
 
@@ -55,7 +56,7 @@
 
 
 
-          <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour" min="1"></Input>
+          <Input v-model="event.cycle" type="number" required id="integerImute"  name="Répéter tous les X jours (0 pour aucune répètitions)" min="0"></Input>
 
       </template>
     </ModalForm>
@@ -116,9 +117,9 @@ import 'vue-cal/dist/vuecal.css';
 import Button from '../components/Button.vue';
 import ModalForm from '@/components/ModalForm.vue';
 import Input from '@/components/Input.vue';
+import { useRouter } from "vue-router";
 
-
-
+const router = useRouter();
 import {useEventStore} from '@/stores/useEventStore.js';
 import {usePlantStore} from '@/stores/usePlantStore.js';
 import Title from '../components/Title.vue';
@@ -134,7 +135,9 @@ const showEvent = ref(false);
 
 const selectedEvent = ref(null);
 
-
+const navigateToEditEvent = () => {
+  router.push("/calendar/editevents");
+};
 
 const event = ref({
 
@@ -235,4 +238,5 @@ let  currentDate = new Date();
       ]});
 
 });
+
 </script>

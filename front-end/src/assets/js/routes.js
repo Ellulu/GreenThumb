@@ -15,6 +15,7 @@ import ProfileView from "@/views/ProfileView.vue";
 import CalendarView from "@/views/CalendarView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import EditEventView from "@/views/EditEventView.vue";
+import NotificationsVue from "@/views/NotificationsVue.vue";
 
 const checkAuth = async (next) => {
   const userStore = useUserStore();
@@ -41,10 +42,15 @@ const routes = [
       {
         path: "dashboard",
         component: DashboardView,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "posts",
         component: PostsView,
+      },  {
+        path: "notification",
+        component:  NotificationsVue,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "calendar",

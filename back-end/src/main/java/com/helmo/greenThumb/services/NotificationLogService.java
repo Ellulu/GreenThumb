@@ -4,11 +4,11 @@ package com.helmo.greenThumb.services;
 import com.helmo.greenThumb.infrastructures.NotificationLogRepository;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.model.NotificationLog;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,6 +61,12 @@ public class NotificationLogService {
 
     }
 
+    public void saveNotifForNewEvent(Event event){
+
+            saverNotification(new NotificationLog(LocalDateTime.now(), event));
+
+    }
+
     public void cleanOldLogs(int retentionDays) {
         LocalDateTime thresholdDate = LocalDateTime.now().minusDays(retentionDays);
         notificationLogRepository.deleteByNotificationDateBefore(thresholdDate);
@@ -94,5 +100,15 @@ public class NotificationLogService {
     public void save(NotificationLog log) {
 
         notificationLogRepository.save(log);
+    }
+
+    public List<NotificationLog> findAllNotificationByUser(String uid) {
+        List<NotificationLog> notiflist= notificationLogRepository.findByEventUserUid(uid);
+
+        return (notiflist.isEmpty())? new ArrayList<>() : notiflist;
+    }
+
+    public void delete(Long id) {
+        notificationLogRepository.deleteById(id);
     }
 }

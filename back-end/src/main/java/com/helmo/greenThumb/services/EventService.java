@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+
 @Service
 public class EventService {
 
@@ -20,11 +21,14 @@ public class EventService {
     @Autowired
     private UserRepository userRepository;
 
+
     public Event createEvent(String uid,Event event) {
 
         User findUser = userRepository.findById(uid).orElse
                 (null);
         event.setUser(findUser);
+
+
         return   eventRepository.save(event);
     }
 
@@ -95,4 +99,6 @@ public class EventService {
 
 
     }
+
+
 }

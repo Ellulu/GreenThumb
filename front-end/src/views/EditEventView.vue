@@ -12,8 +12,8 @@
         </Button>
       </template>
     </CardEventDisplay>
-  </div>
 
+  </div>
  <ModalForm :show="showEditForm"
             title="Modifier un évènement"
             submitLabel="Modifier"
@@ -28,7 +28,7 @@
     <select v-model="event.plant" required >
       <option v-for="plant in plantStore.plants" :key="plant" :value="plant">{{ plant.name }}</option>
     </select>
-    <Input v-model="event.cycle" type="number" required id="integerImute" name="Répéter tous les X jour" min="1"></Input>
+    <Input v-model="event.cycle" type="number" required id="integerImute"  name="Répéter tous les X jours (0 pour aucune répètitions)" min="0"></Input>
   </template>
  </ModalForm>
 
@@ -66,7 +66,7 @@ function closeModal() {
 }
 async function handleEdit() {
    console.log("enter handleEdit");
-  await eventStore.editEvent(event.value.id,event.value);
+  await eventStore.editEvent(event.value.id,event);
 
   displayTasks.value = eventStore.events;
   closeModal();
@@ -81,6 +81,9 @@ async function deleteTask(task) {
 
 onMounted(async () => {
   await eventStore.fetchAllEvent();
+  eventStore.events.forEach(event => {
+    event.eventDate = new Date(event.eventDate).toISOString().split('T')[0];
+  });
   displayTasks.value = eventStore.events;
 });
 </script>
