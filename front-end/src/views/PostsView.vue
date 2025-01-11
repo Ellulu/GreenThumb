@@ -3,7 +3,7 @@
     <Title>Pour vous</Title>
 
     <main class="max-w-2xl mx-auto mt-4 px-4">
-      <div class="bg-amber-50 rounded-lg shadow p-4 mb-4">
+      <div v-if="authUserStore.user" class="rounded-lg shadow p-4 mb-4">
         <Input
           v-model="newArticleTitle"
           name="Titre de l'article"
@@ -33,13 +33,24 @@
           </button>
         </div>
       </div>
+      <div v-else class="rounded-lg shadow p-4 mb-4 text-center">
+        <p class="mb-4">Connectez-vous pour ajouter un nouvel article</p>
+        <div class="space-x-4">
+          <button @click="login" class="bg-green-500 text-white px-4 py-2 rounded-full font-bold hover:bg-green-600 transition">
+            Se connecter
+          </button>
+          <button @click="signup" class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold hover:bg-blue-600 transition">
+            S'inscrire
+          </button>
+        </div>
+      </div>
 
       <div class="space-y-4">
         <template v-if="isLoading">
             <PostsLoader/>
         </template>
         <template v-else>
-          <div v-for="article in articles" :key="article.id" class="bg-amber-50 rounded-lg shadow p-4">
+          <div v-for="article in articles" :key="article.id" class="rounded-lg shadow p-4">
             <div class="flex items-center space-x-4 mb-4">
               <img
                 :src="article.author.imageUrl || '/placeholder.svg?height=48&width=48'"
@@ -50,7 +61,7 @@
                 <div class="flex items-center justify-between">
                   <p class="font-bold">{{ article.author.fullname }}</p>
                   <button
-                    v-if="article.author.uid!=user.uid"
+                    v-if="authUserStore.user && article.author.uid!=user.uid"
                     @click="toggleFollow(article.author)"
                     :class="isFollowing(article.author) ? 'bg-red-100 text-red-500 hover:bg-red-200' : 'bg-green-100 text-green-500 hover:bg-green-200'"
                     class="px-3 py-1 text-sm rounded-full font-medium transition"
@@ -72,6 +83,7 @@
               </ul>
             </div>
             <ArticleActions
+            v-if="authUserStore.user"
             :article="article"
             @like="likeArticle(article)"
             @dislike="dislikeArticle(article)"
@@ -225,11 +237,18 @@ const deleteComment = async (articleId, commentId) => {
 
 onMounted(async () => {
   try {
-    if (!dBUserStore.user || dBUserStore.user.uid !== user) {
+    if ((!dBUserStore.user || dBUserStore.user.uid !== user  || !dBUserStore.user.uid)&& user && user.uid) {
       await dBUserStore.fetchUser(user.uid);
     }
     if (articleStore.articles.length === 0) {
-      await articleStore.fetchArticles()
+      console.log(dBUserStore.user)
+      if( dBUserStore.user ){
+        console.log("fetchArticles")
+        await articleStore.fetchArticles()
+      }else{
+        console.log("fetchALLArticles")
+        await articleStore.fetchAllArticles()
+      }
     }
     articles.value = articleStore.articles
     articles.value.sort((a, b) => new Date(b.date) - new Date(a.date));

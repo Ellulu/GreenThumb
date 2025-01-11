@@ -4,9 +4,7 @@ import APIService from '@/services/ApiService';
 export const useDBUserStore = defineStore('dbUser', {
   state: () => ({
     users: [],
-    user: {
-      following: [], 
-    },
+    user: null,
     error: null,
   }),
   actions: {
@@ -43,6 +41,9 @@ export const useDBUserStore = defineStore('dbUser', {
       try {
         const response = await APIService.get(`/users/${id}`);
         this.user = response.data; 
+        if (!this.user.following){
+          this.user.following = [];
+        }
       } catch (error) {
         this.error = `Failed to load user with id: ${id}`;
       }

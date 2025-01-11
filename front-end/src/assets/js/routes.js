@@ -45,7 +45,6 @@ const routes = [
       {
         path: "posts",
         component: PostsView,
-        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "calendar",

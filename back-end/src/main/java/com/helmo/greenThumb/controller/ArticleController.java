@@ -29,10 +29,15 @@ public class ArticleController {
     }
 
     @GetMapping
-    public List<ArticleDTO> getAllArticles(@RequestAttribute("firebaseToken") FirebaseToken token) {
+    public List<ArticleDTO> getUserArticles(@RequestAttribute("firebaseToken") FirebaseToken token) {
+        System.out.println("articles  user");
         return articleService.getAllArticles(token.getUid());
     }
-
+    @GetMapping("/all")
+    public List<ArticleDTO> getAllArticles() {
+        System.out.println("articles no user");
+        return articleService.getAllArticles("");
+    }
     @GetMapping("/{id}")
     public Article getArticleById(@PathVariable Long id) {
         return articleService.getArticleById(id);

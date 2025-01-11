@@ -16,6 +16,14 @@ export const useArticleStore = defineStore('article', {
         this.error = 'Failed to load articles';
       }
     },
+    async fetchAllArticles() {
+      try {
+        const response = await APIService.get('/articles/all');
+        this.articles = response.data; 
+      } catch (error) {
+        this.error = 'Failed to load articles';
+      }
+    },
     async fetchArticle(id) {
       try {
         const response = await APIService.get(`/articles/${id}`);

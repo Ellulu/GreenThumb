@@ -41,7 +41,6 @@ public class ArticleService {
         }
         return articleDTOS;
     }
-
     public Article getArticleById(Long id) {
         return articleRepository.findById(id).orElse(null);
     }

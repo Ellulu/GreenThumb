@@ -19,6 +19,9 @@ public class DTOConverter {
     public ArticleDTO toArticleDTO(Article article, UserRecord author,String uid){
         return new ArticleDTO(article.getId(),article.getTitle(),article.getText(),toAuthorDTO(author),article.getDate().toString(),article.getFiles(),toRatingDTO(article.getRatings(),uid),article.getComments());
     }
+    public ArticleDTO toArticleDTO(Article article, UserRecord author){
+        return new ArticleDTO(article.getId(),article.getTitle(),article.getText(),toAuthorDTO(author),article.getDate().toString(),article.getFiles(),toRatingDTO(article.getRatings(),""),article.getComments());
+    }
     public AuthorDTO toAuthorDTO(UserRecord author){
         return new AuthorDTO(author.getDisplayName(),author.getPhotoUrl(), author.getUid());
     }
