@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import APIService from '@/services/ApiService';
-import { useUserStore } from '@/stores/useUserStore';
-import * as events from "node:events";
+
 export const useEventStore = defineStore('event', {
   state: () => ({
     events: [],
@@ -12,18 +11,16 @@ export const useEventStore = defineStore('event', {
      async fetchEvents(startDate, endDate) {
          try {
 
-             console.log("fetching events")
+             console.log(startDate);
+                console.log(endDate);
              const response = await APIService.post('/events/get', {
                  startDate: startDate,
                  endDate: endDate
              });
-                console.log("response received")
-             console.log(response.data)
+
                 this.events =  response.data;
 
-
-
-
+return response.data;
          } catch (error) {
             this.error = 'Failed to load events';
          }
@@ -61,9 +58,7 @@ export const useEventStore = defineStore('event', {
       }
     },async editEvent(id,eventData) {
       try {
-          console.log("editing event")
             await APIService.put(`/events/${id}`, eventData.value);
-          console.log("request sent")
 
       } catch (error) {
         this.error = 'Failed to create event';

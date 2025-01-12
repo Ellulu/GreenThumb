@@ -23,9 +23,7 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
-
-    @Autowired
-    private PlantService plantService;
+    
     @Autowired
     private  NotificationLogService notificationLogService;
 
@@ -52,8 +50,6 @@ public ResponseEntity<List<Event>> getEvents(@RequestAttribute("firebaseToken") 
     LocalDate end = LocalDate.parse(requestBody.get("endDate"));
 
         List<Event> events = eventService.getEventsFromDate(token.getUid(), start, end);
-        System.out.println(events.size());
-        System.out.println(events);
        return ResponseEntity.ok(events) ;
 
     }
@@ -68,7 +64,6 @@ public ResponseEntity<List<Event>> getEvents(@RequestAttribute("firebaseToken") 
 
     @PutMapping("/{id}")
     public ResponseEntity<String> editEvent( @PathVariable Long id,@RequestBody Event event) {
-    System.out.println("Requête bien reçue");
         eventService.editEvent( id,event);
         return ResponseEntity.status(HttpStatus.OK).body("L'event a bien été modifié");
     }

@@ -1,10 +1,10 @@
 <template>
   <div class="mx-5 mt-14 md:mt-[1.5%] md:ml-0 md:mr-5">
     <Title>Calendrier</Title>
-<div class="flex  justify-between">
-    <Button @click="openModalEvent" class="m-3 bg-green-600 text-white">+ Ajouter un évènement</Button>
-    <Button  @click="navigateToEditEvent" class="m-3 bg-green-600 text-white">Éditer les évènement</Button>
-</div>
+    <div class="flex  justify-between">
+      <Button @click="openModalEvent" class="m-3 bg-green-600 text-white">+ Ajouter un évènement</Button>
+      <Button  @click="navigateToEditEvent" class="m-3 bg-green-600 text-white">Éditer les évènement</Button>
+    </div>
     <vue-cal
         :view="currentView"
         @view-change="onViewChange"
@@ -38,25 +38,25 @@
     >
       <template #form-content>
 
-          <Input v-model="event.title" type="text" id="eventTitle" required name="titre" />
+        <Input v-model="event.title" type="text" id="eventTitle" required name="titre" />
 
 
-          <Input v-model="event.description" type="text" id="eventDescription" required name="Description" />
-
-
-
-          <Input v-model="event.eventDate" type="date" required name="Commencer à partir de cette date"/>
-
-
-          <label for="eventDate" class="block text-gray-700 font-bold mb-2">Lier une plante</label>
-          <select v-model="event.plant" required >
-
-            <option v-for="plant in plantStore.plants" :key="plant" :value="plant">{{ plant.name }}</option>
-          </select>
+        <Input v-model="event.description" type="text" id="eventDescription" required name="Description" />
 
 
 
-          <Input v-model="event.cycle" type="number" required id="integerImute"  name="Répéter tous les X jours (0 pour aucune répètitions)" min="0"></Input>
+        <Input v-model="event.eventDate" type="date" required name="Commencer à partir de cette date"/>
+
+
+        <label for="eventDate" class="block text-gray-700 font-bold mb-2">Lier une plante</label>
+        <select v-model="event.plant" required >
+
+          <option v-for="plant in plantStore.plants" :key="plant" :value="plant">{{ plant.name }}</option>
+        </select>
+
+
+
+        <Input v-model="event.cycle" type="number" required id="integerImute"  name="Répéter tous les X jours (0 pour aucune répètitions)" min="0"></Input>
 
       </template>
     </ModalForm>
@@ -160,28 +160,26 @@ async function onViewChange(viewData) {
 
     const startDate = new Date(viewData.startDate).toISOString().split('T')[0];
     const endDate = new Date(viewData.endDate).toISOString().split('T')[0];
-console.log("début"+startDate);
-console.log("fin"+endDate);
-    console.log("avant fetch")
-  await useEventStore().fetchEvents(startDate, endDate);
+
+    await useEventStore().fetchEvents(startDate, endDate);
 
 
 
-  const formattedEvents = useEventStore().events.map(event => ({
-    start: new Date(event.eventDate),
-    end: new Date(event.eventDate),
-    title: event.title,
-    description: event.description,
-    plant: event.plant.name,
-    cycle: event.cycle,
-  }));
+    const formattedEvents = useEventStore().events.map(event => ({
+      start: new Date(event.eventDate),
+      end: new Date(event.eventDate),
+      title: event.title,
+      description: event.description,
+      plant: event.plant.name,
+      cycle: event.cycle,
+    }));
 
 
 
 
-  if (JSON.stringify(eventsCalendar.value) !== JSON.stringify(formattedEvents)) {
-    eventsCalendar.value = [...formattedEvents];
-  }} finally {
+    if (JSON.stringify(eventsCalendar.value) !== JSON.stringify(formattedEvents)) {
+      eventsCalendar.value = [...formattedEvents];
+    }} finally {
     loading.value = false;
   }
 
@@ -201,24 +199,24 @@ function closeModal() {
 
 async function handleSubmit() {
 
-try{
-console.log("event début"+event.value.title)
-  await eventStore.createEvent(event);
+  try{
+
+    await eventStore.createEvent(event);
 
 
-}finally {
- event.value = {
+  }finally {
+    event.value = {
 
-    title:'',
-    description: '',
-    eventDate: new Date(),
-    user: {},
-    cycle: 0,
-    plant: {},
-  };
- closeModal();
-  window.location.reload();
-}
+      title:'',
+      description: '',
+      eventDate: new Date(),
+      user: {},
+      cycle: 0,
+      plant: {},
+    };
+    closeModal();
+    window.location.reload();
+  }
 
 }
 
@@ -226,16 +224,23 @@ console.log("event début"+event.value.title)
 onMounted(async () => {
 
 
-let  currentDate = new Date();
-  let startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
+  let currentDate = new Date();
+  let day = currentDate.getDay();
+
+
+  let startOfWeek = new Date(currentDate);
+  startOfWeek.setDate(currentDate.getDate() - (day === 0 ? 6 : day - 1));
+
   let endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
-   await onViewChange({startDate: startOfWeek.toISOString().split('T')[0],
-      endDate: endOfWeek.toISOString().split('T')[0],
-      view: "week",
-      events: [
 
-      ]});
+
+  await onViewChange({startDate: startOfWeek.toISOString().split('T')[0],
+    endDate: endOfWeek.toISOString().split('T')[0],
+    view: "week",
+    events: [
+
+    ]});
 
 });
 

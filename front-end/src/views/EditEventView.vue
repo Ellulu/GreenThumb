@@ -65,7 +65,7 @@ function closeModal() {
   event.value = {};
 }
 async function handleEdit() {
-   console.log("enter handleEdit");
+
   await eventStore.editEvent(event.value.id,event);
 
   displayTasks.value = eventStore.events;

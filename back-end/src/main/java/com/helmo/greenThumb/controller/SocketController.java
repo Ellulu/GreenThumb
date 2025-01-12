@@ -1,10 +1,8 @@
 package com.helmo.greenThumb.controller;
 
-import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.NotificationLog;
 import com.helmo.greenThumb.services.NotificationLogService;
 import com.helmo.greenThumb.services.WebSocketSessionManager;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;

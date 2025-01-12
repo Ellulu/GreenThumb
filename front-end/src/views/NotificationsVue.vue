@@ -12,7 +12,7 @@ let tempevent = notification.event;
 tempevent.start  =notification.event.eventDate;
 tempevent.plant= notification.event.plant.name;
 event.value = tempevent;
-  console.log("Notification ID:", notification.id);
+
 
 await notificationStore.deleteNotification(notification.id);
  await notificationStore.fetchNotifications();
