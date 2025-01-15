@@ -32,7 +32,7 @@ const handleCancel = () => {
 
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-8 w-full max-w-md">
+    <div class="rounded-lg p-8 w-full max-w-md">
       <h2 v-if="title" class="text-2xl font-bold mb-6">{{ title }}</h2>
       <form @submit.prevent="handleSubmit">
         <slot :formData="formData">

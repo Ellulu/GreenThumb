@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import APIService from '@/services/ApiService';
-
+import * as events from "node:events";
 export const useEventStore = defineStore('event', {
   state: () => ({
     events: [],
