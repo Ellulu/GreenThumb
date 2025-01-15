@@ -47,7 +47,7 @@ public class NotificationController {
         notificationLogService.delete(id);
         return ResponseEntity.ok("La notification a bien été supprimée");
     }
-     @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRate = 300000)
     public void SendMail(){
        Map<String ,List<NotificationLog>> logs = notificationLogService.getMailUnSentLogs();
        for (Map.Entry<String, List<NotificationLog>> entry : logs.entrySet()) {
@@ -67,10 +67,7 @@ public class NotificationController {
            emailService.sendEmail(Email,"Notification du "+date  ,message);
            }
        }
-      /*  for(NotificationLog log : logs){
-            String Email = firebaseUserService.getEmailFromUid(log.getEvent().getUser().getUid());
-            emailService.sendEmail(Email,"Notification","Nouvelle tache a effectuer");
-        }*/
+
 
     }
 

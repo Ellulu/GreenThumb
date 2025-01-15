@@ -85,7 +85,7 @@ public class NotificationLogService {
     }
 
    // @Scheduled(fixedRate = 3600000)
-   @Scheduled(cron = "0 0 0 * * ?")
+   @Scheduled(cron = "0 1 0 * * ?")
     public void checkForUpcomingEvents() {
 
 System.out.println("Checking for upcoming events");

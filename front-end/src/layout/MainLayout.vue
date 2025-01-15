@@ -13,7 +13,7 @@ import {
   CalendarIcon,
   UsersIcon,
   UserIcon,
-  HelpCircleIcon, BellIcon,
+  HelpCircleIcon, BellIcon, LayoutDashboard,
 } from "lucide-vue-next";
 import NotificationPopup from "@/components/Notification.vue";
 const webSocketStore = useWebSocketStore();
@@ -37,6 +37,7 @@ const menuItems = [
   { name: "Communauté", path: "/community", icon: UsersIcon },
   { name: "Mon profil", path: "/profile", icon: UserIcon },
   { name: "Notification", path: "/notification", icon: BellIcon },
+  { name: "DashBoard", path: "/dashboard", icon:  LayoutDashboard },
   { name: "Aide", path: "/help", icon: HelpCircleIcon },
 ];
 

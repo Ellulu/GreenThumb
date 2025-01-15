@@ -5,6 +5,7 @@ import Title_2 from "../components/Title_2.vue";
 import TaskDisplay from "@/components/CardEventDisplay.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 import {useEventStore} from "@/stores/useEventStore";
+import {Title} from "@/components/index.js";
 const eventStore = useEventStore();
 const displayTasks = ref([]);
 
@@ -31,7 +32,7 @@ onMounted(async () => {
 <template>
 
   <div>
-    <Title_2>Tàches du jours</Title_2>
+    <Title>Tàches du jours</Title>
   </div>
 
   <TaskDisplay :daily-task="displayTasks" />

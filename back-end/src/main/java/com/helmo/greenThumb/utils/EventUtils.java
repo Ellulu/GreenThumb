@@ -52,7 +52,9 @@ public class EventUtils {
         LocalDate eventLocalDate = event.getEventDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate currentDate = LocalDate.now();
         long diffDays = java.time.temporal.ChronoUnit.DAYS.between(eventLocalDate,   currentDate);
-
+        if (event.getCycle() == 0 && eventLocalDate.equals(LocalDate.now())) {
+            return true;
+        }
 
         return diffDays >= 0 && diffDays % event.getCycle() == 0;
     }
