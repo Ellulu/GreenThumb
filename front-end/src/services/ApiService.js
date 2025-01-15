@@ -37,6 +37,13 @@ export default {
 
     return apiClient.post(url, data);
   },
+  postWithMultipart: (url, data) => {
+    return apiClient.post(url, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
   put: (url, data) => apiClient.put(url, data),
   delete: (url) => apiClient.delete(url),
 };

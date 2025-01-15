@@ -45,14 +45,14 @@
     </button>
 
     <!-- Modal pour ajouter une plante -->
-    <FormBox 
+      <FormBox 
       v-if="isAddModalVisible"
       title="Ajouter une plante" 
       submitText="Ajouter" 
       cancelText="Annuler"
       @submit="addPlant" 
       @cancel="hideAddPlantModal"
-    >
+      >
       <Input 
         name="Nom" 
         v-model="newPlant.name"
@@ -71,17 +71,22 @@
         name="Luminosité"
         v-model="newPlant.lightLevel"
         :options="lightLevelOptions" 
-        required 
+        required
       />
       <Input 
-        name="Nombre arrosages mensuel" 
-        v-model="newPlant.watering"
-        type="number" 
-        placeholder="Nombre d'arrosages mensuel" 
-        required 
-        min="0" 
-        max="30" 
-      />
+      name="Nombre arrosages mensuel" 
+      v-model="newPlant.monthlyWaterFrequency"
+      type="number" 
+      placeholder="Nombre d'arrosages mensuel" 
+      required 
+      min="0" 
+      max="30" 
+    />
+    <input
+      type="file"
+      @change="getPlantPicture"
+      class="block w-full text-sm text-slate-500 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 hover:file:cursor-pointer"
+    />
     </FormBox>
 
     <!-- Modal pour éditer une plante -->
@@ -145,8 +150,9 @@ const isEditModalVisible = ref(false);
 const newPlant = ref({
   name: '',
   variety: '',
-  luminosity: '',
-  watering: 4
+  lightLevel : '',
+  monthlyWaterFrequency: 4,
+  picture: null
 });
 const editingPlant = ref(null);
 onMounted(async () => {
@@ -163,15 +169,20 @@ onMounted(async () => {
         plant.lightLevel==99
       };
     });
-    console.log(plantStore.plants)
     loading.value = false;
-    console.log("loaded")
   } catch (err) {
     error.value = "Erreur lors du chargement des plantes.";
     loading.value = false;
   }
 })
 
+function getPlantPicture(event) {
+    newPlant.value.picture = event.target.files[0];
+    if (newPlant.value.picture) {
+        const reader = new FileReader();
+        reader.readAsDataURL(newPlant.value.picture);
+    }
+}
 
 function getLightPourcentage(lightLevel){
   switch (lightLevel){
@@ -194,21 +205,27 @@ const showAddPlantModal = () => {
 
 const hideAddPlantModal = () => {
   isAddModalVisible.value = false;
-  newPlant.value = { name: '', variety: '', luminosity: '', watering: 4 };
+  newPlant.value = { name: '', variety: '', lightLevel:'', monthlyWaterFrequency: 4 };
 };
-
 const addPlant = async () => {
   try {
     await plantStore.createPlant({
-      ...newPlant.value,
-      variety: { name: newPlant.value.variety }
-    });
+      id: 0,
+      name: newPlant.value.name,
+      variety:{
+        name:newPlant.value.variety
+      },
+      lightLevel: newPlant.value.lightLevel,
+      monthlyWaterFrequency: newPlant.value.monthlyWaterFrequency,
+    },newPlant.value.picture);
     await plantStore.fetchPlants();
     hideAddPlantModal();
   } catch (err) {
+    console.log(err)
     error.value = "Erreur lors de l'ajout de la plante.";
   }
 };
+
 
 const editPlant = (plant) => {
   editingPlant.value = { ...plant };
@@ -222,7 +239,6 @@ const hideEditPlantModal = () => {
 
 const updatePlant = async () => {
   try {
-    console.log(editingPlant.value)
     await plantStore.createPlant(editingPlant.value);
     await plantStore.fetchPlants();
     hideEditPlantModal();

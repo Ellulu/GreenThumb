@@ -17,12 +17,20 @@
         ></textarea>
         <div class="flex justify-between items-center">
           <div class="flex space-x-2 text-green-600">
-            <button class="p-2 rounded-full hover:bg-green-100 transition">
+            <label
+              for="fileInput"
+              class="p-2 rounded-full hover:bg-green-100 transition cursor-pointer"
+            >
               <ImageIcon class="w-5 h-5" />
-            </button>
-            <button class="p-2 rounded-full hover:bg-green-100 transition">
-              <SmileIcon class="w-5 h-5" />
-            </button>
+            </label>
+            <input
+              type="file"
+              id="fileInput"
+              multiple
+              accept="image/*,video/*"
+              @change="handleFileUpload"
+              class="hidden"
+            />
           </div>
           <button
             @click="addArticle"
@@ -74,7 +82,7 @@
             </div>
             <h4 class="text-xl font-bold mb-2">{{ article.title }}</h4>
             <p class="mb-4">{{ article.text }}</p>
-            <div v-if="article.files.length > 0" class="mb-4">
+            <div  class="mb-4">
               <h5 class="font-semibold mb-2">Fichiers joints :</h5>
               <ul class="list-disc list-inside">
                 <li v-for="file in article.files" :key="file" class="text-blue-600 hover:underline">
@@ -150,7 +158,7 @@ const newComment = ref("");
 const authUserStore = useUserStore()
 const dBUserStore = useDBUserStore()
 const user = authUserStore.user;
-
+const files = ref([]);
 
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
@@ -169,11 +177,20 @@ const addArticle = () => {
         imageUrl: user.photoURL
       },
       date: new Date().toISOString(),
-      files: [],
       rating: { likes: 0, dislikes: 0 },
     }
     articles.value.unshift(newArticleObj)
-    articleStore.createArticle(newArticleObj)
+    const newArticleObjSave = {
+      id: 0,
+      title: newArticleTitle.value,
+      text: newArticle.value,
+      author: {
+        uid: user.uid,
+      },
+      date: new Date().toISOString(),
+    }
+    articleStore.createArticle(newArticleObjSave,files.value)
+    files.value = []
     newArticle.value = ''
     newArticleTitle.value = ''
   }
@@ -190,7 +207,6 @@ const likeArticle = (article) => {
 }
 
 const dislikeArticle = (article) => {
-  console.log("before",article.rating.hasDislike)
   if (article.rating.hasLike) {
     article.rating.hasLike = false
     article.rating.likes--
@@ -207,7 +223,9 @@ const toggleComments = async (articleId) => {
   }
   article.showComments = !article.showComments;
 };
-
+const handleFileUpload = (event) => {
+  files.value = Array.from(event.target.files);
+};
 const addComment = async (articleId) => {
   if (newComment.value.trim()) {
     await articleStore.addComment(articleId, {
@@ -222,7 +240,6 @@ const addComment = async (articleId) => {
     }
     const article = articles.value.find((a) => a.id === articleId);
     article.comments.push(showComment);
-    console.log(article.comments)
     newComment.value = "";
   }
 };
@@ -250,7 +267,6 @@ onMounted(async () => {
     articles.value = articleStore.articles
     articles.value.sort((a, b) => new Date(b.date) - new Date(a.date));
     isLoading.value = false
-    console.log(articles.value)
   } catch (err) {
     console.error("Erreur lors du chargement des articles:", err)
     isLoading.value = false

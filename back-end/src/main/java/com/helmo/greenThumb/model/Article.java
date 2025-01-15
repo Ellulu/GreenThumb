@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Article {
@@ -39,7 +36,9 @@ public class Article {
     private User author;
 
     public Article() {
+
         ratings = new HashSet<>();
+        files = new ArrayList<>();
     }
 
     // Getters et setters

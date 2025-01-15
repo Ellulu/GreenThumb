@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Plant {
@@ -24,8 +25,7 @@ public class Plant {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Task> taskList;
 
-    @ElementCollection
-    private List<String> files;
+    private String picture;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -60,6 +60,13 @@ public class Plant {
         this.name = name;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
     public double getMonthlyWaterFrequency() {
         return monthlyWaterFrequency;
     }
@@ -92,4 +99,10 @@ public class Plant {
         this.taskList = taskList;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+    public void setPicture(String picture){
+        this.picture = picture;
+    }
 }

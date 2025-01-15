@@ -23,6 +23,7 @@ public class PlantService {
     }
 
     public Plant addOrUpdatePlant(Plant plant) {
+
         // Récupère la plante existante si elle existe
         Optional<Plant> existingPlantOpt = plantRepository.findById(plant.getId());
 

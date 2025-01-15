@@ -44,10 +44,10 @@ export const useArticleStore = defineStore('article', {
     async addComment(articleId, comment) {
       try {
         const response = await APIService.post(`/articles/${articleId}/comments`, {
-          userId: comment.userId, // Aligné avec le backend
-          content: comment.content, // Correspond à `content`
+          userId: comment.userId,
+          content: comment.content, 
         });
-        return response.data; // Retourne le commentaire créé
+        return response.data;
       } catch (error) {
         this.error = `Failed to add comment to article with id: ${articleId}`;
       }
@@ -60,13 +60,32 @@ export const useArticleStore = defineStore('article', {
         this.error = `Failed to delete comment with id: ${commentId}`;
       }
     },    
-    async createArticle(articleData) {
+    async createArticle(articleData, pictures) {
       try {
-        await APIService.post('/articles', articleData);
+        console.log("Pictures to upload:", pictures);
+        const formData = new FormData();
+    
+        // Ajouter l'article JSON
+        formData.append("article", JSON.stringify(articleData));
+    
+        // Ajouter chaque fichier individuellement
+        if (pictures && pictures.length > 0) {
+          pictures.forEach((picture) => {
+            formData.append("pictures", picture); // Ajoute chaque fichier
+          });
+        }
+    
+        // Affiche le contenu du FormData avant l'envoi
+        console.log([...formData.entries()]);
+    
+        // Envoie la requête
+        await APIService.postWithMultipart('/articles', formData);
       } catch (error) {
-        this.error = 'Failed to create article';
+        console.error('Erreur lors de la création de l\'article :', error);
       }
     },
+    
+     
     async deleteArticle(id) {
       try {
         await APIService.delete(`/articles/${id}`);

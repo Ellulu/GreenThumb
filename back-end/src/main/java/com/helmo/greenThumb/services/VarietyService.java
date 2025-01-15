@@ -26,6 +26,10 @@ public class VarietyService {
     public Optional<Variety> getVarietyById(Long id) {
         return varietyRepository.findById(id);
     }
+    public Optional<Variety> getVarietyByName(String name) {
+        return varietyRepository.findByName(name);
+    }
+
 
     public void deleteVariety(Long id) {
         varietyRepository.deleteById(id);
