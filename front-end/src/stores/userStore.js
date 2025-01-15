@@ -9,8 +9,7 @@ import {
   browserLocalPersistence,
   onAuthStateChanged,
 } from "firebase/auth";
-import { ref as firebaseRef, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth, storage, googleProvider } from "../assets/js/firebase";
+import { auth, googleProvider } from "../assets/js/firebase";
 import ApiService from "@/services/ApiService";
 
 import { useRouter } from "vue-router";
@@ -89,7 +88,7 @@ export const useUserStore = defineStore("user", () => {
     if (!file) throw new Error("No file provided");
 
     try {
-      const response = await ApiService.post('/users/upload', file, true);
+      await ApiService.post('/users/upload', file, true);
     } catch (error) {
       throw new Error("Erreur lors de la mise à jour de la photo de profil");
     }

@@ -7,10 +7,8 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.StorageClient;
-import com.google.firebase.auth.UserRecord;
 import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.services.FirebaseService;
-import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.services.UserService;
 import com.helmo.greenThumb.utils.FileValidator;
 
@@ -22,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +72,6 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") String id) {
         User user = userService.getUserById(id);
@@ -98,7 +97,8 @@ public class UserController {
                 String blobName = "profile_pictures/" + uid + "/" + new Date().getTime() + "-" + file.getOriginalFilename();
                 Blob blob = bucket.create(blobName, file.getInputStream());
                 
-                String downloadUrl = "https://storage.googleapis.com/" + bucket.getName() + "/" + blob.getName();
+                String encodedBlobName = URLEncoder.encode(blob.getName(), StandardCharsets.UTF_8.toString());
+                String downloadUrl = String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media", bucket.getName(), encodedBlobName);
 
                 UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(uid).setPhotoUrl(downloadUrl);
                 
