@@ -80,7 +80,7 @@
   </div>
 
 
-
+  <Loading :loading="isLoading" />
 
 
 
@@ -99,13 +99,14 @@ import {Edit } from "lucide-vue-next";
 import {Plus } from "lucide-vue-next";
 
 import {Title} from "@/components/index.js";
+import Loading from "@/components/Loading.vue";
 
 const noteStore = useNoteStore();
 const showAddModal = ref(false);
 const showEditModal = ref(false)
 const showNoteModal = ref(false);
 const selectedNote = ref({});
-
+const isLoading = ref(true);
 const maxContentLength = 100
 const title = ref('');
 const content = ref('');
@@ -194,6 +195,7 @@ const handleSubmit = async () => {
 
 onMounted(async () => {
   await fetchNotes();
+  isLoading.value = false;
 });
 </script>
 

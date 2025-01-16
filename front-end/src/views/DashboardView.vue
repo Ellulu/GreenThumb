@@ -6,9 +6,10 @@ import TaskDisplay from "@/components/CardEventDisplay.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 import {useEventStore} from "@/stores/useEventStore";
 import {Title} from "@/components/index.js";
+import Loading from "@/components/Loading.vue";
 const eventStore = useEventStore();
 const displayTasks = ref([]);
-
+const isLoading = ref(true);
 
 async function fetchEvents() {
   const startDate = new Date().toISOString().split('T')[0];
@@ -22,7 +23,7 @@ async function fetchEvents() {
 
 onMounted(async () => {
   await fetchEvents();
-
+  isLoading.value = false;
 
 });
 
@@ -38,5 +39,5 @@ onMounted(async () => {
   <TaskDisplay :daily-task="displayTasks" />
 
 
-
+  <Loading :loading="isLoading" />
 </template>

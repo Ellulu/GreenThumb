@@ -61,9 +61,7 @@
       </template>
     </ModalForm>
   </div>
-  <div v-if="loading" class="loading-overlay">
-    <img src="@/assets/img/greenthumb.png" alt="Feuille" class="spinner-image" />
-  </div>
+  <Loading :loading="isLoading" />
 
 </template>
 
@@ -83,30 +81,7 @@
 .vuecal__event-title{
   border: 2px solid #ffffff;
 }
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2rem;
-  color: #333;
-}
-.spinner-image {
-  width: 100px;
-  height: 100px;
-  animation: spin 1s linear infinite;
-}
 
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
 </style>
 
@@ -124,13 +99,14 @@ import {useEventStore} from '@/stores/useEventStore.js';
 import {usePlantStore} from '@/stores/usePlantStore.js';
 import Title from '../components/Title.vue';
 import EventDisplay from "@/components/EventDisplay.vue";
+import Loading from "@/components/Loading.vue";
 
 const plantStore = usePlantStore();
 const eventStore = useEventStore();
 const eventsCalendar = ref([]);
 const showModal = ref(false);
 const currentView = ref("week");
-const loading = ref(false);
+const isLoading = ref(true);
 const showEvent = ref(false);
 
 const selectedEvent = ref(null);
@@ -155,7 +131,7 @@ const showDescription = (event) => {
 
 
 async function onViewChange(viewData) {
-  loading.value = true;
+  isLoading.value = true;
   try {
 
     const startDate = new Date(viewData.startDate).toISOString().split('T')[0];
@@ -180,7 +156,7 @@ async function onViewChange(viewData) {
     if (JSON.stringify(eventsCalendar.value) !== JSON.stringify(formattedEvents)) {
       eventsCalendar.value = [...formattedEvents];
     }} finally {
-    loading.value = false;
+    isLoading.value = false;
   }
 
 }
