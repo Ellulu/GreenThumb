@@ -1,7 +1,7 @@
 <script setup>
 
 
-import Title_2 from "../components/Title_2.vue";
+
 import TaskDisplay from "@/components/CardEventDisplay.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 import {useEventStore} from "@/stores/useEventStore";

@@ -124,7 +124,7 @@ const event = ref({
   cycle: 0,
   plant: {},
 });
-// Fonction appelée lors du clic sur un événement
+
 const showDescription = (event) => {
   selectedEvent.value = event;
 };
