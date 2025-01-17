@@ -20,7 +20,7 @@
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <ImageBox :alt="plant.name" v-for="plant in plantStore.plants" :key="plant.id">
+      <ImageBox :alt="plant.name" :image="plant.picture" v-for="plant in plantStore.plants" :key="plant.id">
           <Title_3>{{ plant.name }}</Title_3>
           <Text>Variété: {{ plant.variety.name }}</Text>
           <div class="flex items-center mb-2">
@@ -35,7 +35,7 @@
             <Button @click="editPlant(plant)" class="text-green-600 hover:text-green-800">
               <EditIcon class="h-5 w-5" />
             </button>
-            <Button @click="deletePlant(plant)" class="text-red-600 hover:text-red-800"><TrashIcon class="h-5 w-5" /></Button>
+            <Button @click="deletePlant(plant.id)" class="text-red-600 hover:text-red-800"><TrashIcon class="h-5 w-5" /></Button>
           </div>
       </ImageBox>
     </div>
@@ -159,7 +159,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     await plantStore.fetchPlants();
-
+    console.log("plants",plantStore.plants)
     plantStore.plants.forEach(plant => {
       if(plant.lightLevel=="LOW"){
         plant.lightLevel==30

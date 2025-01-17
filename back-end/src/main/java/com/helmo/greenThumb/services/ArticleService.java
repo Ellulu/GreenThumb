@@ -30,6 +30,8 @@ public class ArticleService {
     private RatingRepository ratingRepository;
     @Autowired
     private FirebaseService firebaseService;
+    @Autowired
+    private NotificationLogService notificationLogService;
     private static final DTOConverter DTO_CONVERTER = new DTOConverter();
     public Article createArticle(Article article) {
         return articleRepository.save(article);

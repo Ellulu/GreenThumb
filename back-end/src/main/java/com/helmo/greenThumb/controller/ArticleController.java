@@ -10,6 +10,7 @@ import com.google.firebase.cloud.StorageClient;
 import com.helmo.greenThumb.dto.ArticleDTO;
 import com.helmo.greenThumb.dto.LikeRequestDTO;
 import com.helmo.greenThumb.model.Article;
+import com.helmo.greenThumb.model.NotificationLog;
 import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.services.ArticleService;
 import com.helmo.greenThumb.services.FirebaseService;
@@ -93,6 +94,7 @@ public class ArticleController {
             @RequestAttribute("firebaseToken") FirebaseToken token,
             @RequestBody boolean isLike) {
         try {
+
             articleService.likeOrDislikeArticle(articleId, token.getUid(), isLike);
             return ResponseEntity.ok("Réaction mise à jour avec succès.");
         } catch (IllegalArgumentException e) {
