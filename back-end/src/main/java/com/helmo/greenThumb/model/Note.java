@@ -9,7 +9,7 @@ public class Note {
     private Long id;
 
     @Lob
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String title;
 

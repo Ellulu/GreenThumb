@@ -2,11 +2,13 @@ package com.helmo.greenThumb.services;
 import com.helmo.greenThumb.infrastructures.VarietyRepository;
 import com.helmo.greenThumb.model.Variety;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class VarietyService {
 
     private final VarietyRepository varietyRepository;

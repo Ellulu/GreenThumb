@@ -3,55 +3,10 @@
     <Title>Pour vous</Title>
 
     <main class="max-w-2xl mx-auto mt-4 px-4">
-      <div v-if="authUserStore.user" class="rounded-lg shadow p-4 mb-4">
-        <Input
-          v-model="newArticleTitle"
-          name="Titre de l'article"
-          placeholder="Titre de l'article"
-          required
-        />
-        <textarea
-          v-model="newArticle"
-          placeholder="Quoi de neuf ?"
-          class="w-full h-20 resize-none border-b border-green-200 focus:outline-none focus:border-green-500 mb-4"
-        ></textarea>
-        <div class="flex justify-between items-center">
-          <div class="flex space-x-2 text-green-600">
-            <label
-              for="fileInput"
-              class="p-2 rounded-full hover:bg-green-100 transition cursor-pointer"
-            >
-              <ImageIcon class="w-5 h-5" />
-            </label>
-            <input
-              type="file"
-              id="fileInput"
-              multiple
-              accept="image/*,video/*"
-              @change="handleFileUpload"
-              class="hidden"
-            />
-          </div>
-          <button
-            @click="addArticle"
-            class="bg-green-500 text-white px-4 py-2 rounded-full font-bold hover:bg-green-600 transition"
-            :disabled="!newArticle.trim() || !newArticleTitle.trim()"
-          >
-            Nouvel Article
-          </button>
-        </div>
-      </div>
-      <div v-else class="rounded-lg shadow p-4 mb-4 text-center">
-        <p class="mb-4">Connectez-vous pour ajouter un nouvel article</p>
-        <div class="space-x-4">
-          <button @click="login" class="bg-green-500 text-white px-4 py-2 rounded-full font-bold hover:bg-green-600 transition">
-            Se connecter
-          </button>
-          <button @click="signup" class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold hover:bg-blue-600 transition">
-            S'inscrire
-          </button>
-        </div>
-      </div>
+      <NewArticleForm v-if="authUserStore.user" @submit-article="addArticle" />
+
+      <AuthPrompt v-else  />
+
 
       <div class="space-y-4">
         <template v-if="isLoading">
@@ -82,13 +37,22 @@
             </div>
             <h4 class="text-xl font-bold mb-2">{{ article.title }}</h4>
             <p class="mb-4">{{ article.text }}</p>
-            <div  class="mb-4">
-              <h5 class="font-semibold mb-2">Fichiers joints :</h5>
-              <ul class="list-disc list-inside">
-                <li v-for="file in article.files" :key="file" class="text-blue-600 hover:underline">
-                  {{ file }}
-                </li>
-              </ul>
+            <div class="mb-4">
+              <div class="relative overflow-hidden rounded-lg shadow-md">
+                <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar space-x-4 p-4">
+                  <div
+                    v-for="file in article.files"
+                    :key="file"
+                    class="snap-center flex-shrink-0 w-64 h-64 relative"
+                  >
+                    <img
+                      :src="file"
+                      :alt="'Image from ' + article.author.fullname"
+                      class="w-full h-full object-cover rounded-lg shadow-md"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <ArticleActions
             v-if="authUserStore.user"
@@ -148,7 +112,8 @@ import Title_3 from '../components/Title_3.vue';
 import ArticleActions from '../components/ArticleActions.vue'
 import PostsLoader from '../components/PostsLoader.vue';
 import Input from '@/components/Input.vue';
-
+import AuthPrompt from '@/components/AuthPrompt.vue'
+import NewArticleForm from '@/components/NewArticleForm.vue'
 const articleStore = useArticleStore()
 const isLoading = ref(true)
 const newArticle = ref('')
@@ -158,44 +123,58 @@ const newComment = ref("");
 const authUserStore = useUserStore()
 const dBUserStore = useDBUserStore()
 const user = authUserStore.user;
-const files = ref([]);
 
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
   return new Date(dateString).toLocaleDateString('fr-FR', options)
 }
-
-const addArticle = () => {
-  if (newArticle.value.trim() && newArticleTitle.value.trim()) {
+const isVideo = (file) => {
+  return file.match("/\.(jpeg|jpg|gif|png)$/") != null;
+}
+const getVideoType = (file) => {
+      const extension = file.split('.').pop().toLowerCase();
+      switch (extension) {
+        case 'mp4':
+          return 'video/mp4';
+        case 'webm':
+          return 'video/webm';
+        case 'ogg':
+          return 'video/ogg';
+        default:
+          return '';
+      }
+}
+const addArticle = (newArticle) => {
     const newArticleObj = {
       id: Date.now(),
-      title: newArticleTitle.value,
-      text: newArticle.value,
+      title: newArticle.title,
+      text: newArticle.content,
       author: {
         fullname: user.displayName,
         uid: user.uid,
         imageUrl: user.photoURL
       },
+      files: convertFilesToUrls(newArticle.files),
       date: new Date().toISOString(),
       rating: { likes: 0, dislikes: 0 },
     }
+    console.log("files",newArticleObj.files)
+
     articles.value.unshift(newArticleObj)
     const newArticleObjSave = {
       id: 0,
-      title: newArticleTitle.value,
-      text: newArticle.value,
+      title: newArticle.title,
+      text: newArticle.content,
       author: {
         uid: user.uid,
       },
       date: new Date().toISOString(),
     }
-    articleStore.createArticle(newArticleObjSave,files.value)
-    files.value = []
-    newArticle.value = ''
-    newArticleTitle.value = ''
-  }
+    articleStore.createArticle(newArticleObjSave,newArticle.files)
 }
-
+const convertFilesToUrls = (files) => {
+  return files.map(file => URL.createObjectURL(file));
+};
 const likeArticle = (article) => {
   if ( article.rating.hasDislike) {
     article.rating.hasDislike = false
@@ -266,6 +245,7 @@ onMounted(async () => {
     }
     articles.value = articleStore.articles
     articles.value.sort((a, b) => new Date(b.date) - new Date(a.date));
+    console.log(articleStore.articles)
     isLoading.value = false
   } catch (err) {
     console.error("Erreur lors du chargement des articles:", err)

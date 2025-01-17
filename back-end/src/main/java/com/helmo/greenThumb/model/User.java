@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "app_user")
 public class User {
     @Id
     private String uid;

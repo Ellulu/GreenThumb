@@ -27,7 +27,6 @@ export default {
     if (isMultipart) {
       const formData = new FormData();
       formData.append("file", data);
-
       return apiClient.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -38,6 +37,7 @@ export default {
     return apiClient.post(url, data);
   },
   postWithMultipart: (url, data) => {
+    console.log(url)
     return apiClient.post(url, data, {
       headers: {
         'Content-Type': 'multipart/form-data',

@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -36,20 +38,21 @@ public class ArticleController {
                                  @RequestParam("article") String articleJson,
                                  @RequestParam(value = "pictures",required = false)List<MultipartFile> pictures) {
         try {
-            System.out.println(pictures.size());
             ObjectMapper objectMapper = new ObjectMapper();
             Article article = objectMapper.readValue(articleJson, Article.class);
-            
+            System.out.println(pictures);
             if (!token.getUid().equals(article.getAuthor().getUid())) return new Article();
-
             if (pictures != null) {
                 Bucket bucket = StorageClient.getInstance().bucket("greenthumb-54c99.firebasestorage.app");
                 for (var picture : pictures) {
                     if (FileValidator.validateImage(picture)) {
+
                         String blobName = "article/" + token.getUid() + "/" + new Date().getTime() + "-" + picture.getOriginalFilename();
                         Blob blob = bucket.create(blobName, picture.getInputStream());
 
-                        String pictureUrl = "https://storage.googleapis.com/" + bucket.getName() + "/" + blob.getName();
+                        String encodedBlobName = URLEncoder.encode(blob.getName(), StandardCharsets.UTF_8.toString());
+                        String pictureUrl = String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media", bucket.getName(), encodedBlobName);
+                        System.out.println(pictureUrl);
                         article.getFiles().add(pictureUrl);
                     }
                 }

@@ -9,12 +9,14 @@ import com.helmo.greenThumb.model.Article;
 import com.helmo.greenThumb.model.Comment;
 import com.helmo.greenThumb.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CommentService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;

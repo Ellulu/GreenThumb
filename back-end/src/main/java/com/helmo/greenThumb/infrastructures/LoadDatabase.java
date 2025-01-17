@@ -9,12 +9,12 @@ import java.util.*;
 
 @Configuration
 public class LoadDatabase {
-
+    private static boolean HASTORUN = false;
     @Bean
     CommandLineRunner initDatabase(RatingRepository ratingRepository, UserRepository userRepository, PlantRepository plantRepository,
                                    ArticleRepository articleRepository, EventRepository eventRepository,VarietyRepository varietyRepository) {
         return args -> {
-            if (userRepository.count() > 0) {return;}
+            if (userRepository.count() > 0 || !HASTORUN) {return;}
             // Créer des utilisateurs (User)
             Variety variety1 = new Variety();
             variety1.setName("Common");
