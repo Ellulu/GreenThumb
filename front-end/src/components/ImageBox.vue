@@ -3,7 +3,7 @@ import Box from './Box.vue';
 const props = defineProps({
     image: {
         type: String,
-        default: 'https://i0.wp.com/pygear.com/wp-content/uploads/2024/05/Shrek-micro-penis.jpg?fit=1080%2C1038&ssl=1'
+        default: 'https://www.pessleux.be/files/images/news/les-meilleurs-conseils-pour-une-magnifique-monstera-1000x667-66f5720b71845_og.jpg'
     },
     alt: {
         type: String,

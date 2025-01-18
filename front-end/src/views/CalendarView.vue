@@ -160,7 +160,7 @@ async function onViewChange(viewData) {
   }
 
 }
-//!!! ATTENTION QUAND DAns les plants on récupe bien le user a modifier
+
 async function  openModalEvent() {
   showModal.value = true;
   await plantStore.fetchPlants();

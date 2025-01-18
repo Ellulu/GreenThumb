@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.model.NotificationLog;
 import com.helmo.greenThumb.services.EmailService;
-import com.helmo.greenThumb.services.FirebaseUserService;
+import com.helmo.greenThumb.services.FirebaseService;
 import com.helmo.greenThumb.services.NotificationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class NotificationController {
     @Autowired
     NotificationLogService notificationLogService;
     @Autowired
-    FirebaseUserService firebaseUserService;
+    FirebaseService firebaseService;
     @Autowired
     private EmailService emailService;
 
@@ -51,7 +51,7 @@ public class NotificationController {
     public void SendMail(){
        Map<String ,List<NotificationLog>> logs = notificationLogService.getMailUnSentLogs();
        for (Map.Entry<String, List<NotificationLog>> entry : logs.entrySet()) {
-           String Email = firebaseUserService.getEmailFromUid(entry.getKey());
+           String Email = firebaseService.getEmailFromUid(entry.getKey());
           String message = "";
            for(NotificationLog log : entry.getValue()){
                if (!log.isMailSent()){

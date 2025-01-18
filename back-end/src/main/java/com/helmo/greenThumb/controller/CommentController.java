@@ -1,5 +1,6 @@
 package com.helmo.greenThumb.controller;
 
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.dto.CommentDTO;
 import com.helmo.greenThumb.model.Comment;
 import com.helmo.greenThumb.services.CommentService;
@@ -26,19 +27,24 @@ public class CommentController {
 
     @PostMapping("/{articleId}/comments")
     public ResponseEntity<Comment> createComment(
+            @RequestAttribute("firebaseToken") FirebaseToken token,
             @PathVariable Long articleId,
             @RequestBody CommentRequest commentRequest) {
         Comment comment = commentService.createComment(
                 articleId,
-                commentRequest.getUserId(),
+                token.getUid(),
                 commentRequest.getContent()
         );
         return ResponseEntity.status(201).body(comment);
     }
 
     @DeleteMapping("/{commentId}/comments")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        System.out.println("hello");
+    public ResponseEntity<Void> deleteComment(
+            @RequestAttribute("firebaseToken") FirebaseToken token,
+            @PathVariable Long commentId) {
+        if(!commentService.isCommentOwner(commentId,token.getUid())) {
+            return ResponseEntity.status(403).build();
+        }
         commentService.deleteComment(commentId);
         return ResponseEntity.noContent().build();
     }

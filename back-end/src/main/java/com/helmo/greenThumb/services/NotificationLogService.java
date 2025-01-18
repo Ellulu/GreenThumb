@@ -6,6 +6,7 @@ import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.model.NotificationLog;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class NotificationLogService {
 
 

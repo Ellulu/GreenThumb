@@ -1,5 +1,5 @@
 <script setup>
-import { LogOut, Pencil, LeafIcon, NotebookPen } from 'lucide-vue-next';
+import { LogOut, Pencil, LeafIcon, NotebookPen, LayoutDashboard} from 'lucide-vue-next';
 import { useUserStore } from "../stores/userStore";
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
@@ -46,6 +46,15 @@ const items = [
         <p>Vos notes</p>
       </RouterLink>
     </div>
+<div>
+  <RouterLink
+      to="/profile/dashboards"
+      class="w-full flex items-center justify-center gap-4 bg-green-600 text-white rounded-md drop-shadow-md py-1 hover:bg-green-700 transition-all ease-in-out duration-200"
+  >
+    <LayoutDashboard></LayoutDashboard>
+    <p>Dashboard</p>
+  </RouterLink>
 
+</div>
     <hr class="bg-gray-400 h-[1px] border-none">
 </template>

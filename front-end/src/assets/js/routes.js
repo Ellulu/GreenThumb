@@ -38,11 +38,7 @@ const routes = [
         path: "test",
         component: TestView,
       },
-      {
-        path: "dashboard",
-        component: DashboardView,
-        beforeEnter: (to, from, next) => checkAuth(next),
-      },
+
       {
         path: "posts",
         component: PostsView,
@@ -74,6 +70,10 @@ const routes = [
       {
         path: "profile/plants",
         component: PlantView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+      },{
+        path: "profile/dashboards",
+        component: DashboardView,
         beforeEnter: (to, from, next) => checkAuth(next),
       },
       {

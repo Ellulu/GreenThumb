@@ -15,6 +15,9 @@ public class FileValidator {
         MAGIC_NUMBERS.put("gif", "47494638"); // GIF
         MAGIC_NUMBERS.put("bmp", "424D"); // BMP
         MAGIC_NUMBERS.put("tif", "49492A00"); // TIFF
+        MAGIC_NUMBERS.put("webp", "52494646"); // WEBP
+        MAGIC_NUMBERS.put("avif", "0000001C"); // AVIF
+
     }
     
     public static boolean validateImage(MultipartFile file) {
