@@ -36,14 +36,10 @@ const routes = [
     redirect: {path: "posts"},
     children: [
       {
-        path: "test",
-        component: TestView,
-      },
-
-      {
         path: "posts",
         component: PostsView,
-      },  {
+      },
+      {
         path: "notification",
         component:  NotificationsVue,
         beforeEnter: (to, from, next) => checkAuth(next),
