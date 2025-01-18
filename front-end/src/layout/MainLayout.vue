@@ -37,7 +37,6 @@ const menuItems = [
   { name: "Communauté", path: "/community", icon: UsersIcon },
   { name: "Mon profil", path: "/profile", icon: UserIcon },
   { name: "Notification", path: "/notification", icon: BellIcon },
-  { name: "DashBoard", path: "/dashboard", icon:  LayoutDashboard },
   { name: "Aide", path: "/help", icon: HelpCircleIcon },
 ];
 

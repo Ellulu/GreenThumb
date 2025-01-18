@@ -32,7 +32,7 @@ onMounted(async () => {
 
 <template>
 
-  <div>
+  <div class="mb-8">
     <Title>Tâches du jour</Title>
   </div>
 

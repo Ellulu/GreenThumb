@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Title_2>Edit event view</Title_2>
+  <div >
+    <Title class="mb-8">Modifier Évènement</Title>
 
     <CardEventDisplay :daily-task="displayTasks">
       <template #default="{ task, index }">
@@ -39,7 +39,7 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import CardEventDisplay from '@/components/CardEventDisplay.vue';
-import Title_2 from '@/components/Title_2.vue';
+import Title from '@/components/Title.vue';
 import Button from '@/components/Button.vue';
 import { useEventStore } from '@/stores/useEventStore.js';
 import ModalForm from "@/components/ModalForm.vue";
