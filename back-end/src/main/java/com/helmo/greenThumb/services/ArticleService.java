@@ -3,6 +3,7 @@ package com.helmo.greenThumb.services;
 import com.google.firebase.auth.ExportedUserRecord;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ListUsersPage;
+import com.google.firebase.auth.UserRecord;
 import com.helmo.greenThumb.dto.ArticleDTO;
 import com.helmo.greenThumb.infrastructures.RatingRepository;
 import com.helmo.greenThumb.infrastructures.UserRepository;
@@ -13,15 +14,22 @@ import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.utils.DTOConverter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ArticleService {
 
+    private static int PAGE_SIZE = 5;
     @Autowired
     private ArticleRepository articleRepository;
     @Autowired
@@ -32,18 +40,31 @@ public class ArticleService {
     private FirebaseService firebaseService;
     @Autowired
     private NotificationLogService notificationLogService;
+    Map<String, UserRecord> userCache = new HashMap<>();
+
     private static final DTOConverter DTO_CONVERTER = new DTOConverter();
     public Article createArticle(Article article) {
         return articleRepository.save(article);
     }
 
-    public List<ArticleDTO> getAllArticles(String uid) {
-        List<ArticleDTO> articleDTOS = new ArrayList<>();
-        for (Article a : articleRepository.findTop15ByOrderByDateDesc()){
-            articleDTOS.add(DTO_CONVERTER.toArticleDTO(a,firebaseService.getUserByUid(a.getAuthor().getUid()),uid));
-        }
-        return articleDTOS;
+    public List<ArticleDTO> getArticlesByPage(String uid, int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<Article> articlesPage = articleRepository.findAllByOrderByDateDesc(pageable);
+        return articlesPage.stream()
+                .map(article -> {
+                    UserRecord userRecord;
+                    String authorUid = article.getAuthor().getUid();
+                    if (!userCache.containsKey(authorUid)) {
+                        userRecord = firebaseService.getUserByUid(authorUid);
+                        userCache.put(authorUid, userRecord);
+                    }else{
+                        userRecord = userCache.get(authorUid);
+                    }
+                    return DTO_CONVERTER.toArticleDTO(article, userRecord, uid);
+                })
+                .collect(Collectors.toList());
     }
+
     public Article getArticleById(Long id) {
         return articleRepository.findById(id).orElse(null);
     }
