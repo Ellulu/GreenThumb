@@ -39,9 +39,6 @@ class NotificationControllerTest {
     private NotificationLogService notificationLogService;
 
     @MockBean
-    private FirebaseUserService firebaseUserService;
-
-    @MockBean
     private EmailService emailService;
 
     @MockBean

@@ -82,6 +82,17 @@ public class UserController {
         }
     }
 
+    @GetMapping("/admin")
+    public ResponseEntity<Boolean> userIsAdmin(@RequestAttribute("firebaseToken") FirebaseToken token) {
+        User user = userService.getUserById(token.getUid());
+        
+        if (user.isAdmin()) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);

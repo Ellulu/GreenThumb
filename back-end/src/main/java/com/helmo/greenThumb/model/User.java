@@ -2,18 +2,22 @@ package com.helmo.greenThumb.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Entity
 @Table(name = "app_user")
 public class User {
     @Id
     private String uid;
+
+    @Value("false")
+    private Boolean isAdmin;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -55,6 +59,14 @@ public class User {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public Boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     public List<User> getFollowing() {
