@@ -4,10 +4,14 @@ import {
   updateProfile,
   signOut,
   signInWithPopup,
-  deleteUser as firebaseDeleteUser,
+  deleteUser,
   setPersistence,
   browserLocalPersistence,
   onAuthStateChanged,
+  updateEmail,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential
 } from "firebase/auth";
 import { auth, googleProvider } from "../assets/js/firebase";
 import ApiService from "@/services/ApiService";
@@ -39,7 +43,7 @@ export const useUserStore = defineStore("user", () => {
       await ApiService.post("/users", { uid: auth.currentUser.uid })
         .then(() => router.push("/posts"))
         .catch(async () => {
-          await firebaseDeleteUser(createdUser);
+          await deleteUser(createdUser);
         });
     } catch (error) {
       throw new Error("Une erreur est survenue. Veuillez réessayer.");
@@ -94,10 +98,49 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
+  const updateUser = async (name, email, password, currentPassword = null) => {
+    try {
+      if (password && currentPassword) {
+        await reauthenticate(currentPassword);
+        await updatePassword(auth.currentUser, password);
+      }
+
+      if (name) {
+        await updateProfile(auth.currentUser, {displayName: name});
+      }
+  
+      if (email) {
+        await updateEmail(auth.currentUser, email);
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error("Erreur lors de la mise à jour de vos informations");
+    }
+  };
+
+  const deleteProfile = async () => {
+    try {
+      await deleteUser(auth.currentUser);
+    } catch (error) {
+      throw new Error("Erreur lors de la suppression de votre compte");
+    }
+  };
+
   const logout = async () => {
     await signOut(auth);
     user.value = null;
     router.push("/login");
+  };
+
+  const reauthenticate = async (password) => {
+    try {
+      const credential = EmailAuthProvider.credential(auth.currentUser.email, password);
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      console.log("Ré-authentification réussie.");
+    } catch (error) {
+      console.error("Erreur de ré-authentification :", error);
+      throw new Error("Ré-authentification requise. Veuillez vous reconnecter.");
+    }
   };
 
   return {
@@ -109,5 +152,7 @@ export const useUserStore = defineStore("user", () => {
     register,
     loginWithGoogle,
     saveProfilePicture,
+    updateUser,
+    deleteProfile
   };
 });
