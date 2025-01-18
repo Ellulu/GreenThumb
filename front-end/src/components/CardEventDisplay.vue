@@ -26,7 +26,7 @@ function toggleDescription(index) {
     <div
         v-for="(task, index) in dailyTask"
         :key="index"
-        class="border-green-600 bg border-2 p-4 mb-4 flex flex-col gap-2 text-center"
+        class="border-2 border-green-600 rounded-lg bg-white w-[90%] mx-auto p-4 mb-4 flex flex-col gap-2 text-center shadow-sm"
     >
       <Title_3 class="text-green-600">{{ task.title }}</Title_3>
       <p>

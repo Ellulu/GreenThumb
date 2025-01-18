@@ -42,7 +42,7 @@ await notificationStore.fetchNotifications();
     <div
         v-for="(notification, index) in notifications"
         :key="index"
-        class="border-green-600 bg border-2 p-4 mb-4 flex flex-col gap-2 text-center"
+        class="border-green-600 rounded-lg bg mx-auto border-2 p-4 mb-4 flex flex-col gap-2 text-center mx-4"
     >
       <Title class="text-green-600">{{ notification.event.title }}</Title>
 

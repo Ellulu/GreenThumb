@@ -4,7 +4,7 @@
     <div @click="closeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-[100]"></div>
 
     <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-lg shadow-xl w-full max-w-md z-[101]"
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-[101] p-8 rounded-lg shadow-xl max-w-md w-[90%] mx-auto border border-gray-300"
         role="dialog"
         aria-labelledby="modal-title"
         aria-hidden="false"
