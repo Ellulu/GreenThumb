@@ -41,8 +41,6 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     private Date eventDate;
 
-    @ElementCollection
-    private List<String> files;
 
 
 
@@ -95,17 +93,13 @@ public class Event {
         this.eventDate = eventDate;
     }
 
-    public List<String> getFiles() {
-        return files;
-    }
+
 
     public void setUser(User author) {
         this.user = author;
     }
 
-    public void setFiles(List<String> files) {
-        this.files = files;
-    }
+
 
     public int getCycle() {
         return cycle;

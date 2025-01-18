@@ -4,7 +4,7 @@
 
     <CardEventDisplay :daily-task="displayTasks">
       <template #default="{ task, index }">
-        <Button @click="editTask(task, index)" class="bg-blue-600 text-white py-1 px-3 rounded">
+        <Button @click="editTask(task, index)" class="bg-green-600 text-white py-1 px-3 rounded">
           Modifier
         </Button>
         <Button @click="deleteTask(task, index)" class="bg-red-600 text-white py-1 px-3 rounded">
@@ -33,7 +33,7 @@
  </ModalForm>
 
 
-
+  <Loading :loading="isLoading" />
 </template>
 
 <script setup>
@@ -45,9 +45,11 @@ import { useEventStore } from '@/stores/useEventStore.js';
 import ModalForm from "@/components/ModalForm.vue";
 import Input from "@/components/Input.vue";
 import {usePlantStore} from "@/stores/usePlantStore.js";
+import Loading from "@/components/Loading.vue";
 
 const eventStore = useEventStore();
 const plantStore = usePlantStore();
+const isLoading = ref(true);
 const displayTasks = ref([]);
 const showEditForm = ref(false);
 const event = ref({});
@@ -65,7 +67,7 @@ function closeModal() {
   event.value = {};
 }
 async function handleEdit() {
-   console.log("enter handleEdit");
+
   await eventStore.editEvent(event.value.id,event);
 
   displayTasks.value = eventStore.events;
@@ -85,5 +87,6 @@ onMounted(async () => {
     event.eventDate = new Date(event.eventDate).toISOString().split('T')[0];
   });
   displayTasks.value = eventStore.events;
+  isLoading.value = false;
 });
 </script>

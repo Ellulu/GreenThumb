@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationLogService {
@@ -50,11 +53,9 @@ public class NotificationLogService {
     public void notifyUser(Event event) {
         NotificationLog notificationLog =  notificationLogExists(event);
         if (notificationLog != null) {
-            System.out.println("Le log existe déjà");
-            System.out.println("Vérifier si il a été lu ou pas");
+
         }else{
-            System.out.println("Le log n'existe pas");
-            System.out.println("Créer un nouveau log eet notifier l'utilisateur");
+
 
             saverNotification(new NotificationLog(LocalDateTime.now(), event));
         }
@@ -82,10 +83,12 @@ public class NotificationLogService {
 
         }
     }
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void checkForUpcomingEvents() {
-        System.out.println("on entre dans la boucle");
 
+   // @Scheduled(fixedRate = 3600000)
+   @Scheduled(cron = "0 1 0 * * ?")
+    public void checkForUpcomingEvents() {
+
+System.out.println("Checking for upcoming events");
         GetUpcomingEvents();
 
     }
@@ -110,5 +113,23 @@ public class NotificationLogService {
 
     public void delete(Long id) {
         notificationLogRepository.deleteById(id);
+    }
+
+    public  Map<String, List<NotificationLog>>  getMailUnSentLogs() {
+        List<NotificationLog> logs = notificationLogRepository.findByIsMailSentFalse();
+        Map<String, List<NotificationLog>> notification = new HashMap<>();
+        for (NotificationLog log : logs) {
+            String userId = log.getEvent().getUser().getUid();
+            if(notification.containsKey(userId)){
+                notification.get(userId).add(log);
+            }else{
+                List<NotificationLog> list = new ArrayList<>();
+                list.add(log);
+                notification.put(userId,list);
+            }
+
+        }
+        return notification;
+
     }
 }

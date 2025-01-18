@@ -15,17 +15,14 @@ public class EventUtils {
         List<Event> recurringEvents = new ArrayList<>();
         long cpt = 0;
         for (Event evt : events) {
-            // Conversion de la date d'événement en LocalDate
+
             LocalDate eventLocalDate = evt.getEventDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if(evt.getCycle() !=0){
             for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
                 long diffDays = java.time.temporal.ChronoUnit.DAYS.between(eventLocalDate, date);
 
                 if (diffDays >= 0 && diffDays % evt.getCycle() == 0) {
-                    // Créer une copie de l'événement
 
-
-                    // Convertir LocalDate en Date sans problème de fuseau horaire
                     Date formattedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
                     if(usage){
@@ -34,9 +31,7 @@ public class EventUtils {
                     Event newEvent =new Event(cpt, evt.getTitle(), evt.getDescription(), evt.getCycle(), evt.getPlant(), evt.getUser(),formattedDate);
                     cpt++;
 
-                    // Affichage formaté pour vérifier
-                    System.out.println("Event title: " + newEvent.getTitle());
-                    System.out.println("Event date: " + newEvent.getEventDate());
+
 
                     recurringEvents.add(newEvent);   }else {
                         recurringEvents.add(evt);
@@ -57,7 +52,9 @@ public class EventUtils {
         LocalDate eventLocalDate = event.getEventDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate currentDate = LocalDate.now();
         long diffDays = java.time.temporal.ChronoUnit.DAYS.between(eventLocalDate,   currentDate);
-        System.out.println("diffDays: " + diffDays);
+        if (event.getCycle() == 0 && eventLocalDate.equals(LocalDate.now())) {
+            return true;
+        }
 
         return diffDays >= 0 && diffDays % event.getCycle() == 0;
     }

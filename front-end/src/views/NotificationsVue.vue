@@ -3,16 +3,17 @@ import { ref, onMounted } from 'vue';
 import {Button, Title} from "@/components/index.js";
 import {useNotificationStore} from "@/stores/useNotficationStore.js";
 import EventDisplay from "@/components/EventDisplay.vue";
+import Loading from "@/components/Loading.vue";
 const notificationStore = useNotificationStore();
 const notifications = ref([]);
 const event = ref(null);
-
+const isLoading = ref(true);
 async function showEvent(notification) {
 let tempevent = notification.event;
 tempevent.start  =notification.event.eventDate;
 tempevent.plant= notification.event.plant.name;
 event.value = tempevent;
-  console.log("Notification ID:", notification.id);
+
 
 await notificationStore.deleteNotification(notification.id);
  await notificationStore.fetchNotifications();
@@ -26,6 +27,7 @@ event.value = null;
 onMounted(async () => {
 await notificationStore.fetchNotifications();
   notifications.value = notificationStore.notifications;
+  isLoading.value = false;
 });
 
 
@@ -58,7 +60,7 @@ await notificationStore.fetchNotifications();
   </div>
   <EventDisplay @close="closeModal"  v-if="event" :event="event" />
 
-
+  <Loading :loading="isLoading" />
 
 
 </template>

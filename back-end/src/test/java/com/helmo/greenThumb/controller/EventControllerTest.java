@@ -1,27 +1,30 @@
 package com.helmo.greenThumb.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.services.EventService;
+import com.helmo.greenThumb.services.NotificationLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @WebMvcTest(EventController.class)
@@ -30,86 +33,103 @@ class EventControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
     private EventService eventService;
 
+    @MockBean
+    private NotificationLogService notificationLogService;
+
+    @MockBean
+    private FirebaseToken firebaseToken;
+
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        Mockito.when(firebaseToken.getUid()).thenReturn("testUser");
     }
 
 
-  /*  @Test
-    void createEvent() throws Exception {
-        Event event = new Event();
-        event.setId(1L);
-        event.setDescription("Test Event");
-        event.setEventDate(new Date());
 
-        Mockito.when(eventService.createEvent(Mockito.any(Event.class))).thenReturn(event);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/events")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(event)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.description").value("Test Event"));
-    }
-*/
     @Test
-    void getAllEvents() throws Exception {
-       /* Event event1 = new Event();
+    @WithMockUser(username = "testUser", roles = "USER")
+    void getEvents() throws Exception {
+        Event event1 = new Event();
         event1.setId(1L);
-        event1.setDescription("Test Event 1");
+        event1.setTitle("Event 1");
         event1.setEventDate(new Date());
 
         Event event2 = new Event();
         event2.setId(2L);
-        event2.setDescription("Test Event 2");
+        event2.setTitle("Event 2");
         event2.setEventDate(new Date());
 
         List<Event> events = Arrays.asList(event1, event2);
 
-       // Mockito.when(eventService.getAllEvents()).thenReturn(events);
+        Mockito.when(eventService.getEventsFromDate(Mockito.anyString(), Mockito.any(LocalDate.class), Mockito.any(LocalDate.class))).thenReturn(events);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/events")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/events/get")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("startDate", "2023-01-01", "endDate", "2023-12-31")))
+                        .requestAttr("firebaseToken", firebaseToken)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].description").value("Test Event 1"))
-                .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].description").value("Test Event 2"));*/
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2));
     }
 
     @Test
-    void getEventById() throws Exception {
+    @WithMockUser(username = "testUser", roles = "USER")
+    void getAllEvents() throws Exception {
+        Event event1 = new Event();
+        event1.setId(1L);
+        event1.setTitle("Event 1");
+        event1.setEventDate(new Date());
+
+        Event event2 = new Event();
+        event2.setId(2L);
+        event2.setTitle("Event 2");
+        event2.setEventDate(new Date());
+
+        List<Event> events = Arrays.asList(event1, event2);
+
+        Mockito.when(eventService.getAllEventsForUser(Mockito.anyString())).thenReturn(events);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/events/all")
+                        .requestAttr("firebaseToken", firebaseToken)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = "USER")
+    void editEvent() throws Exception {
         Event event = new Event();
         event.setId(1L);
-        event.setDescription("Test Event");
-        event.setEventDate(new Date());
+        event.setTitle("Updated Event");
 
-        Mockito.when(eventService.getEventById(1L)).thenReturn(event);
+        Mockito.doNothing().when(eventService).editEvent(Mockito.anyLong(), Mockito.any(Event.class));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/events/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/events/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(event))
+                        .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.description").value("Test Event"));
+                .andExpect(content().string("L'event a bien été modifié"));
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void deleteEvent() throws Exception {
-        Mockito.doNothing().when(eventService).deleteEvent(1L);
+        Mockito.doNothing().when(eventService).deleteEvent(Mockito.anyLong());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/events/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .with(csrf()))
                 .andExpect(status().isOk());
     }
 }

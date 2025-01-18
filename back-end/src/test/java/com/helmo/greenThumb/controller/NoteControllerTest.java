@@ -1,16 +1,17 @@
 package com.helmo.greenThumb.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Note;
 import com.helmo.greenThumb.services.NoteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,9 +19,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @WebMvcTest(NoteController.class)
@@ -29,58 +29,74 @@ class NoteControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private NoteService noteService;
-
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private NoteService noteService;
+
+    @MockBean
+    private FirebaseToken firebaseToken;
+
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        Mockito.when(firebaseToken.getUid()).thenReturn("testUser");
     }
 
-   /* @Test
-    void createNote() throws Exception {
-        Note note = new Note();
-        note.setId(1L);
-        note.setTitle("Test Note");
-        note.setContent("This is a test note.");
 
-        Mockito.when(noteService.saveNote(Mockito.any(Note.class))).thenReturn(note);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/notes")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(note)))
-                .andExpect(status().isCreated())
-                .andExpect(content().string("La note a bien été créée"));
-    }*/
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void getAllNotes() throws Exception {
         Note note1 = new Note();
         note1.setId(1L);
-        note1.setTitle("Test Note 1");
-        note1.setContent("test note.");
+        note1.setTitle("Note 1");
+        note1.setContent("Content 1");
 
         Note note2 = new Note();
         note2.setId(2L);
-        note2.setTitle("Test Note 2");
-        note2.setContent("test note note.");
+        note2.setTitle("Note 2");
+        note2.setContent("Content 2");
 
         List<Note> notes = Arrays.asList(note1, note2);
 
-        Mockito.when(noteService.findAll()).thenReturn(notes);
+        Mockito.when(noteService.findAllNoteByUser(Mockito.anyString())).thenReturn(notes);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/notes")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/notes/get")
+                        .requestAttr("firebaseToken", firebaseToken)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].title").value("Test Note 1"))
-                .andExpect(jsonPath("$[0].content").value("test note."))
-                .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].title").value("Test Note 2"))
-                .andExpect(jsonPath("$[1].content").value("test note note."));
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = "USER")
+    void editNote() throws Exception {
+        Note note = new Note();
+        note.setId(1L);
+        note.setTitle("Updated Note");
+        note.setContent("Updated content.");
+
+        Mockito.doNothing().when(noteService).edit(Mockito.anyLong(), Mockito.any(Note.class));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/notes/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(note))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("La note a bien été modifiée"));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = "USER")
+    void deleteNote() throws Exception {
+        Mockito.doNothing().when(noteService).delete(Mockito.anyLong());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/notes/1")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("La note a bien été supprimée"));
     }
 }
