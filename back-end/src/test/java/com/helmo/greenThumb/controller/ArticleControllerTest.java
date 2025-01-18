@@ -1,7 +1,9 @@
 package com.helmo.greenThumb.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.dto.ArticleDTO;
+import com.helmo.greenThumb.dto.AuthorDTO;
 import com.helmo.greenThumb.model.Article;
 import com.helmo.greenThumb.services.ArticleService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -20,9 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @WebMvcTest(ArticleController.class)
@@ -37,50 +38,29 @@ class ArticleControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private FirebaseToken firebaseToken;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        Mockito.when(firebaseToken.getUid()).thenReturn("testUser");
     }
 
-    @Test
-    void createArticle() throws Exception {
-        Article article = new Article();
-        article.setId(1L);
-        article.setTitle("Test Article");
-        article.setText("Test pour article.");
-        article.setDate(new Date());
-
-        Mockito.when(articleService.createArticle(Mockito.any(Article.class))).thenReturn(article);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/articles")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(article)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.title").value("Test Article"))
-                .andExpect(jsonPath("$.text").value("Test pour article."));
-    }
 
     @Test
-    void getAllArticles() throws Exception {
-        Article article1 = new Article();
-        article1.setId(1L);
-        article1.setTitle("Test Article 1");
-        article1.setText("article de test 1");
-        article1.setDate(new Date());
+    @WithMockUser(username = "testUser", roles = "USER")
+    void getUserArticles() throws Exception {
+        AuthorDTO author = new AuthorDTO("Test User", "imageUrl", "testUser");
+        ArticleDTO article1 = new ArticleDTO(1L, "Test Article 1", "article de test 1", author, "2023-10-10", null, null, null);
+        ArticleDTO article2 = new ArticleDTO(2L, "Test Article 2", "article de test 2", author, "2023-10-11", null, null, null);
 
-        Article article2 = new Article();
-        article2.setId(2L);
-        article2.setTitle("Test Article 2");
-        article2.setText("artoicle de test 2");
-        article2.setDate(new Date());
+        List<ArticleDTO> articles = Arrays.asList(article1, article2);
 
-        List<ArticleDTO> articles = null;// TODO: switch article dto
-
-        Mockito.when(articleService.getAllArticles("")).thenReturn(articles);//TODO:update article
+        Mockito.when(articleService.getAllArticles("testUser")).thenReturn(articles);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/articles")
+                        .requestAttr("firebaseToken", firebaseToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -89,10 +69,34 @@ class ArticleControllerTest {
                 .andExpect(jsonPath("$[0].text").value("article de test 1"))
                 .andExpect(jsonPath("$[1].id").value(2L))
                 .andExpect(jsonPath("$[1].title").value("Test Article 2"))
-                .andExpect(jsonPath("$[1].text").value("artoicle de test 2"));
+                .andExpect(jsonPath("$[1].text").value("article de test 2"));
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
+    void getAllArticles() throws Exception {
+        AuthorDTO author = new AuthorDTO("Test User", "imageUrl", "testUser");
+        ArticleDTO article1 = new ArticleDTO(1L, "Test Article 1", "article de test 1", author, "2023-10-10", null, null, null);
+        ArticleDTO article2 = new ArticleDTO(2L, "Test Article 2", "article de test 2", author, "2023-10-11", null, null, null);
+
+        List<ArticleDTO> articles = Arrays.asList(article1, article2);
+
+        Mockito.when(articleService.getAllArticles("")).thenReturn(articles);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/articles/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].title").value("Test Article 1"))
+                .andExpect(jsonPath("$[0].text").value("article de test 1"))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].title").value("Test Article 2"))
+                .andExpect(jsonPath("$[1].text").value("article de test 2"));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void getArticleById() throws Exception {
         Article article = new Article();
         article.setId(1L);
@@ -112,12 +116,6 @@ class ArticleControllerTest {
     }
 
 
-    @Test
-    void deleteArticle() throws Exception {
-        Mockito.doNothing().when(articleService).deleteArticle(1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/articles/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+
 }

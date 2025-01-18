@@ -25,11 +25,14 @@ public class NotificationLog {
     private boolean isSent = false;
 
 
+    private boolean isMailSent = false;
 
     public NotificationLog(LocalDateTime now, Event event) {
         this.notificationDate = now;
         this.event = event;
         this.isSent = false;
+        this.isMailSent = false;
+
     }
 
     public NotificationLog() {
@@ -72,4 +75,11 @@ public class NotificationLog {
     }
 
 
+    public boolean isMailSent() {
+        return isMailSent;
+    }
+
+    public void setMailSent(boolean mailSent) {
+        isMailSent = mailSent;
+    }
 }

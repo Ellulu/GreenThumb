@@ -9,10 +9,7 @@ export const useNotificationStore = defineStore('notification', {
     actions: {
         async fetchNotifications() {
             try {
-                console.log("fetching notifications");
                 const response = await ApiService.post('/notifications/get');
-                console.log("response received");
-                console.log(response.data);
                 this.notifications = response.data;
             } catch (error) {
                 this.error = 'Failed to load notifications';

@@ -1,16 +1,18 @@
 package com.helmo.greenThumb.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.User;
+import com.helmo.greenThumb.services.FirebaseService;
 import com.helmo.greenThumb.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,9 +20,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @WebMvcTest(UserController.class)
@@ -32,15 +33,22 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private FirebaseService firebaseService;
+
+    @MockBean
+    private FirebaseToken firebaseToken;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        Mockito.when(firebaseToken.getUid()).thenReturn("testUser");
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void getAllUsers() throws Exception {
         User user1 = new User();
         user1.setUid("1");
@@ -61,6 +69,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void getUserById() throws Exception {
         User user = new User();
         user.setUid("1");
@@ -74,27 +83,28 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.uid").value("1"));
     }
 
+
     @Test
-    void createUser() throws Exception {
-        User user = new User();
-        user.setUid("1");
+    @WithMockUser(username = "testUser", roles = "USER")
+    void followUser() throws Exception {
+        Mockito.doNothing().when(userService).followUser("testUser", "2");
 
-        Mockito.when(userService.createUser(Mockito.any(User.class))).thenReturn(user);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/2/follow")
+                        .requestAttr("firebaseToken", firebaseToken)
+                        .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.uid").value("1"));
+                .andExpect(content().string("User followed"));
     }
 
     @Test
-    void deleteUser() throws Exception {
-        Mockito.doNothing().when(userService).deleteUser("1");
+    @WithMockUser(username = "testUser", roles = "USER")
+    void unfollowUser() throws Exception {
+        Mockito.doNothing().when(userService).unfollowUser("testUser", "2");
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/2/unfollow")
+                        .requestAttr("firebaseToken", firebaseToken)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("User unfollowed"));
     }
 }

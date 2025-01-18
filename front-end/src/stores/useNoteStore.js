@@ -9,8 +9,13 @@ export const useNoteStore = defineStore('note', () => {
 
         const fetchNotes = async () => {
             try {
-                console.log(userStore.uid);
+
                 const response = await APIService.post(`/notes/get`);
+
+
+
+
+
                 notes.value = response.data;
 
             } catch (error) {
@@ -34,7 +39,7 @@ export const useNoteStore = defineStore('note', () => {
                 noteData.user = userStore.user;
                 await APIService.post('/notes/create', noteData);
                 notes.value.push(noteData);
-                console.log(noteData.value);
+
             } catch (error) {
                 error.value = 'Failed to create note';
             }

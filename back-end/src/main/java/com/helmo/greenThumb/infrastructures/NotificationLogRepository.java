@@ -19,4 +19,5 @@ public interface NotificationLogRepository  extends JpaRepository<NotificationLo
     List<NotificationLog> findByEventUserUid(String uid);
 
 
+    List<NotificationLog> findByIsMailSentFalse();
 }
