@@ -1,18 +1,15 @@
 package com.helmo.greenThumb.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.cloud.StorageClient;
 import com.helmo.greenThumb.dto.ArticleDTO;
-import com.helmo.greenThumb.dto.LikeRequestDTO;
 import com.helmo.greenThumb.model.Article;
-import com.helmo.greenThumb.model.NotificationLog;
-import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.services.ArticleService;
+import com.helmo.greenThumb.services.EmailService;
 import com.helmo.greenThumb.services.FirebaseService;
 import com.helmo.greenThumb.utils.FileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,10 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-
+    @Autowired
+    private FirebaseService firebaseService;
+    @Autowired
+    private EmailService emailService;
     @PostMapping
     public Article createArticle(@RequestAttribute("firebaseToken") FirebaseToken token,
                                  @RequestParam("article") String articleJson,
@@ -85,7 +85,12 @@ public class ArticleController {
 
 
     @DeleteMapping("/{id}")
-    public void deleteArticle(@PathVariable Long id) {
+    public void deleteArticle(
+            @RequestAttribute("firebaseToken") FirebaseToken token,
+            @PathVariable Long id) {
+        Article article = articleService.getArticleById(id);
+        if (article == null) return;
+        if (!article.getAuthor().getUid().equals(token.getUid())) return;
         articleService.deleteArticle(id);
     }
     @PostMapping("/{articleId}/like")
@@ -96,10 +101,18 @@ public class ArticleController {
         try {
 
             articleService.likeOrDislikeArticle(articleId, token.getUid(), isLike);
+            sendMailToAuthor(token.getUid(), isLike);
             return ResponseEntity.ok("Réaction mise à jour avec succès.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    private void sendMailToAuthor(String uid, boolean isLike) {
+        String eMail = firebaseService.getEmailFromUid(uid);
+        String message = isLike ?
+                "Votre article est populaire! il a été liké."
+                :"Votre article a été disliké.";
+        emailService.sendEmail(eMail, "[GreenThumb] Nouveau Like sur votre poste", message);
     }
 
 }

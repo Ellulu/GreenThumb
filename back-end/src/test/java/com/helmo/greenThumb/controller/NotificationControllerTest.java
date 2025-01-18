@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.model.NotificationLog;
 import com.helmo.greenThumb.services.EmailService;
-import com.helmo.greenThumb.services.FirebaseUserService;
 import com.helmo.greenThumb.services.NotificationLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

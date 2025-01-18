@@ -16,42 +16,51 @@
           <div v-for="article in articles" :key="article.id" class="rounded-lg shadow p-4">
             <div class="flex items-center space-x-4 mb-4">
               <img
-                :src="article.author.imageUrl || '/placeholder.svg?height=48&width=48'"
-                alt="User Avatar"
-                class="w-12 h-12 rounded-full"
+              :src="article.author.imageUrl || '/placeholder.svg?height=48&width=48'"
+              alt="User Avatar"
+              class="w-12 h-12 rounded-full"
               />
               <div class="flex-1">
-                <div class="flex items-center justify-between">
-                  <p class="font-bold">{{ article.author.fullname }}</p>
-                  <button
-                    v-if="authUserStore.user && article.author.uid!=user.uid"
-                    @click="toggleFollow(article.author)"
-                    :class="isFollowing(article.author) ? 'bg-red-100 text-red-500 hover:bg-red-200' : 'bg-green-100 text-green-500 hover:bg-green-200'"
-                    class="px-3 py-1 text-sm rounded-full font-medium transition"
-                  >
-                    {{ isFollowing(article.author) ? 'Unfollow' : 'Follow' }}
-                  </button>
+              <div class="flex items-center justify-between">
+                <p class="font-bold">{{ article.author.fullname }}</p>
+                <div class="flex space-x-2">
+                <button
+                  v-if="authUserStore.user && article.author.uid!=user.uid"
+                  @click="toggleFollow(article.author)"
+                  :class="isFollowing(article.author) ? 'bg-red-100 text-red-500 hover:bg-red-200' : 'bg-green-100 text-green-500 hover:bg-green-200'"
+                  class="px-3 py-1 text-sm rounded-full font-medium transition"
+                >
+                  {{ isFollowing(article.author) ? 'Unfollow' : 'Follow' }}
+                </button>
+                <button
+                  v-if="authUserStore.user && article.author.uid === user.uid"
+                  @click="deleteArticle(article.id)"
+                  class="bg-red-100 text-red-500 hover:bg-red-200 px-3 py-1 text-sm rounded-full font-medium transition"
+                >
+                  Supprimer
+                </button>
                 </div>
-                <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
+              </div>
+              <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
               </div>
             </div>
             <h4 class="text-xl font-bold mb-2">{{ article.title }}</h4>
             <p class="mb-4">{{ article.text }}</p>
             <div class="mb-4">
               <div class="relative overflow-hidden rounded-lg shadow-md">
-                <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar space-x-4 p-4">
-                  <div
-                    v-for="file in article.files"
-                    :key="file"
-                    class="snap-center flex-shrink-0 w-64 h-64 relative"
-                  >
-                    <img
-                      :src="file"
-                      :alt="'Image from ' + article.author.fullname"
-                      class="w-full h-full object-cover rounded-lg shadow-md"
-                    />
-                  </div>
+              <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar space-x-4 p-4">
+                <div
+                v-for="file in article.files"
+                :key="file"
+                class="snap-center flex-shrink-0 w-64 h-64 relative"
+                >
+                <img
+                  :src="file"
+                  :alt="'Image from ' + article.author.fullname"
+                  class="w-full h-full object-cover rounded-lg shadow-md"
+                />
                 </div>
+              </div>
               </div>
             </div>
             <ArticleActions
@@ -102,6 +111,7 @@
 </template>
 
 <script setup>
+// TODO : ajouter tri posts par fan
 import { ref, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/useArticleStore'
 import { useUserStore } from '@/stores/userStore';
@@ -144,6 +154,11 @@ const getVideoType = (file) => {
           return '';
       }
 }
+const deleteArticle = async (articleId) => {
+  await articleStore.deleteArticle(articleId)
+  articles.value = articles.value.filter((a) => a.id !== articleId)
+}
+
 const addArticle = (newArticle) => {
     const newArticleObj = {
       id: Date.now(),
@@ -227,7 +242,6 @@ const deleteComment = async (articleId, commentId) => {
   const article = articles.value.find((a) => a.id === articleId);
   article.comments = article.comments.filter((c) => c.id !== commentId);
 };
-
 onMounted(async () => {
   try {
     if ((!dBUserStore.user || dBUserStore.user.uid !== user  || !dBUserStore.user.uid)&& user && user.uid) {
@@ -244,7 +258,13 @@ onMounted(async () => {
       }
     }
     articles.value = articleStore.articles
-    articles.value.sort((a, b) => new Date(b.date) - new Date(a.date));
+    articles.value.sort((a, b) => {
+      const aFollowing = isFollowing(a.author);
+      const bFollowing = isFollowing(b.author);
+      if (aFollowing && !bFollowing) return -1;
+      if (!aFollowing && bFollowing) return 1;
+      return new Date(b.date) - new Date(a.date);
+    });
     console.log(articleStore.articles)
     isLoading.value = false
   } catch (err) {

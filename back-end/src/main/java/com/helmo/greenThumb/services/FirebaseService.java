@@ -14,21 +14,6 @@ public class FirebaseService {
     public FirebaseService(){
 
     }
-    public void listAllUsers() {
-        try {
-            ListUsersPage page = FirebaseAuth.getInstance().listUsers(null);
-            while (page != null) {
-                for (ExportedUserRecord user : page.getValues()) {
-                    System.out.println("User ID: " + user.getUid());
-                    System.out.println("Email: " + user.getEmail());
-                    System.out.println("Phone: " + user.getPhoneNumber());
-                }
-                page = page.getNextPage();
-            }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération des utilisateurs : " + e.getMessage());
-        }
-    }
 
     public UserRecord getUserByUid(String uid) {
         try {
@@ -38,5 +23,13 @@ public class FirebaseService {
             return null;
         }
 
+    }
+    public String getEmailFromUid(String uid) {
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().getUser(uid);
+            return userRecord.getEmail(); // Récupère l'adresse e-mail de l'utilisateur
+        } catch (Exception e) {
+            throw new RuntimeException("Impossible de récupérer l'utilisateur Firebase : " + e.getMessage());
+        }
     }
 }

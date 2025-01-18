@@ -28,7 +28,12 @@ public class CommentService {
         this.userRepository = userRepository;
         this.firebaseService = firebaseService;
     }
+    public boolean isCommentOwner(Long commentId, String userId) {
 
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Commentaire introuvable"));
+        return comment.getUser().getUid().equals(userId);
+    }
     public List<CommentDTO> getCommentsByArticleId(Long articleId) {
         List<Comment> comments = commentRepository.findByArticleId(articleId);
         return comments.stream()

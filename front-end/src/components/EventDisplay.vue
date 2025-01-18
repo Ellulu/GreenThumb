@@ -43,7 +43,7 @@ const handleCancel = () => {
         <span class="font-bold">Cet événement ne se répète pas.</span>
       </p>
       <p v-else>
-        <span class="font-bold">Ce répète tous les:</span> {{ event.cycle }} <span class="font-bold">jours</span>
+        <span class="font-bold">Se répète tous les:</span> {{ event.cycle }} <span class="font-bold">jours</span>
       </p>
       <button
           type="button"
