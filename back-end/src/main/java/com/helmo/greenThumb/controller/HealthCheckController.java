@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/health")
 public class HealthCheckController {
     @GetMapping
-    public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("Hello World !");
+    public ResponseEntity<Void> helloWorld() {
+        return ResponseEntity.ok().build();
     }
 }
