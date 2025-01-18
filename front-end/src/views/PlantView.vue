@@ -20,7 +20,7 @@
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <ImageBox :alt="plant.name" v-for="plant in plantStore.plants" :key="plant.id">
+      <ImageBox :alt="plant.name" :image="plant.picture" v-for="plant in plantStore.plants" :key="plant.id">
           <Title_3>{{ plant.name }}</Title_3>
           <Text>Variété: {{ plant.variety.name }}</Text>
           <div class="flex items-center mb-2">
@@ -35,7 +35,7 @@
             <Button @click="editPlant(plant)" class="text-green-600 hover:text-green-800">
               <EditIcon class="h-5 w-5" />
             </button>
-            <Button @click="deletePlant(plant)" class="text-red-600 hover:text-red-800"><TrashIcon class="h-5 w-5" /></Button>
+            <Button @click="deletePlant(plant.id)" class="text-red-600 hover:text-red-800"><TrashIcon class="h-5 w-5" /></Button>
           </div>
       </ImageBox>
     </div>
@@ -45,14 +45,14 @@
     </button>
 
     <!-- Modal pour ajouter une plante -->
-    <FormBox 
+      <FormBox 
       v-if="isAddModalVisible"
       title="Ajouter une plante" 
       submitText="Ajouter" 
       cancelText="Annuler"
       @submit="addPlant" 
       @cancel="hideAddPlantModal"
-    >
+      >
       <Input 
         name="Nom" 
         v-model="newPlant.name"
@@ -71,17 +71,22 @@
         name="Luminosité"
         v-model="newPlant.lightLevel"
         :options="lightLevelOptions" 
-        required 
+        required
       />
       <Input 
-        name="Nombre arrosages mensuel" 
-        v-model="newPlant.watering"
-        type="number" 
-        placeholder="Nombre d'arrosages mensuel" 
-        required 
-        min="0" 
-        max="30" 
-      />
+      name="Nombre arrosages mensuel" 
+      v-model="newPlant.monthlyWaterFrequency"
+      type="number" 
+      placeholder="Nombre d'arrosages mensuel" 
+      required 
+      min="0" 
+      max="30" 
+    />
+    <input
+      type="file"
+      @change="getPlantPicture"
+      class="block w-full text-sm text-slate-500 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 hover:file:cursor-pointer"
+    />
     </FormBox>
 
     <!-- Modal pour éditer une plante -->
@@ -145,15 +150,16 @@ const isEditModalVisible = ref(false);
 const newPlant = ref({
   name: '',
   variety: '',
-  luminosity: '',
-  watering: 4
+  lightLevel : '',
+  monthlyWaterFrequency: 4,
+  picture: null
 });
 const editingPlant = ref(null);
 onMounted(async () => {
   loading.value = true;
   try {
     await plantStore.fetchPlants();
-
+    console.log("plants",plantStore.plants)
     plantStore.plants.forEach(plant => {
       if(plant.lightLevel=="LOW"){
         plant.lightLevel==30
@@ -163,15 +169,20 @@ onMounted(async () => {
         plant.lightLevel==99
       };
     });
-    console.log(plantStore.plants)
     loading.value = false;
-    console.log("loaded")
   } catch (err) {
     error.value = "Erreur lors du chargement des plantes.";
     loading.value = false;
   }
 })
 
+function getPlantPicture(event) {
+    newPlant.value.picture = event.target.files[0];
+    if (newPlant.value.picture) {
+        const reader = new FileReader();
+        reader.readAsDataURL(newPlant.value.picture);
+    }
+}
 
 function getLightPourcentage(lightLevel){
   switch (lightLevel){
@@ -194,21 +205,27 @@ const showAddPlantModal = () => {
 
 const hideAddPlantModal = () => {
   isAddModalVisible.value = false;
-  newPlant.value = { name: '', variety: '', luminosity: '', watering: 4 };
+  newPlant.value = { name: '', variety: '', lightLevel:'', monthlyWaterFrequency: 4 };
 };
-
 const addPlant = async () => {
   try {
     await plantStore.createPlant({
-      ...newPlant.value,
-      variety: { name: newPlant.value.variety }
-    });
+      id: 0,
+      name: newPlant.value.name,
+      variety:{
+        name:newPlant.value.variety
+      },
+      lightLevel: newPlant.value.lightLevel,
+      monthlyWaterFrequency: newPlant.value.monthlyWaterFrequency,
+    },newPlant.value.picture);
     await plantStore.fetchPlants();
     hideAddPlantModal();
   } catch (err) {
+    console.log(err)
     error.value = "Erreur lors de l'ajout de la plante.";
   }
 };
+
 
 const editPlant = (plant) => {
   editingPlant.value = { ...plant };
@@ -222,7 +239,6 @@ const hideEditPlantModal = () => {
 
 const updatePlant = async () => {
   try {
-    console.log(editingPlant.value)
     await plantStore.createPlant(editingPlant.value);
     await plantStore.fetchPlants();
     hideEditPlantModal();

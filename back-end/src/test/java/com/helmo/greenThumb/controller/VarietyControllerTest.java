@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,9 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @WebMvcTest(VarietyController.class)
@@ -42,11 +42,12 @@ class VarietyControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void getAllVarieties() throws Exception {
-        Variety variety1 = new Variety("Varieté 1", "Groot");
+        Variety variety1 = new Variety("Variety 1", "Description 1");
         variety1.setId(1L);
 
-        Variety variety2 = new Variety("Varieté 2", "Groot 2");
+        Variety variety2 = new Variety("Variety 2", "Description 2");
         variety2.setId(2L);
 
         List<Variety> varieties = Arrays.asList(variety1, variety2);
@@ -58,14 +59,15 @@ class VarietyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].name").value("Varieté 1"))
-                .andExpect(jsonPath("$[0].description").value("Groot"))
+                .andExpect(jsonPath("$[0].name").value("Variety 1"))
+                .andExpect(jsonPath("$[0].description").value("Description 1"))
                 .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].name").value("Varieté 2"))
-                .andExpect(jsonPath("$[1].description").value("Groot 2"));
+                .andExpect(jsonPath("$[1].name").value("Variety 2"))
+                .andExpect(jsonPath("$[1].description").value("Description 2"));
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void addVariety() throws Exception {
         Variety variety = new Variety("New Variety", "New Description");
         variety.setId(1L);
@@ -74,7 +76,8 @@ class VarietyControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/varieties")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(variety)))
+                        .content(objectMapper.writeValueAsString(variety))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -83,6 +86,7 @@ class VarietyControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void getVarietyById() throws Exception {
         Variety variety = new Variety("Variety 1", "Description 1");
         variety.setId(1L);
@@ -99,11 +103,13 @@ class VarietyControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void deleteVariety() throws Exception {
         Mockito.doNothing().when(varietyService).deleteVariety(1L);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/varieties/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isOk());
     }
 }

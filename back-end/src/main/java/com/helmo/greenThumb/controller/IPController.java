@@ -13,7 +13,6 @@ public class IPController {
     @GetMapping("/get-ip")
     public String getClientIp(HttpServletRequest request) {
         String clientIp = request.getRemoteAddr();
-        System.out.println("Client IP: " + clientIp); // Affiche l'IP dans la console
-        return "Client IP: " + clientIp; // Retourne l'IP comme réponse
+        return "Client IP: " + clientIp;
     }
 }

@@ -4,11 +4,13 @@ import com.helmo.greenThumb.infrastructures.VarietyRepository;
 import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.model.Variety;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PlantService {
 
     private final PlantRepository plantRepository;
@@ -18,11 +20,12 @@ public class PlantService {
         this.varietyRepository = varietyRepository;
     }
 
-    public List<Plant> getAllPlants() {
-        return plantRepository.findAll();
+    public List<Plant> getAllPlants(String uid) {
+        return plantRepository.findAllByOwnerUid(uid);
     }
 
     public Plant addOrUpdatePlant(Plant plant) {
+
         // Récupère la plante existante si elle existe
         Optional<Plant> existingPlantOpt = plantRepository.findById(plant.getId());
 

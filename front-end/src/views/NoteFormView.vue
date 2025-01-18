@@ -50,12 +50,12 @@
       <template #form-content>
         <div class="mb-4">
 
-          <Input v-model="title" type="text" id="noteTitle" required name="Titre" maxlength="30">
+          <Input v-model="newNote.title" type="text" id="noteTitle" required name="Titre" maxlength="30">
           </Input>
         </div>
         <div class="mb-4">
           <label for="noteContent" class="block text-gray-700 font-bold mb-2">Contenu</label>
-          <textarea v-model="content" id="noteContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
+          <textarea v-model="newNote.content" id="noteContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
         </div>
       </template>
     </ModalForm>
@@ -69,15 +69,21 @@
       <template #form-content>
         <div class="mb-4">
           <label for="editTitle" class="block text-gray-700 font-bold mb-2" >Titre</label>
-          <input v-model="title" type="text" id="editTitle" name="editTitle" class="w-full px-3 py-2 border border-gray-300 rounded" maxlength="30" required>
+          <input v-model="editNoteVar.title" type="text" id="editTitle" name="editTitle" class="w-full px-3 py-2 border border-gray-300 rounded" maxlength="30" required>
         </div>
         <div class="mb-4">
           <label for="editContent" class="block text-gray-700 font-bold mb-2">Contenu</label>
-          <textarea v-model="content" id="editContent" name="editContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
+          <textarea v-model="editNoteVar.content" id="editContent" name="editContent" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
         </div>
       </template>
     </ModalForm>
   </div>
+
+
+  <Loading :loading="isLoading" />
+
+
+
 </template>
 
 <script setup>
@@ -93,44 +99,59 @@ import {Edit } from "lucide-vue-next";
 import {Plus } from "lucide-vue-next";
 
 import {Title} from "@/components/index.js";
+import Loading from "@/components/Loading.vue";
 
 const noteStore = useNoteStore();
 const showAddModal = ref(false);
 const showEditModal = ref(false)
 const showNoteModal = ref(false);
 const selectedNote = ref({});
-
+const isLoading = ref(true);
 const maxContentLength = 100
 const title = ref('');
 const content = ref('');
 const id = ref(null);
 const {fetchNotes,deleteNote,createNote,editNote} = noteStore;
 const { notes } = toRefs(noteStore);
+const newNote =ref({
+  title: '',
+  content:''
+})
+const editNoteVar = ref({
+  title:'',
+  content: '',
+  id: null,
+})
+function resetForm() {
+newNote.value = {
+  title: '',
+  content: ''
+}
+
+}
+
 
 function openEditModal(note) {
-  title.value = note.title
-  content.value = note.content
-  id.value = note.id
+  editNoteVar.value = note;
   showEditModal.value = true
 }
 
 function openNoteModal(note) {
+
   selectedNote.value = note;
   showNoteModal.value = true;
 }
 
 async function deleteNoteEvent(note) {
   try{
-    await deleteNote( note.id);
+      await deleteNote( note.id);
   }catch (error) {
     console.error("Erreur de connexion au serveur:", error);
   }
 }
 
 function closeModal() {
-  title.value = '';
-  content.value = '';
-  id.value=null;
+  resetForm();
   showAddModal.value = false;
   showEditModal.value = false
   showNoteModal.value = false;
@@ -140,37 +161,41 @@ const handleEditSubmit = async ()=> {
 
 
   try {
-    await editNote({ id: id.value, title: title.value, content: content.value });
-    title.value = '';
-    content.value = '';
-    id.value=null;
+    await editNote(editNoteVar.value);
 
-    closeModal();
+
+
   } catch (error) {
     console.error("Erreur de connexion au serveur:", error);
-  }}
+  }finally
+  {
+    closeModal();
+  }
+
+}
 
 
 const handleSubmit = async () => {
+
+
   try {
-    console.log(notes)
-  await createNote({
-    title: title.value,
-    content: content.value
-  });
 
-  title.value = '';
-  content.value = '';
+    await createNote(newNote.value);
 
-  closeModal();
+
+
+
   } catch (error) {
     console.error("Erreur de connexion au serveur:", error);
+  }finally {
+    closeModal();
   }
 
 };
 
 onMounted(async () => {
   await fetchNotes();
+  isLoading.value = false;
 });
 </script>
 

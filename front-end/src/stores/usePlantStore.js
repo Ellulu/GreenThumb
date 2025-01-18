@@ -24,13 +24,19 @@ export const usePlantStore = defineStore('plant', {
         this.error = `Failed to load plant with id: ${id}`;
       }
     },
-    async createPlant(plantData) {
+    async createPlant(plantData, picture) {
       try {
-        await APIService.post('/plants', plantData);
+        const formData = new FormData();
+        formData.append("plant", JSON.stringify(plantData));
+        if (picture) {
+          formData.append("picture", picture);
+        }
+        await APIService.postWithMultipart('/plants/add', formData);
       } catch (error) {
         this.error = 'Failed to create plant';
+        console.error(error);
       }
-    },
+    },    
     async deletePlant(id) {
       try {
         await APIService.delete(`/plants/${id}`);

@@ -1,6 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { useUserStore } from "@/stores/userStore";
 
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
@@ -13,18 +12,22 @@ import PostsView from "@/views/PostsView.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import CalendarView from "@/views/CalendarView.vue";
+import DashboardView from "@/views/DashboardView.vue";
+import EditEventView from "@/views/EditEventView.vue";
+import NotificationsVue from "@/views/NotificationsVue.vue";
+import CommunityView from "@/views/CommunityView.vue";
 
-const checkAuth = (next) => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Utilisateur connecté :", user);
-      next();
-    } else {
-      console.log("Utilisateur déconnecté");
-      next("/login");
-    }
-  })
-}
+const checkAuth = async (next) => {
+  const userStore = useUserStore();
+  if (!userStore.isInitialized) {
+    await userStore.initializeUser();
+  }
+  if (userStore.user) {
+    next();
+  } else {
+    next("/login");
+  }
+};
 
 const routes = [
   {
@@ -36,13 +39,23 @@ const routes = [
         path: "test",
         component: TestView,
       },
+
       {
         path: "posts",
         component: PostsView,
+      },  {
+        path: "notification",
+        component:  NotificationsVue,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "calendar",
         component: CalendarView,
+        beforeEnter: (to, from, next) => checkAuth(next),
+      },
+      {
+        path: "calendar/editevents",
+        component: EditEventView,
         beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
@@ -59,12 +72,21 @@ const routes = [
         path: "profile/plants",
         component: PlantView,
         beforeEnter: (to, from, next) => checkAuth(next),
+      },{
+        path: "profile/dashboards",
+        component: DashboardView,
+        beforeEnter: (to, from, next) => checkAuth(next),
       },
       {
         path: "profile/edit",
         component: EditProfileView,
         beforeEnter: (to, from, next) => checkAuth(next),
-      }
+      },
+      {
+        path: "/community", 
+        component: CommunityView, 
+        beforeEnter: (to, from, next) => checkAuth(next)
+      },
     ],
   },
   { path: "/login", component: LoginView },

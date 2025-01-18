@@ -1,12 +1,12 @@
 <script setup>
 import { onMounted } from 'vue'
 import { usePlantStore } from '@/stores/usePlantStore'
-import { useUserStore } from '@/stores/useUserStore'
+import { useDBUserStore } from '@/stores/DBUserStore'
 import { useEventStore } from '@/stores/useEventStore'
 import { useArticleStore } from '@/stores/useArticleStore'
 
 const plantStore = usePlantStore()
-const userStore = useUserStore()
+const userStore = useDBUserStore()
 const eventStore = useEventStore()
 const articleStore = useArticleStore()
 

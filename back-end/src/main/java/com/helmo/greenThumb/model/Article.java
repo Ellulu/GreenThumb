@@ -1,8 +1,11 @@
 package com.helmo.greenThumb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+
 @Entity
 public class Article {
 
@@ -21,17 +24,34 @@ public class Article {
     @ElementCollection
     private List<String> files;
 
-    @Embedded
-    private Rating rating;
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private Set<Rating> ratings;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
 
     public Article() {
+
+        ratings = new HashSet<>();
+        files = new ArrayList<>();
     }
 
     // Getters et setters
+
+
+    public Set<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Set<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
     public Long getId() {
         return id;
     }
@@ -72,19 +92,32 @@ public class Article {
         this.files = files;
     }
 
-    public Rating getRating() {
-        return rating;
-    }
-
-    public void setRating(Rating rating) {
-        this.rating = rating;
-    }
-
     public User getAuthor() {
         return author;
     }
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", text='" + text + '\'' +
+                ", date=" + date +
+                ", files=" + files +
+                ", ratings=" + ratings +
+                ", author=" + author +
+                '}';
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

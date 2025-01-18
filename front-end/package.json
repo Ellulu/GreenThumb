@@ -11,15 +11,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.7",
     "firebase": "^10.14.1",
+    "lucid": "^2.21.0",
     "lucide-vue-next": "^0.453.0",
     "pinia": "^2.2.6",
     "pinia-plugin-persistedstate": "^4.1.1",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "underscore": "^1.13.7",
     "vue": "^3.5.10",
     "vue-cal": "^4.10.0",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",

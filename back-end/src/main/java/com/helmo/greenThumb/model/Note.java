@@ -9,22 +9,19 @@ public class Note {
     private Long id;
 
     @Lob
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String title;
 
 
-    @OneToOne
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+
+
 
     public Note( String title, String content ) {
         this.title = title;
@@ -34,7 +31,12 @@ public class Note {
     public Note() {
 
     }
-
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
     public String getContent() {
         return content;
     }

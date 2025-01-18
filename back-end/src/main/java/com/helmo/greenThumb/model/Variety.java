@@ -2,6 +2,8 @@ package com.helmo.greenThumb.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 public class Variety {
 
@@ -38,6 +40,18 @@ public class Variety {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Variety variety)) return false;
+        return Objects.equals(name, variety.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     public void setDescription(String description) {

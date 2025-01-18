@@ -9,7 +9,7 @@ import ErrorSpan from "@/components/ErrorSpan.vue";
 import logo from "@/assets/img/default.jpg";
 
 const userStore = useUserStore();
-const { user, updateUser, saveProfilePicture } = userStore;
+const { user, updateUser, deleteProfile, saveProfilePicture } = userStore;
 
 const isLoading = ref(false);
 const name = ref(`${_.rest(user.displayName.split(" "))}` || "");
@@ -37,7 +37,6 @@ function loadFile(event) {
 }
 
 // TODO: Add validation
-// TODO: Add Api calls
 
 const handleSubmit = async () => {
     try {
@@ -46,7 +45,7 @@ const handleSubmit = async () => {
             await saveProfilePicture(file.value);
         }
 
-
+        await updateUser(firstName.value + " " + name.value, email.value, newPassword.value);
 
         isLoading.value = false;
     } catch(error) {
@@ -55,11 +54,11 @@ const handleSubmit = async () => {
     }
 };
 
-const handleDelete = () => {
+const handleDelete = async () => {
     try {
         isLoading.value = true;
 
-        // Do something...
+        await deleteProfile();
 
         isLoading.value = false;
     } catch(error) {
