@@ -124,7 +124,7 @@ const event = ref({
   cycle: 0,
   plant: {},
 });
-// Fonction appelée lors du clic sur un événement
+
 const showDescription = (event) => {
   selectedEvent.value = event;
 };
@@ -160,7 +160,7 @@ async function onViewChange(viewData) {
   }
 
 }
-//!!! ATTENTION QUAND DAns les plants on récupe bien le user a modifier
+
 async function  openModalEvent() {
   showModal.value = true;
   await plantStore.fetchPlants();

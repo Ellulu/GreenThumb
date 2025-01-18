@@ -30,10 +30,11 @@ const handleCancel = () => {
 <template>
 
 
-  <div class="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
+  <div     class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
+  >
     <div
         class="flex flex-col justify-between border-2 border-green-600 rounded-lg p-4 bg-white text-green-600
-           w-full max-w-[500px] min-w-[500px] max-h-[400px] min-h-[400px] overflow-y-auto"
+               mx-auto w-[90%] max-w-[500px] h-auto max-h-[400px] overflow-y-auto"
     >
       <Title_2 class="font-bold text-lg">Titre: {{ event.title }}</Title_2>
       <p><span class="font-bold">Description:</span> {{ event.description }}</p>

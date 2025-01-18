@@ -32,8 +32,8 @@ onMounted(async () => {
 
 <template>
 
-  <div>
-    <Title>Tàches du jours</Title>
+  <div class="mb-8">
+    <Title>Tâches du jour</Title>
   </div>
 
   <TaskDisplay :daily-task="displayTasks" />
