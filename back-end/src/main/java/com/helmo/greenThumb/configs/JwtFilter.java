@@ -18,7 +18,11 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-                String authHeader = request.getHeader("Authorization");
+        String clientIp = request.getRemoteAddr();
+        System.out.println("IP detected: " + clientIp); // Log pour vérifier l'IP
+
+        String authHeader = request.getHeader("Authorization");
+                System.out.println("Authorization header: " + authHeader);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     String token = authHeader.substring(7);
                     try {
@@ -30,6 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         return;
                     }
                 }
+
                 filterChain.doFilter(request, response);
     }
     

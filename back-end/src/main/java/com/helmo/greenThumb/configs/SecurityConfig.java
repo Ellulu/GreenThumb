@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 @Configuration
 public class SecurityConfig {
@@ -19,18 +20,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> {
-                    csrf.ignoringRequestMatchers("/public/**", "/api/auth/**","/api/plants/**","/api/users/**","/api/**");
-                })
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS configuration
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Autoriser les requêtes OPTIONS
-                        .requestMatchers("/public/**").permitAll() // Exemple pour des ressources publiques
-                        .requestMatchers("/api/auth/**").permitAll() // Exclure les endpoints d'authentification
-                        .requestMatchers("/api/**").permitAll() // Exclure les endpoints d'authentification
-                        .requestMatchers("/api/plants/").permitAll() // Exclure les endpoints d'authentification
+                                .requestMatchers("/public/**", "/api/plants", "/api/**").permitAll()// Toutes les autres requêtes doivent être authentifiées
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Ajouter un filtre JWT
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Ajoute le filtre JWT
 
         return http.build();
     }
@@ -48,7 +43,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Applique à toutes les routes
 
-        System.out.println("CORS configuration applied");
+        System.out.println("CORS configuration applied too");
 
         return source;
     }
