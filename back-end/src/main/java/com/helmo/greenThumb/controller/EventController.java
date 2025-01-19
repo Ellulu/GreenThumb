@@ -4,7 +4,6 @@ import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Event;
 import com.helmo.greenThumb.services.EventService;
 import com.helmo.greenThumb.services.NotificationLogService;
-import com.helmo.greenThumb.services.PlantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

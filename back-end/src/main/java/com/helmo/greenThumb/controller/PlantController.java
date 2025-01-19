@@ -5,19 +5,11 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.cloud.StorageClient;
-import com.helmo.greenThumb.dto.PlantDTO;
-import com.helmo.greenThumb.model.LightLevel;
 import com.helmo.greenThumb.model.Plant;
 import com.helmo.greenThumb.model.User;
-import com.helmo.greenThumb.model.Variety;
 import com.helmo.greenThumb.services.PlantService;
 import com.helmo.greenThumb.services.VarietyService;
 import com.helmo.greenThumb.utils.FileValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,9 +22,10 @@ import java.util.List;
 @RequestMapping("/api/plants")
 @CrossOrigin(origins = "http://localhost:5173")
 public class PlantController {
-    private static final Logger logger = LoggerFactory.getLogger(PlantController.class);
+
     private final PlantService plantService;
     private final VarietyService varietyService;
+
     public PlantController(PlantService plantService,VarietyService varietyService) {
         this.plantService = plantService;
         this.varietyService = varietyService;

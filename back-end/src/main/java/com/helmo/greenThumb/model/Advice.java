@@ -1,13 +1,11 @@
 package com.helmo.greenThumb.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.*;
 import jakarta.persistence.*;
 
-import java.util.*;
-
 @Entity
-public class Article {
-
+public class Advice {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,34 +21,15 @@ public class Article {
     @ElementCollection
     private List<String> files;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-    private Set<Rating> ratings;
-
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Comment> comments;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
 
-    public Article() {
-
-        ratings = new HashSet<>();
+    public Advice() {
         files = new ArrayList<>();
     }
 
     // Getters et setters
-
-
-    public Set<Rating> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(Set<Rating> ratings) {
-        this.ratings = ratings;
-    }
-
     public Long getId() {
         return id;
     }
@@ -101,22 +80,13 @@ public class Article {
 
     @Override
     public String toString() {
-        return "Article{" +
+        return "Advice{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", date=" + date +
                 ", files=" + files +
-                ", ratings=" + ratings +
                 ", author=" + author +
                 '}';
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 }

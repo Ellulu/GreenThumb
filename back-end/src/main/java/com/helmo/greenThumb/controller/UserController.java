@@ -87,10 +87,10 @@ public class UserController {
         User user = userService.getUserById(token.getUid());
         
         if (user.isAdmin()) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(true);
         }
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(false);
     }
 
     @PostMapping
