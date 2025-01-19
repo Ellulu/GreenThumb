@@ -11,10 +11,11 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(async (config) => {
   const auth = getAuth();
   const user = auth.currentUser;
-
+  console.log(user)
   if (user) {
     const token = await user.getIdToken();
     config.headers.Authorization = `Bearer ${token}`;
+    console.log(config.headers.Authorization)
   }
   return config;
 }, (error) => {
