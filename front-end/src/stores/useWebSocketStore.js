@@ -23,7 +23,7 @@ export const useWebSocketStore = defineStore("websocket", () => {
             try {
                 const token = await user.getIdToken();
 
-                const socket = new SockJS("http://localhost:8080/notifications");
+                const socket = new SockJS("https://greeenthumb-1074673461190.europe-west3.run.app/notifications");
                 stompClient = Stomp.over(socket);
 
                 stompClient.connect(
