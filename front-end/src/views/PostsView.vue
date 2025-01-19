@@ -46,7 +46,7 @@
             </div>
             <h4 class="text-xl font-bold mb-2">{{ article.title }}</h4>
             <p class="mb-4">{{ article.text }}</p>
-            <div class="mb-4">
+            <div class="mb-4" v-if="article.files && article.files.length > 0">
               <div class="relative overflow-hidden rounded-lg shadow-md">
               <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar space-x-4 p-4">
                 <div
@@ -64,7 +64,7 @@
               </div>
             </div>
             <ArticleActions
-            v-if="authUserStore.user"
+            v-if="user"
             :article="article"
             @like="likeArticle(article)"
             @dislike="dislikeArticle(article)"
@@ -77,7 +77,7 @@
                     <div class="flex-1">
                       <div class="flex items-center justify-between">
                         <p class="font-semibold text-sm">{{ comment.username }}</p>
-                        <button @click="deleteComment(article.id, comment.id)" class="text-red-500 text-xs hover:underline">Supprimer</button>
+                        <button v-if="comment.uid==user.id" @click="deleteComment(article, comment)" class="text-red-500 text-xs hover:underline">Supprimer</button>
                       </div>
                       <p class="text-sm text-gray-700 mt-1">{{ comment.text }}</p>
                     </div>
@@ -94,7 +94,7 @@
                       ></textarea>
                     </div>
                     <button 
-                      @click="addComment(article.id)" 
+                      @click="addComment(article)" 
                       class="bg-green-500 text-white py-2 px-4 rounded-full font-bold hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
                       :disabled="!newComment.trim()"
                     >
@@ -104,6 +104,17 @@
                 </div>
               </transition>
           </div>
+          <PostsLoader v-if="isLoadingMore && !noMoreArticles" />
+          <p v-if="noMoreArticles" class="text-center text-gray-500">No more articles to load</p>
+            <div class="flex justify-center mt-4">
+            <button 
+              @click="handleScroll" 
+              class="bg-blue-500 text-white py-2 px-4 rounded-full font-bold hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              :disabled="isLoadingMore || noMoreArticles"
+            >
+              Charger plus d'articles
+            </button>
+            </div>
         </template>
       </div>
     </main>
@@ -112,7 +123,7 @@
 
 <script setup>
 // TODO : ajouter tri posts par fan
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,onUnmounted } from 'vue'
 import { useArticleStore } from '@/stores/useArticleStore'
 import { useUserStore } from '@/stores/userStore';
 import { useDBUserStore } from '@/stores/dbUserStore';
@@ -126,6 +137,10 @@ import AuthPrompt from '@/components/AuthPrompt.vue'
 import NewArticleForm from '@/components/NewArticleForm.vue'
 const articleStore = useArticleStore()
 const isLoading = ref(true)
+const isLoadingMore = ref(false)
+const noMoreArticles = ref(false)
+const page = ref(0)
+
 const newArticle = ref('')
 const newArticleTitle = ref('')
 const articles = ref([])
@@ -138,22 +153,7 @@ const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
   return new Date(dateString).toLocaleDateString('fr-FR', options)
 }
-const isVideo = (file) => {
-  return file.match("/\.(jpeg|jpg|gif|png)$/") != null;
-}
-const getVideoType = (file) => {
-      const extension = file.split('.').pop().toLowerCase();
-      switch (extension) {
-        case 'mp4':
-          return 'video/mp4';
-        case 'webm':
-          return 'video/webm';
-        case 'ogg':
-          return 'video/ogg';
-        default:
-          return '';
-      }
-}
+
 const deleteArticle = async (articleId) => {
   await articleStore.deleteArticle(articleId)
   articles.value = articles.value.filter((a) => a.id !== articleId)
@@ -217,30 +217,28 @@ const toggleComments = async (articleId) => {
   }
   article.showComments = !article.showComments;
 };
-const handleFileUpload = (event) => {
-  files.value = Array.from(event.target.files);
-};
-const addComment = async (articleId) => {
+
+const addComment = async (article) => {
   if (newComment.value.trim()) {
-    await articleStore.addComment(articleId, {
-      userId: user.uid, 
+
+    const commentPromise = articleStore.addComment(article.id, {
+      userId: user.uid,
       content: newComment.value,
     });
-    console.log("user:",user);
     const showComment = {
-      imageUrl : user.photoURL,
-      username : user.displayName,
-      text     : newComment.value
-    }
-    const article = articles.value.find((a) => a.id === articleId);
+      imageUrl: user.photoURL,
+      username: user.displayName,
+      text: newComment.value,
+    };
     article.comments.push(showComment);
     newComment.value = "";
+    await commentPromise;
   }
 };
-const deleteComment = async (articleId, commentId) => {
-  await articleStore.deleteComment(commentId);
-  const article = articles.value.find((a) => a.id === articleId);
-  article.comments = article.comments.filter((c) => c.id !== commentId);
+const deleteComment = async (article, comment) => {
+  console.log("co mment",comment)
+  await articleStore.deleteComment(comment.id);
+  article.comments = article.comments.filter((c) => c.id !== comment.id);
 };
 onMounted(async () => {
   try {
@@ -250,11 +248,9 @@ onMounted(async () => {
     if (articleStore.articles.length === 0) {
       console.log(dBUserStore.user)
       if( dBUserStore.user ){
-        console.log("fetchArticles")
-        await articleStore.fetchArticles()
+        await articleStore.fetchArticles(0)
       }else{
-        console.log("fetchALLArticles")
-        await articleStore.fetchAllArticles()
+        await articleStore.fetchAllArticles(0)
       }
     }
     articles.value = articleStore.articles
@@ -265,13 +261,25 @@ onMounted(async () => {
       if (!aFollowing && bFollowing) return 1;
       return new Date(b.date) - new Date(a.date);
     });
-    console.log(articleStore.articles)
+
     isLoading.value = false
   } catch (err) {
     console.error("Erreur lors du chargement des articles:", err)
     isLoading.value = false
   }
 })
+
+const handleScroll = async () => {
+    isLoadingMore.value = true;
+    page.value += 1;
+    await articleStore.fetchArticles(page.value);
+    console.log("articles",articleStore.articles)
+    articles.value = articles.value.concat(articleStore.articles)
+    if (articleStore.articles.length === 0) {
+      noMoreArticles.value = true;
+    }
+    isLoadingMore.value = false;
+};
 const toggleFollow = async (user) => {
   if (isFollowing(user)) {
     await dBUserStore.unfollowUser(user);

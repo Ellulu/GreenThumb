@@ -42,6 +42,7 @@ public class CommentService {
                     return new CommentDTO(
                             comment.getId(),
                             comment.getText(),
+                            firebaseUser.getUid(),
                             firebaseUser.getDisplayName(),
                             firebaseUser.getPhotoUrl(),
                             comment.getCreatedAt()
