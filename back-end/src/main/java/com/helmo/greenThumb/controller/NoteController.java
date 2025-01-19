@@ -1,7 +1,6 @@
 package com.helmo.greenThumb.controller;
 import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.model.Note;
-import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.services.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -143,6 +143,15 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
+  const checkIsAdmin = async () => {
+    try {
+      const response = await ApiService.get("/users/admin");
+      return response.data;
+    } catch (error) {
+      console.log("Erreur : " + error.message);
+    }
+  }
+
   return {
     user,
     isInitialized,
@@ -153,6 +162,7 @@ export const useUserStore = defineStore("user", () => {
     loginWithGoogle,
     saveProfilePicture,
     updateUser,
-    deleteProfile
+    deleteProfile,
+    checkIsAdmin
   };
 });

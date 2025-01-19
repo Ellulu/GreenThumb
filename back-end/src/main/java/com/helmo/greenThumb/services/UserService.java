@@ -34,11 +34,13 @@ public class UserService {
     public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
+
     public boolean isFollowing(String userId, String targetUserId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return user.getFollowing().stream()
                 .anyMatch(subscription -> subscription.getUid().equals(targetUserId));
     }
+
     public void followUser(String currentUserId, String userIdToFollow) {
         User currentUser = userRepository.findById(currentUserId).orElse(null);
         User userToFollow = userRepository.findById(userIdToFollow)
@@ -59,6 +61,12 @@ public class UserService {
         userRepository.save(currentUser);
     }
 
+    public boolean isAdmin(String currentUserId) {
+        User user = userRepository.findById(currentUserId).orElse(null);
 
+        if (user == null || !user.isAdmin()) return false;
+
+        return true;
+    }
 
 }

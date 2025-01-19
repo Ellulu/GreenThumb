@@ -4,6 +4,9 @@ import com.google.firebase.auth.FirebaseToken;
 import com.helmo.greenThumb.dto.CommentDTO;
 import com.helmo.greenThumb.model.Comment;
 import com.helmo.greenThumb.services.CommentService;
+import com.helmo.greenThumb.services.UserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,9 @@ import java.util.List;
 @RequestMapping("/api/articles")
 @CrossOrigin(origins = "http://localhost:5173")
 public class CommentController {
+
+    @Autowired
+    private UserService userService;
 
     private final CommentService commentService;
 
@@ -43,7 +49,8 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(
             @RequestAttribute("firebaseToken") FirebaseToken token,
             @PathVariable Long commentId) {
-        if(!commentService.isCommentOwner(commentId,token.getUid())) {
+        String uid = token.getUid();
+        if(!userService.isAdmin(uid) || !commentService.isCommentOwner(commentId,uid)) {
             return ResponseEntity.status(403).build();
         }
         commentService.deleteComment(commentId);

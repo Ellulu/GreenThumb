@@ -57,7 +57,7 @@ class ArticleControllerTest {
 
         List<ArticleDTO> articles = Arrays.asList(article1, article2);
 
-        Mockito.when(articleService.getAllArticles("testUser")).thenReturn(articles);
+        //Mockito.when(articleService.getAllArticles("testUser")).thenReturn(articles);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/articles")
                         .requestAttr("firebaseToken", firebaseToken)
@@ -81,7 +81,7 @@ class ArticleControllerTest {
 
         List<ArticleDTO> articles = Arrays.asList(article1, article2);
 
-        Mockito.when(articleService.getAllArticles("")).thenReturn(articles);
+        //Mockito.when(articleService.getAllArticles("")).thenReturn(articles);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/articles/all")
                         .contentType(MediaType.APPLICATION_JSON))

@@ -11,6 +11,7 @@ import com.helmo.greenThumb.model.Article;
 import com.helmo.greenThumb.services.ArticleService;
 import com.helmo.greenThumb.services.EmailService;
 import com.helmo.greenThumb.services.FirebaseService;
+import com.helmo.greenThumb.services.UserService;
 import com.helmo.greenThumb.utils.FileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +32,14 @@ public class ArticleController {
     private ArticleService articleService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private FirebaseService firebaseService;
+    
     @Autowired
     private EmailService emailService;
+
     @PostMapping
     public Article createArticle(@RequestAttribute("firebaseToken") FirebaseToken token,
                                  @RequestParam("article") String articleJson,
@@ -73,6 +79,7 @@ public class ArticleController {
         System.out.println(">>> Page: " + page);
         return articleService.getArticlesByPage(token.getUid(), page);
     }
+
     @GetMapping("/offline/page/{page}")
     public List<ArticleDTO> getArticlesByPage(@PathVariable int page) {
         return articleService.getArticlesByPage("", page);
@@ -83,16 +90,19 @@ public class ArticleController {
         return articleService.getArticleById(id);
     }
 
-
     @DeleteMapping("/{id}")
     public void deleteArticle(
             @RequestAttribute("firebaseToken") FirebaseToken token,
             @PathVariable Long id) {
         Article article = articleService.getArticleById(id);
         if (article == null) return;
-        if (!article.getAuthor().getUid().equals(token.getUid())) return;
+
+        String uid = token.getUid();
+
+        if (!userService.isAdmin(uid) || !article.getAuthor().getUid().equals(uid)) return;
         articleService.deleteArticle(id);
     }
+
     @PostMapping("/{articleId}/like")
     public ResponseEntity<String> updateLikeOrDislike(
             @PathVariable Long articleId,
@@ -107,6 +117,7 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     private void sendMailToAuthor(String uid, boolean isLike) {
         String eMail = firebaseService.getEmailFromUid(uid);
         String message = isLike ?
