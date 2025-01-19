@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/notes")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://green-thumb-five.vercel.app/")
 public class NoteController {
 
     @Autowired

@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("http://localhost:5173"); // Autoriser toutes les origines
+        configuration.addAllowedOriginPattern("https://green-thumb-five.vercel.app/"); // Autoriser toutes les origines
 
         configuration.addAllowedMethod("*"); // Autoriser toutes les méthodes (GET, POST, etc.)
         configuration.addAllowedHeader("*"); // Autoriser tous les headers

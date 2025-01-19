@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/varieties")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://green-thumb-five.vercel.app/")
 public class VarietyController {
 
     private final VarietyService varietyService;

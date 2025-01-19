@@ -1,6 +1,7 @@
 package com.helmo.greenThumb.configs;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
@@ -20,7 +21,7 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String clientIp = request.getRemoteAddr();
         System.out.println("IP detected: " + clientIp); // Log pour vérifier l'IP
-
+        System.out.println("myIP" + InetAddress.getLocalHost().getHostAddress());
         String authHeader = request.getHeader("Authorization");
                 System.out.println("Authorization header: " + authHeader);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
