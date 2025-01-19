@@ -4,7 +4,7 @@ import ProfileDetails from "../components/ProfileDetails.vue";
 </script>
 
 <template>
-  <div class="mt-14 md:mt-[1.5%] md:w-1/2 mx-auto lg:w-1/3">
+  <div class="mt-14 mx-4 md:mt-[1.5%] md:w-1/2 md:mx-auto lg:w-1/3">
     <Title>{{ isOwnProfile ? "Votre profil" : profileUser?.displayName || "Profil utilisateur" }}</Title>
 
     <ProfileDetails></ProfileDetails>

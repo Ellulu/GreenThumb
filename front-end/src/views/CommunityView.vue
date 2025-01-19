@@ -4,91 +4,87 @@ import Title from "@/components/Title.vue";
 import PostsLoader from '@/components/PostsLoader.vue';
 import NewArticleForm from '@/components/NewArticleForm.vue';
 import { useUserStore } from '@/stores/userStore';
-import { useArticleStore } from '@/stores/useArticleStore';
+import { useAdviceStore } from '@/stores/useAdviceStore';
 import { useDBUserStore } from '@/stores/dbUserStore';
 
-const articleStore = useArticleStore();
+const adviceStore = useAdviceStore();
 const isLoading = ref(true)
 const isLoadingMore = ref(false)
-const noMoreArticles = ref(false)
+const noMoreAdvices = ref(false)
 const page = ref(0)
 
-const newArticle = ref('')
-const newArticleTitle = ref('')
-const articles = ref([])
-const newComment = ref("");
+const newAdvice = ref('')
+const newAdviceTitle = ref('')
+const advices = ref([])
 const authUserStore = useUserStore()
 const dBUserStore = useDBUserStore()
 const user = authUserStore.user;
+
+const isAdmin = ref(false);
 
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
   return new Date(dateString).toLocaleDateString('fr-FR', options)
 }
 
-const deleteArticle = async (articleId) => {
-  await articleStore.deleteArticle(articleId)
-  articles.value = articles.value.filter((a) => a.id !== articleId)
+const deleteAdvice = async (adviceId) => {
+  await adviceStore.deleteAdvice(adviceId)
+  advices.value = advices.value.filter((a) => a.id !== adviceId)
 }
 
-const addArticle = (newArticle) => {
-    const newArticleObj = {
+const convertFilesToUrls = (files) => {
+  return files.map(file => URL.createObjectURL(file));
+}
+
+const addAdvice = (newAdvice) => {
+    const newAdviceObj = {
       id: Date.now(),
-      title: newArticle.title,
-      text: newArticle.content,
+      title: newAdvice.title,
+      text: newAdvice.content,
       author: {
         fullname: user.displayName,
         uid: user.uid,
         imageUrl: user.photoURL
       },
-      files: convertFilesToUrls(newArticle.files),
+      files: convertFilesToUrls(newAdvice.files),
       date: new Date().toISOString(),
-      rating: { likes: 0, dislikes: 0 },
     }
-    console.log("files",newArticleObj.files)
+    console.log("files",newAdviceObj.files)
 
-    articles.value.unshift(newArticleObj)
-    const newArticleObjSave = {
+    advices.value.unshift(newAdviceObj)
+    const newAdviceObjSave = {
       id: 0,
-      title: newArticle.title,
-      text: newArticle.content,
+      title: newAdvice.title,
+      text: newAdvice.content,
       author: {
         uid: user.uid,
       },
       date: new Date().toISOString(),
     }
-    articleStore.createArticle(newArticleObjSave,newArticle.files);
-}
-
-const isFollowing = (user) => {
-  return dBUserStore.user?.following?.some(follower => follower.uid === user.uid);
+    adviceStore.createAdvice(newAdviceObjSave,newAdvice.files);
 }
 
 onMounted(async () => {
   try {
-    if ((!dBUserStore.user || dBUserStore.user.uid !== user  || !dBUserStore.user.uid)&& user && user.uid) {
+    if ((!dBUserStore.user || dBUserStore.user.uid !== user || !dBUserStore.user.uid)&& user && user.uid) {
       await dBUserStore.fetchUser(user.uid);
     }
-    if (articleStore.articles.length === 0) {
-      console.log(dBUserStore.user)
-      if( dBUserStore.user ){
-        await articleStore.fetchArticles(0)
-      }else{
-        await articleStore.fetchAllArticles(0)
-      }
+
+    isAdmin.value = await authUserStore.checkIsAdmin();
+
+    if (adviceStore.advices.length === 0) {
+      await adviceStore.fetchAdvices(0)
     }
-    articles.value = articleStore.articles
-    articles.value.sort((a, b) => {
-      const aFollowing = isFollowing(a.author);
-      const bFollowing = isFollowing(b.author);
-      if (aFollowing && !bFollowing) return -1;
-      if (!aFollowing && bFollowing) return 1;
+
+    advices.value = adviceStore.advices
+    console.log(advices.value);
+    advices.value.sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     });
 
     isLoading.value = false
   } catch (err) {
-    console.error("Erreur lors du chargement des articles:", err)
+    console.error("Erreur lors du chargement des advices:", err)
     isLoading.value = false
   }
 })
@@ -100,54 +96,46 @@ onMounted(async () => {
     </div>
 
     <div class="max-w-2xl mx-auto mt-4 px-4">
-        <NewArticleForm v-if="authUserStore.user" @submit-article="addArticle" />
+        <NewArticleForm v-if="authUserStore.user" @submit-article="addAdvice" />
 
         <PostsLoader v-if="isLoading"/>
         <div v-else>
-            <div v-for="article in articles" :key="article.id" class="rounded-lg shadow p-4">
+            <div v-for="advice in advices" :key="advice.id" class="rounded-lg shadow p-4">
             <div class="flex items-center space-x-4 mb-4">
               <img
-              :src="article.author.imageUrl || '/placeholder.svg?height=48&width=48'"
+              :src="advice.author.imageUrl || '/placeholder.svg?height=48&width=48'"
               alt="User Avatar"
               class="w-12 h-12 rounded-full"
               />
               <div class="flex-1">
               <div class="flex items-center justify-between">
-                <p class="font-bold">{{ article.author.fullname }}</p>
+                <p class="font-bold">{{ advice.author.fullname }}</p>
                 <div class="flex space-x-2">
                 <button
-                  v-if="authUserStore.user && article.author.uid!=user.uid"
-                  @click="toggleFollow(article.author)"
-                  :class="isFollowing(article.author) ? 'bg-red-100 text-red-500 hover:bg-red-200' : 'bg-green-100 text-green-500 hover:bg-green-200'"
-                  class="px-3 py-1 text-sm rounded-full font-medium transition"
-                >
-                  {{ isFollowing(article.author) ? 'Unfollow' : 'Follow' }}
-                </button>
-                <button
-                  v-if="authUserStore.user && article.author.uid === user.uid"
-                  @click="deleteArticle(article.id)"
+                  v-if="isAdmin && (authUserStore.user && advice.author.uid === user.uid)"
+                  @click="deleteAdvice(advice.id)"
                   class="bg-red-100 text-red-500 hover:bg-red-200 px-3 py-1 text-sm rounded-full font-medium transition"
                 >
                   Supprimer
                 </button>
                 </div>
               </div>
-              <p class="text-gray-500 text-sm">{{ formatDate(article.date) }}</p>
+              <p class="text-gray-500 text-sm">{{ formatDate(advice.date) }}</p>
               </div>
             </div>
-            <h4 class="text-xl font-bold mb-2">{{ article.title }}</h4>
-            <p class="mb-4">{{ article.text }}</p>
-            <div class="mb-4" v-if="article.files && article.files.length > 0">
+            <h4 class="text-xl font-bold mb-2">{{ advice.title }}</h4>
+            <p class="mb-4">{{ advice.text }}</p>
+            <div class="mb-4" v-if="advice.files && advice.files.length > 0">
               <div class="relative overflow-hidden rounded-lg shadow-md">
               <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar space-x-4 p-4">
                 <div
-                v-for="file in article.files"
+                v-for="file in advice.files"
                 :key="file"
                 class="snap-center flex-shrink-0 w-64 h-64 relative"
                 >
                 <img
                   :src="file"
-                  :alt="'Image from ' + article.author.fullname"
+                  :alt="'Image from ' + advice.author.fullname"
                   class="w-full h-full object-cover rounded-lg shadow-md"
                 />
                 </div>

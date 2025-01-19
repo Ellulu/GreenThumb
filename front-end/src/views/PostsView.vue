@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen mt-10 md:mt-0">
     <Title>Pour vous</Title>
 
     <main class="max-w-2xl mx-auto mt-4 px-4">
@@ -21,7 +21,7 @@
               class="w-12 h-12 rounded-full"
               />
               <div class="flex-1">
-              <div class="flex items-center justify-between">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                 <p class="font-bold">{{ article.author.fullname }}</p>
                 <div class="flex space-x-2">
                 <button
@@ -33,7 +33,7 @@
                   {{ isFollowing(article.author) ? 'Unfollow' : 'Follow' }}
                 </button>
                 <button
-                  v-if="authUserStore.user && article.author.uid === user.uid"
+                  v-if="isAdmin || (authUserStore.user && article.author.uid === user.uid)"
                   @click="deleteArticle(article.id)"
                   class="bg-red-100 text-red-500 hover:bg-red-200 px-3 py-1 text-sm rounded-full font-medium transition"
                 >
@@ -77,7 +77,7 @@
                     <div class="flex-1">
                       <div class="flex items-center justify-between">
                         <p class="font-semibold text-sm">{{ comment.username }}</p>
-                        <button v-if="comment.uid==user.id" @click="deleteComment(article, comment)" class="text-red-500 text-xs hover:underline">Supprimer</button>
+                        <button v-if="isAdmin || comment.uid==user.id" @click="deleteComment(article, comment)" class="text-red-500 text-xs hover:underline">Supprimer</button>
                       </div>
                       <p class="text-sm text-gray-700 mt-1">{{ comment.text }}</p>
                     </div>
@@ -137,6 +137,8 @@ const isLoading = ref(true)
 const isLoadingMore = ref(false)
 const noMoreArticles = ref(false)
 const page = ref(0)
+
+const isAdmin = ref(false);
 
 const newArticle = ref('')
 const newArticleTitle = ref('')
@@ -242,6 +244,9 @@ onMounted(async () => {
     if ((!dBUserStore.user || dBUserStore.user.uid !== user  || !dBUserStore.user.uid)&& user && user.uid) {
       await dBUserStore.fetchUser(user.uid);
     }
+    
+    isAdmin.value = await authUserStore.checkIsAdmin();
+    
     if (articleStore.articles.length === 0) {
       console.log(dBUserStore.user)
       if( dBUserStore.user ){

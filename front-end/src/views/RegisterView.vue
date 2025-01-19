@@ -11,6 +11,7 @@ import Input from "../components/Input.vue";
 import Button from "../components/Button.vue";
 import Title from "../components/Title.vue";
 import ErrorSpan from "../components/ErrorSpan.vue";
+import Text from "../components/Text.vue";
 
 const userStore = useUserStore();
 
@@ -120,6 +121,8 @@ const handleSubmit = async () => {
         >S'enregistrer</Button
       >
     </form>
+
+    <Text class="mt-4">Déjà membre ? <RouterLink class="underline hover:text-green-600" to="/login">Se connecter</RouterLink></Text>
 
     <GoogleSignIn />
   </div>

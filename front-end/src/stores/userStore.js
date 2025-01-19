@@ -145,7 +145,8 @@ export const useUserStore = defineStore("user", () => {
 
   const checkIsAdmin = async () => {
     try {
-      await ApiService.get("/users/admin");
+      const response = await ApiService.get("/users/admin");
+      return response.data;
     } catch (error) {
       console.log("Erreur : " + error.message);
     }
@@ -161,6 +162,7 @@ export const useUserStore = defineStore("user", () => {
     loginWithGoogle,
     saveProfilePicture,
     updateUser,
-    deleteProfile
+    deleteProfile,
+    checkIsAdmin
   };
 });

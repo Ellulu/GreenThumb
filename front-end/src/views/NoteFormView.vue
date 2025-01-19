@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white min-h-screen mr-5">
+  <div class="mt-14 bg-white min-h-screen md:mt-0 md:mr-5">
     <Title>Mes notes</Title>
 
     <main class="container mx-auto p-4">

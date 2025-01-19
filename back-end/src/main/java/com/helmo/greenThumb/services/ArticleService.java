@@ -1,8 +1,5 @@
 package com.helmo.greenThumb.services;
 
-import com.google.firebase.auth.ExportedUserRecord;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.ListUsersPage;
 import com.google.firebase.auth.UserRecord;
 import com.helmo.greenThumb.dto.ArticleDTO;
 import com.helmo.greenThumb.infrastructures.RatingRepository;
@@ -19,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +34,7 @@ public class ArticleService {
     private RatingRepository ratingRepository;
     @Autowired
     private FirebaseService firebaseService;
-    @Autowired
-    private NotificationLogService notificationLogService;
+
     Map<String, UserRecord> userCache = new HashMap<>();
 
     private static final DTOConverter DTO_CONVERTER = new DTOConverter();
