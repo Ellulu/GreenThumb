@@ -18,7 +18,6 @@ import static com.helmo.greenThumb.utils.EventUtils.isEventToday;
 
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = "http://localhost:5173")
 public class EventController {
 
     @Autowired

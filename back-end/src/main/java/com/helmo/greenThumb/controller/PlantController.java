@@ -28,7 +28,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/plants")
-@CrossOrigin(origins = "http://localhost:5173")
 public class PlantController {
     private static final Logger logger = LoggerFactory.getLogger(PlantController.class);
     private final PlantService plantService;
