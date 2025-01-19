@@ -20,4 +20,8 @@ public interface NotificationLogRepository  extends JpaRepository<NotificationLo
 
 
     List<NotificationLog> findByIsMailSentFalse();
+
+    @Modifying
+    @Query("DELETE FROM NotificationLog n WHERE n.id = :id")
+    void deleteById(Long id);
 }

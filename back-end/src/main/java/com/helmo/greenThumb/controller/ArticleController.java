@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/articles")
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
 public class ArticleController {
 
     @Autowired
@@ -68,16 +68,16 @@ public class ArticleController {
         return new Article();
     }
 
-    @GetMapping
-    public List<ArticleDTO> getUserArticles(@RequestAttribute("firebaseToken") FirebaseToken token) {
-        System.out.println("articles  user");
-        return articleService.getAllArticles(token.getUid());
+    @GetMapping("/page/{page}")
+    public List<ArticleDTO> getArticlesByPage(@RequestAttribute("firebaseToken") FirebaseToken token, @PathVariable int page) {
+        System.out.println(">>> Page: " + page);
+        return articleService.getArticlesByPage(token.getUid(), page);
     }
-    @GetMapping("/all")
-    public List<ArticleDTO> getAllArticles() {
-        System.out.println("articles no user");
-        return articleService.getAllArticles("");
+    @GetMapping("/offline/page/{page}")
+    public List<ArticleDTO> getArticlesByPage(@PathVariable int page) {
+        return articleService.getArticlesByPage("", page);
     }
+
     @GetMapping("/{id}")
     public Article getArticleById(@PathVariable Long id) {
         return articleService.getArticleById(id);

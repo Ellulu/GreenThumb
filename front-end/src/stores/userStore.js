@@ -143,6 +143,14 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
+  const checkIsAdmin = async () => {
+    try {
+      await ApiService.get("/users/admin");
+    } catch (error) {
+      console.log("Erreur : " + error.message);
+    }
+  }
+
   return {
     user,
     isInitialized,
