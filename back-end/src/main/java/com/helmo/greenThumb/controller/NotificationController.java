@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://green-thumb-five.vercel.app/")
 public class NotificationController {
     @Autowired
     NotificationLogService notificationLogService;
