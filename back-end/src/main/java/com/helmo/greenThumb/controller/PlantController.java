@@ -10,8 +10,6 @@ import com.helmo.greenThumb.model.User;
 import com.helmo.greenThumb.services.PlantService;
 import com.helmo.greenThumb.services.VarietyService;
 import com.helmo.greenThumb.utils.FileValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,9 +22,10 @@ import java.util.List;
 @RequestMapping("/api/plants")
 @CrossOrigin(origins = "http://localhost:5173")
 public class PlantController {
-    private static final Logger logger = LoggerFactory.getLogger(PlantController.class);
+
     private final PlantService plantService;
     private final VarietyService varietyService;
+
     public PlantController(PlantService plantService,VarietyService varietyService) {
         this.plantService = plantService;
         this.varietyService = varietyService;
