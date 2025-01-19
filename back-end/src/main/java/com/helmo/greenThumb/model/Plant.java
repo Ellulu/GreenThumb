@@ -2,6 +2,8 @@ package com.helmo.greenThumb.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,8 @@ public class Plant {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Task> taskList;
-
+    @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
     private String picture;
 
     @ManyToOne

@@ -40,7 +40,7 @@
       </ImageBox>
     </div>
 
-    <button @click="showAddPlantModal" class="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
+    <button @click="showAddPlantModal" class="fixed bottom-6 sm:bottom-24 right-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
       <PlusIcon class="h-6 w-6" />
     </button>
 
@@ -127,6 +127,11 @@
       min="0" 
       max="30" 
     />
+    <input
+      type="file"
+      @change="getEditingPlantPicture"
+      class="block w-full text-sm text-slate-500 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 hover:file:cursor-pointer"
+    />
   </FormBox>
   </div>
 </template>
@@ -175,7 +180,13 @@ onMounted(async () => {
     loading.value = false;
   }
 })
-
+function getEditingPlantPicture(event) {
+  editingPlant.value.picture = event.target.files[0];
+  if (editingPlant.value.picture) {
+    const reader = new FileReader();
+    reader.readAsDataURL(editingPlant.value.picture);
+  }
+}
 function getPlantPicture(event) {
     newPlant.value.picture = event.target.files[0];
     if (newPlant.value.picture) {

@@ -8,20 +8,20 @@ export const useArticleStore = defineStore('article', {
     error: null,
   }),
   actions: {
-    async fetchArticles() {
+    async fetchArticles(page) {
       try {
-        const response = await APIService.get('/articles');
-        this.articles = response.data; 
+      const response = await APIService.get(`/articles/page/${page}`);
+      this.articles = response.data;
       } catch (error) {
-        this.error = 'Failed to load articles';
+      this.error = `Failed to load articles for page: ${page}`;
       }
     },
-    async fetchAllArticles() {
+    async fetchAllArticles(page) {
       try {
-        const response = await APIService.get('/articles/all');
-        this.articles = response.data; 
+      const response = await APIService.get(`/articles/offline/page/${page}`);
+        this.articles = response.data;
       } catch (error) {
-        this.error = 'Failed to load articles';
+      this.error = `Failed to load articles for page: ${page}`;
       }
     },
     async fetchArticle(id) {
