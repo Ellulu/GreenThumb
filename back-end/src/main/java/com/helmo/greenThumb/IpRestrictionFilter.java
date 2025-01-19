@@ -21,6 +21,7 @@ public class IpRestrictionFilter implements Filter {
 
     static {
         // Ajouter ici les IP autorisées
+        allowedIps.add("51.195.62.118");
         allowedIps.add("127.0.0.1");
         allowedIps.add("172.17.0.1");
         allowedIps.add("0:0:0:0:0:0:0:1");
