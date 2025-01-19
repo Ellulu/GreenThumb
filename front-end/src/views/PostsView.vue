@@ -123,16 +123,13 @@
 
 <script setup>
 // TODO : ajouter tri posts par fan
-import { ref, onMounted,onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/useArticleStore'
 import { useUserStore } from '@/stores/userStore';
 import { useDBUserStore } from '@/stores/dbUserStore';
-import { UserIcon, ImageIcon, SmileIcon, MessageCircleIcon, ThumbsUpIcon, ThumbsDownIcon } from 'lucide-vue-next'
 import Title from '../components/Title.vue';
-import Title_3 from '../components/Title_3.vue';
 import ArticleActions from '../components/ArticleActions.vue'
 import PostsLoader from '../components/PostsLoader.vue';
-import Input from '@/components/Input.vue';
 import AuthPrompt from '@/components/AuthPrompt.vue'
 import NewArticleForm from '@/components/NewArticleForm.vue'
 const articleStore = useArticleStore()

@@ -4,7 +4,6 @@ import { useUserStore } from "@/stores/userStore";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
-import TestView from "@/views/TestView.vue";
 import MainLayout from "@/layout/MainLayout.vue";
 import PlantView from "@/views/PlantView.vue";
 import NoteFormView from "@/views/NoteFormView.vue";
