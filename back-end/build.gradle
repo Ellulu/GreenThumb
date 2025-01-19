@@ -22,7 +22,7 @@ bootWar {
 }
 
 bootJar {
-	enabled = false
+	enabled = true
 }
 dependencies {
 	implementation 'org.postgresql:postgresql:42.6.0'
