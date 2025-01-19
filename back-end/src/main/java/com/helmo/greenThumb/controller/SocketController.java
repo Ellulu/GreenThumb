@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://green-thumb-five.vercel.app/")
 public class SocketController {
     private final SimpMessagingTemplate messagingTemplate;
 
